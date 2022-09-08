@@ -1,0 +1,75 @@
+@font-face {
+    font-family: GladiusUI;
+    src: url(./assets/SourceHanSans.otf)
+}
+html {
+height: 100%;
+padding: 0;
+}
+body {
+width: 100%;
+height: 100%;
+margin: 0%;
+padding: 0;
+color: aliceblue;
+/* border-radius:15px; */
+box-shadow: 0px 0px 10px -1px rgba(170, 170, 170, 0.75);
+-webkit-box-shadow: 0px 0px 10px -1px rgba(170, 170, 170, 0.75);
+-moz-box-shadow: 0px 0px 10px -1px rgba(170, 170, 170, 0.75);
+background-color: #1b1b1b;
+}
+.container {
+width: 100%;
+height: 100%;
+padding: 0;
+position: absolute;
+/* -webkit-app-region: drag; */
+}
+.TitleBar {
+    align-items:center;
+    position: absolute;
+    font-size: 15px;
+    font-weight: lighter;
+    color:azure;
+    height:30px;
+    text-align: center;
+    width: 100%;
+    background-color: #202020;
+    font-family: GladiusUI;
+    -webkit-app-region: drag;
+}
+.cross {
+    z-index: 5;
+    width: 50px;
+    float: right;
+    height: 30px;
+    margin-right: 0px;
+    background-color: rgba(76, 16, 16, 0.447);
+    -webkit-app-region: no-drag;
+    background-image: url("./assets/cross.png");
+}
+.cross:hover {background-color: rgba(163, 17, 17, 0.447);}
+.hider {
+    z-index: 5;
+    width: 50px;
+    float: right;
+    height: 30px;
+    margin-right: 0px;
+    background-color: rgba(69, 69, 69, 0.447);
+    -webkit-app-region: no-drag;
+    background-image: url("./assets/hider.png");
+}
+.hider:hover {background-color: rgba(130, 130, 130, 0.447);}
+.watev {
+background-color: black;
+}
+.PortSelect {
+    width: 5%;
+    margin-top: 50px;
+    left: 6%;
+    position: absolute;
+    float: right;
+    -webkit-app-region: no-drag;
+}
+table { border-collapse: collapse; }
+table, th, td { border: 1px solid black; }

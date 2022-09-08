@@ -1,0 +1,58 @@
+{
+  "name": "bgm.res",
+  "title": "BGM.res",
+  "version": "0.1.0",
+  "description": "BGM.res-A local bangumi manager",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "BGM.res",
+    "bangumi",
+    "local manager"
+  ],
+  "author": "JimHan",
+  "license": "GPL",
+  "build": {
+    "productName": "bgm.res",
+    "appId": "com.Zerolite.bgm-res",
+    "copyright": "2022 Zerolite Studio All Rights Reserved.",
+    "asar": true,
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ],
+      "icon": "./assets/app.ico",
+      "asarUnpack": [
+        "src/**",
+        "README.md"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "./install.ico",
+      "uninstallerIcon": "./install.ico",
+      "installerHeaderIcon": "./assets/app.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "bgm.res"
+    }
+  },
+  "devDependencies": {
+    "electron": "^20.0.0",
+    "electron-builder": "^23.0.3"
+  },
+  "dependencies": {
+  }
+}

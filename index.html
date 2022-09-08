@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>GladiusRGB-Console</title>
+    <style>
+    </style>
+</head>
+
+<body style="overflow: hidden;">
+    <div class="container">
+        <div class="TitleBar"> <!--标题栏-->
+            <img src="./assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+            <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;">GladiusRGB-Console</a>
+            <!-- <div class="cross" onclick="Closer()"></div>
+            <div class="hider" onclick="Hider()"></div> 不需要的自定义container-->
+        </div>
+        <div class="FloatBar"> <!--胶囊菜单-->
+            
+        </div>
+        <div style="bottom:1%;left:1%;position: absolute;text-align: center;">
+            Node.js <span id="node-version"></span>
+            , Chromium <span id="chrome-version"></span>
+            , Electron <span id="electron-version"></span>
+        </div>
+    </div>
+</body>
+
+<script src="./renderer.js"></script>
+
+</html>
