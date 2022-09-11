@@ -1,0 +1,11 @@
+<script src="./includes/jquery-min.js"></script>
+
+<script>
+//Recent View Get
+window.onload = function () {
+    var bgmID = 1671;
+    $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID.toString(), function(data){
+      console.log(data.name+data.summary);
+    });
+  }
+</script>

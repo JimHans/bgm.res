@@ -2,25 +2,59 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <html>
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./includes/style.css">
     <meta charset="UTF-8">
-    <title>GladiusRGB-Console</title>
+    <title>BGM.res</title>
     <style>
     </style>
+    <script> 
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    </script> <!--重定向NodeRequire以引入JQuery-->
+    <script src="./includes/jquery-min.js"></script>
 </head>
+
 
 <body style="overflow: hidden;">
     <div class="container">
-        <div class="TitleBar"> <!--标题栏-->
+        <div class="TitleBar"> <!--*标题栏-->
             <img src="./assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
-            <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;">GladiusRGB-Console</a>
+            <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;">BGM.res</a>
             <!-- <div class="cross" onclick="Closer()"></div>
             <div class="hider" onclick="Hider()"></div> 不需要的自定义container-->
         </div>
-        <div class="FloatBar"> <!--胶囊菜单-->
-            
+        <div class="FloatBar"> <!--*胶囊菜单-->
+            <div id="Home" class="BarBrick" style="top:8%" onclick="FloatBarAction('Home')"></div>
+            <div id="Archive" class="BarBrick" style="top:31%" onclick="FloatBarAction('Archive')"></div>
+            <div id="Torrnet" class="BarBrick" style="top:54%" onclick="FloatBarAction('Torrnet')"><svg t="1662741893806" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5281" style="position:absolute;top:25%;bottom:30%;left:30%;right:30%"><path d="M950.12864 511.77472c0-22.6304-18.3296-40.96-40.96-40.96h-138.99776v-78.39744c0-22.6304-18.3296-40.96-40.96-40.96s-40.96 18.3296-40.96 40.96v78.39744H528.7936v-265.4208c0-69.38624-56.25856-125.6448-125.6448-125.6448h-195.52256c-69.38624 0-125.6448 56.25856-125.6448 125.6448v615.2192c0 69.38624 56.25856 125.6448 125.6448 125.6448h195.52256c69.38624 0 125.6448-56.25856 125.6448-125.6448v-117.16608c0-22.6304-18.3296-40.96-40.96-40.96s-40.96 18.3296-40.96 40.96v117.16608c0 24.14592-19.57888 43.7248-43.7248 43.7248h-195.52256c-24.14592 0-43.7248-19.57888-43.7248-43.7248v-267.8784h524.34944v267.85792c0 69.38624 56.25856 125.6448 125.6448 125.6448h95.29344c22.6304 0 40.96-18.3296 40.96-40.96s-18.3296-40.96-40.96-40.96H813.8752c-24.14592 0-43.7248-19.57888-43.7248-43.7248V552.73472h138.99776c22.65088 0 40.98048-18.3296 40.98048-40.96z m-786.2272-40.96v-265.4208c0-24.10496 19.61984-43.7248 43.7248-43.7248h195.52256c24.10496 0 43.7248 19.61984 43.7248 43.7248v265.4208H163.90144z" p-id="5282" fill="#ffffff"></path></svg></div>
+            <div id="Settings" class="BarBrick" style="top:77%" onclick="FloatBarAction('Settings')"></div>
         </div>
-        <div style="bottom:1%;left:1%;position: absolute;text-align: center;">
+        <div id="HomePage" class="HomePage"> <!--*主页 -->
+            <div class="Cover"></div>
+            <div class="HomepageTitle">继续观看</div>
+            <div id="RecentViewName" class="RecentViewName"></div> <!--TODO首页最近观看-标题部分-->
+            <div id="RecentViewProgress" class="RecentViewProgress"></div> <!--TODO首页最近观看-上次进度-->
+            <div id="RecentViewDetail" class="RecentViewDetail"></div> <!--TODO首页最近观看-简介部分-->
+            <div id="RecentViewRating" class="RecentViewRating">
+                <p style="margin-top: -10px;margin-bottom: -10px;">Bangumi</p>
+                <p style="margin-bottom: -5px;">Animation Rank</p>
+                <div id="RecentViewRatingScore" style="font-size: 6vw;font-family:bgmUIHeavy;"></div>
+                </div>
+        </div>
+        <div id="ArchivePage" class="ArchivePage"> <!--*番剧管理页 --> 
+        </div>
+        <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
+        </div>
+        <div id="SettingsPage" class="SettingsPage"> <!--*设置页 -->
+            <div class="Cover"></div>
+            <span style="position:absolute;left:15%;top:21%;font-size:1vmax;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看影片ID:</span>
+            <div class="boxBlank" style="top: 20%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
+                <input type="text" id="InputRecentViewID" autocomplete="off" class="TspInput" placeholder="请输入ID"  onkeydown="LocalSave('InputRecentViewID')">
+            </div>
+        </div>
+        <div style="bottom:1%;left:1%;position: absolute;text-align: center;z-index: 100;"> <!-- *版本信息 -->
             Node.js <span id="node-version"></span>
             , Chromium <span id="chrome-version"></span>
             , Electron <span id="electron-version"></span>
