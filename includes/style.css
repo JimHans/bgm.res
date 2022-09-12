@@ -1,11 +1,57 @@
-@font-face {
+/* TODO BGM.res CSS样式表 */
+/* *字体定义 */
+@font-face { /*BGMUI*/
     font-family: bgmUI;
     src: url(../assets/SourceHanSans.otf)
 }
-@font-face {
+@font-face { /*BGMUI-Heavy*/
     font-family: bgmUIHeavy;
     src: url(../assets/SourceHanSansHeavy.otf)
 }
+
+@keyframes wrapper-gradient { /* ANI页面渐变 */
+    0% {
+        opacity:0;
+    }
+    20% {
+        opacity:0.75;
+    }
+    40% {
+        opacity:0.88;
+    }
+    60% {
+        opacity:0.94;
+    }
+    80% {
+        opacity:0.97;
+    }
+    100% {
+        opacity:1;
+    }
+}
+@keyframes Ascent-Fonts { /* ANI标题上浮 */
+    0% {
+        transform:translateY(100px);
+        opacity:0;
+    }
+    /* 20% {
+        transform:translateY(25px);
+    }
+    40% {
+        transform:translateY(12px);
+    }
+    60% {
+        transform:translateY(6px);
+    }
+    80% {
+        transform:translateY(3px);
+    } */
+    100% {
+        transform:translateY(0px);
+        opacity:1;
+    }
+}
+
 html {
 height: 100%;
 padding: 0;
@@ -67,14 +113,33 @@ position: absolute;
     position:absolute;
     background-color: rgba(0, 0, 0, 0);
     border-radius:10px;
-    border: 2px solid rgb(66, 66, 66); 
+    /* border: 2px solid rgb(66, 66, 66);  */
     box-shadow: 0px 0px 10px -1px #3a3a3abf;
     -webkit-box-shadow: 0px 0px 10px -1px #3a3a3abf;
     -moz-box-shadow: 0px 0px 10px -1px #3a3a3abf;
     left: 15%;
     right:15%;
     -webkit-app-region: no-drag;
+    transition: background-color .25s;
 }
+.BarBrick:hover {
+    background-color: rgba(93, 93, 93, 0.397);
+}
+.BarBrick::after {
+    content: '';
+    position: absolute;
+    background-image: radial-gradient(circle, #ccc 10%, transparent 10.1%);
+    background-size: cover;
+    transform: scale(10);
+    opacity: 0;
+    transition: all .6s;
+}
+.BarBrick:active::after {
+    transform: scale(0);
+    opacity: .5;
+    transition: 0s;
+}
+
 /* *主页CSS开始 */
 .HomePage{
     width: 100%;
@@ -84,6 +149,7 @@ position: absolute;
     background:url('../assets/bg.jpg') no-repeat;
     background-size:cover;
     z-index: 10;
+    animation: wrapper-gradient 3s linear;
 }
 .HomepageTitle{
     position: absolute;
@@ -94,19 +160,21 @@ position: absolute;
     font-family: bgmUI;
     font-size: 2vw;
     font-weight:bolder;
+    animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
 }
 .RecentViewName{
     position: absolute;
     left:20%;
     top:15%;
     right:30%;
-    height:38%;
+    height:36%;
     color:#fff;
     z-index: 12;
     font-family: bgmUIHeavy;
     font-size: 4vw;
     font-weight:bolder;
     overflow-y: auto;
+    animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
 }
 .RecentViewName::-webkit-scrollbar { width: 0 !important }
 .RecentViewDetail{
@@ -125,6 +193,7 @@ position: absolute;
     z-index: 100;
     -webkit-app-region: no-drag;
     backdrop-filter: blur(30px);
+    animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
     overflow-y: auto;
 }
 .RecentViewDetail::-webkit-scrollbar { width: 0 !important }
@@ -141,6 +210,7 @@ position: absolute;
     padding: 1.5%;
     -webkit-app-region: no-drag;
     backdrop-filter: blur(30px);
+    animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
 }
 .RecentViewRating{
     font-family: bgmUI;
@@ -148,13 +218,55 @@ position: absolute;
     width: 20%;
     height: 35%;
     position: absolute;
-    text-align: center;
+    text-align: right;
     background-color: rgba(0, 0, 0, 0);
     top: 15%;
     right: 5%;
     z-index: 100;
     padding: 5px;
     -webkit-app-region: no-drag;
+    animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
+}
+.RecentViewPlay{
+    font-family: bgmUI;
+    font-size: 2vw;
+    width: 12%;
+    height: 12%;
+    color:rgb(172, 172, 172);
+    position: absolute;
+    background-color: rgba(222, 222, 222, 0.5);
+    /* background:url('../assets/play.svg') no-repeat center; */
+    background-size: contain;
+    border-radius:15px;
+    bottom: 15%;
+    right: 8%;
+    z-index: 100;
+    -webkit-app-region: no-drag;
+    backdrop-filter: blur(30px);
+    animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
+    transition: background-color .25s;
+    overflow: hidden;
+}
+.RecentViewPlay:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.RecentViewPlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(circle, rgb(129, 129, 129) 10%, transparent 10.1%);
+    background-size: cover;
+    transform: scale(10);
+    opacity: 0;
+    transition: all .6s;
+}
+.RecentViewPlay:active::after {
+    transform: scale(0);
+    opacity: .5;
+    transition: 0s;
 }
 .Cover{
     width: 100%;
@@ -167,8 +279,10 @@ position: absolute;
     opacity: 0.8;
 }
 /* ! 主页CSS结束 */
+
 /* *设置页CSS开始-默认隐藏 */
 .SettingsPage{
+    color:aliceblue;
     width: 100%;
     top:30px;
     bottom:0px;
@@ -177,6 +291,7 @@ position: absolute;
     background-size:cover;
     z-index: 10;
     display: none;
+    animation: wrapper-gradient 3s linear;
 }
 /* *自定义控制区 */
 .cross {
@@ -206,6 +321,7 @@ background-color: black;
 }
 table { border-collapse: collapse; }
 table, th, td { border: 1px solid black; }
+
 /* TODO 空白Div盒体、高斯模糊输入框定义模板 */
 .boxBlank {
     z-index: 12;
@@ -223,10 +339,12 @@ table, th, td { border: 1px solid black; }
     left:0%;
     width:99%;
     border-radius:5px;
-    font-size: 1vw;
+    font-size: 4vmin;
     color:aliceblue;
     border: 0px;
     background: #00000000;
-    box-shadow: 0px 0px 5px 0px rrgba(45, 45, 45, 0.75);
+    box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
+    -webkit-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
+    -moz-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
     backdrop-filter: blur(10px);
 }

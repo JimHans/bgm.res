@@ -11,7 +11,8 @@ function createWindow () {
     // 创建主程序浏览器窗口
     const win = new BrowserWindow({
       width:  (screenElectron.getPrimaryDisplay().workAreaSize.width)*0.5,
-      height: (screenElectron.getPrimaryDisplay().workAreaSize.height)*0.5,
+      height: (screenElectron.getPrimaryDisplay().workAreaSize.width)*0.5*(11/16),
+      // height: (screenElectron.getPrimaryDisplay().workAreaSize.height)*0.5,
       minWidth: 600,
       minHeight: 350,
       //x: screenElectron.getPrimaryDisplay().workAreaSize.width-360,
@@ -101,7 +102,8 @@ ipcMain.on("MainWindow",(event,data) => {
   console.log(data);
   if(data == 'Close') {event.preventDefault();app.quit();}
   if(data == 'Hide') {event.preventDefault();win.hide();}
-});//监听主程序标题栏操作最小化与关闭
+  if(data == 'Refresh') {win.reload();}
+});//监听主程序标题栏操作最小化与关闭、刷新
 
 // // alternatively use these to
 // // dynamically change vibrancy
