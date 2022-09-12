@@ -1,7 +1,7 @@
 {
   "name": "bgm.res",
   "title": "BGM.res",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "BGM.res-A local bangumi manager",
   "main": "index.js",
   "scripts": {

@@ -26,6 +26,7 @@ window.onload = function () {
     $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID.toString(), function(data){
     document.getElementById("RecentViewDetail").innerText=data.summary;
     document.getElementById("RecentViewName").innerText=data.name;
+    document.getElementById("RecentViewTitle").innerText="继续观看: "+data.name_cn;
     var HomePageRatingScore =document.createTextNode(data.rating.score);
     document.getElementById("RecentViewRatingScore").appendChild(HomePageRatingScore);
     document.getElementById("RecentViewRatingRank").innerText="NO."+data.rating.rank;
@@ -39,7 +40,8 @@ window.onload = function () {
       else if(data.rating.score > 3.5) {document.getElementById("RecentViewRatingPos").innerText="较差";}
       else if(data.rating.score > 2.5) {document.getElementById("RecentViewRatingPos").innerText="差";}
       else if(data.rating.score > 2.5) {document.getElementById("RecentViewRatingPos").innerText="很差";}
-      else{document.getElementById("RecentViewRatingPos").innerText="不忍直视";}
+      else if(data.rating.score >= 1) {document.getElementById("RecentViewRatingPos").innerText="不忍直视";}
+      else {document.getElementById("RecentViewRatingPos").innerText="暂无评分";}
     // 作品等级判定OVER
     document.getElementById("HomePage").style.background="url('"+data.images.large+"') no-repeat center";
     document.getElementById("HomePage").style.backgroundSize="cover";
