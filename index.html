@@ -45,7 +45,7 @@
                 </svg>
             </div>
         </div>
-        <div id="HomePage" class="HomePage"> <!--*主页 -->
+        <div id="HomePage" class="HomePage"> <!-- TODO主页 -->
             <div class="Cover"></div>
             <div id="RecentViewTitle"class="HomepageTitle">继续观看</div>
             <div id="RecentViewName" class="RecentViewName"></div> <!--TODO首页最近观看-标题部分-->
@@ -55,30 +55,47 @@
                 <p style="margin-top: -10px;margin-bottom: -10px;">Bangumi</p>
                 <p style="margin-bottom: -5px;">Animation Rank</p>
                 <div id="RecentViewRatingScore" style="position:absolute;right:0%;width:100%;font-size: 7vw;font-family:bgmUIHeavy;text-align: right;">
-                    <div id="RecentViewRatingRank" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;"></div>
-                    <div id="RecentViewRatingPos" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;"></div>
+                    <div id="RecentViewRatingRank" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;">NO.Null</div>
+                    <div id="RecentViewRatingPos" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;">NoRank</div>
                 </div>
             </div>
-            <div id="RecentViewPlay" class="RecentViewPlay"> <!--TODO首页最近观看-播放键-->
-                <div style="width: 105%;height: 100%;position: absolute;background:url('./assets/play.svg') no-repeat center;background-size: contain;"></div>
+            <div id="RecentViewPlay" class="RecentViewPlay" onclick="RecentViewPlayAction();" style="border: 2px dashed rgb(255, 255, 255);"> <!--TODO首页最近观看-播放键-->
+                <div style="width: 105%;height: 100%;position: absolute;background:url('./assets/play.svg') no-repeat center;background-size: contain;" onclick="RecentViewPlayAction();"></div>
+                <div class="rolled"></div>
             </div>
         </div>
         <div id="ArchivePage" class="ArchivePage"> <!--*番剧管理页 --> 
+            <div class="ArchivePageHeader">
+                <div class="RecentViewName" style="height:auto;left:2%;top:4%;font-size: 5vmin;">资源库</div>
+                <div id="ArchivePageSum" class="ArchivePageSum">共 -- 部作品</div>
+            </div>
+            <div id="ArchivePageContent" class="ArchivePageContent"></div>
         </div>
         <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
         </div>
         <div id="SettingsPage" class="SettingsPage"> <!--*设置页 -->
             <div class="Cover"></div>
             <div class="RecentViewName" style="left:20%;top:6%;font-size: 4vw;">🛠️设置页</div>
-            <div style="position:absolute;z-index:12;left:20%;top:21%;font-size:4vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看影片ID:</div>
+            <div style="position:absolute;z-index:12;left:20%;top:21%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看影片ID:</div>
             <div class="boxBlank" style="top: 20%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
                 <input type="text" id="RecentViewID" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'RecentViewID')">
             </div>
-            <div style="position:absolute;z-index:12;left:20%;top:41%;font-size:4vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看EPID:</div>
-            <div class="boxBlank" style="top: 40%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
+            <div style="position:absolute;z-index:12;left:20%;top:41%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看EPID:</div>
+            <div class="boxBlank" style="top: 40%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看EPID-Dev -->
                 <input type="text" id="RecentViewEpisode" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'RecentViewEpisode')">
             </div>
+            <div style="position:absolute;z-index:12;left:20%;top:61%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看-URL:</div>
+            <div class="boxBlank" style="top: 60%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看URL-Dev -->
+                <input type="text" id="RecentViewURL" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'RecentViewURL')">
+            </div>
+            <div style="position:absolute;z-index:12;left:20%;top:81%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);">📟继续观看-URL:</div>
+            <div class="boxBlank" style="top: 80%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *媒体库URL -->
+                <input type="text" id="MediaBaseURL" autocomplete="off" class="TspInput" placeholder="请输入需要扫描的媒体库路径"  onkeydown="LocalSave(event.keyCode,'MediaBaseURL')">
+            </div>
         </div>
+        <!--  *成功、失败横幅提示  -->
+        <div id="OKStreamer" class="OKStreamer"></div>
+        <div id="ErrorStreamer" class="OKStreamer" style="background-color:#a4414f;"></div>
         <div style="bottom:1%;left:1%;position: absolute;text-align: center;z-index: 100;"> <!-- *版本信息 -->
             Node.js <span id="node-version"></span>
             , Chromium <span id="chrome-version"></span>

@@ -45,7 +45,7 @@ function createWindow () {
     // 并且为你的应用加载index.html
     win.loadFile('index.html');
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 //系统托盘右键菜单
 var trayMenuTemplate = [
     {
@@ -104,6 +104,12 @@ ipcMain.on("MainWindow",(event,data) => {
   if(data == 'Hide') {event.preventDefault();win.hide();}
   if(data == 'Refresh') {win.reload();}
 });//监听主程序标题栏操作最小化与关闭、刷新
+
+//开发人员工具打开监听
+ipcMain.on("dev",(event,data) => {
+  console.log(data); 
+  if(data == 'Open') {win.webContents.openDevTools();}
+});
 
 // // alternatively use these to
 // // dynamically change vibrancy

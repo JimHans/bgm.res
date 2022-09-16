@@ -4,6 +4,10 @@
 
 const { app , Menu , Tray, shell, ipcRenderer, nativeTheme} = nodeRequire('electron');
 const path = nodeRequire("path");
+const fs = nodeRequire('fs');
+const runtimeUrl = path.join(__dirname, './mpv/mpv.exe');
+const packUrl = path.join(process.cwd(), './resources/mpv/mpv.exe');
+let mpv = nodeRequire('node-mpv');
 
 //Version Get
 // window.onload = function () {
@@ -13,6 +17,23 @@ const path = nodeRequire("path");
 
 // function Closer(){ipcRenderer.send('MainWindow','Close');}
 // function Hider(){ipcRenderer.send('MainWindow','Hide');}
+
+/* *成功、失败横幅提示调用函数 */
+function OKErrorStreamer(type,text,if_reload) {
+  if(type=="OK") {
+    document.getElementById("OKStreamer").innerHTML="✅"+text.toString();
+    document.getElementById("OKStreamer").style.display="block";
+    if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
+    else{setTimeout(function() { document.getElementById("OKStreamer").style.display="none"; }, 4000);}
+  }
+  else {
+    document.getElementById("ErrorStreamer").innerHTML="⛔"+text.toString();
+    document.getElementById("ErrorStreamer").style.display="block";
+    if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
+    else{setTimeout(function() { document.getElementById("ErrorStreamer").style.display="none"; }, 4000);}
+  }
+  
+}
 
 window.onload = function () {
   //!Version Get
@@ -45,10 +66,14 @@ window.onload = function () {
     // 作品等级判定OVER
     document.getElementById("HomePage").style.background="url('"+data.images.large+"') no-repeat center";
     document.getElementById("HomePage").style.backgroundSize="cover";
-    });
+    //错误回调
+    }).done(function() { OKErrorStreamer("OK","加载作品信息完成",0); }).fail(function() { document.getElementById("RecentViewRatingScore").appendChild(document.createTextNode('0.0'));OKErrorStreamer("Error","无法连接Bangumi",0); });
+    
+    // EP信息获取
     $.getJSON("https://api.bgm.tv/v0/episodes/"+bgmEP.toString(), function(data){
     document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+data.ep+"-"+data.name;
-    });
+    //错误回调
+    }).done(function() { OKErrorStreamer("OK","加载EP信息完成",0); }).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); }); //错误回调
     console.log("Success");
   }
   else{
@@ -68,8 +93,9 @@ function LocalSave(Key,Input){
     localStorage.setItem(Input.toString(),Inner.toString());
     console.log(Inner);
     document.getElementById(Input.toString()).value = "";
-    document.getElementById(Input.toString()).setAttribute("placeholder","✅更改成功保存！");
-    setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 1000);
+    OKErrorStreamer("OK","更改成功保存！",1);
+    // document.getElementById(Input.toString()).setAttribute("placeholder","✅更改成功保存！");
+    // setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 1000);
   }
 }
 
@@ -117,5 +143,34 @@ function FloatBarAction(PageID) { //点击切换页面
     document.getElementById("Archive").style.border="none";
     document.getElementById("Torrnet").style.border="none";
     document.getElementById("Settings").style.border="2px solid rgb(66, 66, 66)";
+  }
+}
+
+//TODO 调用MPV播放最近播放
+function RecentViewPlayAction() {
+  if(localStorage.getItem("RecentViewURL")){
+    var RecentViewURL = localStorage.getItem("RecentViewURL");
+    process.noAsar = true; //临时禁用fs对ASAR读取
+    fs.access(runtimeUrl, fs.constants.F_OK,function (err) {
+      if (err) {    
+        fs.access(RecentViewURL, fs.constants.F_OK,function (exist) {
+          if (exist) { OKErrorStreamer("Error","指定文件不存在！",1); } 
+          else {
+            process.noAsar = false; //恢复fs对ASAR读取
+            let mpvPlayer = new mpv({"binary": packUrl,},["--fps=60"]);
+            mpvPlayer.load(RecentViewURL);}
+        });
+      } 
+      else {
+        fs.access(RecentViewURL, fs.constants.F_OK,function (exist) {
+          if (exist) { OKErrorStreamer("Error","指定文件不存在！",1); } 
+          else {
+            process.noAsar = false; //恢复fs对ASAR读取
+            let mpvPlayer = new mpv({"binary": runtimeUrl,},["--fps=60"]);
+            mpvPlayer.load(RecentViewURL);}
+        });
+      }
+    })
+    process.noAsar = false; //恢复fs对ASAR读取
   }
 }

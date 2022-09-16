@@ -1,7 +1,7 @@
 {
   "name": "bgm.res",
   "title": "BGM.res",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "BGM.res-A local bangumi manager",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,12 @@
     "appId": "com.Zerolite.bgm-res",
     "copyright": "2022 Zerolite Studio All Rights Reserved.",
     "asar": true,
+    "extraResources": [
+      {
+        "from": "./mpv",
+        "to": "./mpv"
+      }
+    ],
     "directories": {
       "buildResources": "build",
       "output": "dist"
@@ -50,9 +56,10 @@
     }
   },
   "devDependencies": {
-    "electron": "^20.0.0",
-    "electron-builder": "^23.0.3"
+    "electron": "^20.1.3",
+    "electron-builder": "^23.5.1"
   },
   "dependencies": {
+    "node-mpv": "^1.5.0"
   }
 }
