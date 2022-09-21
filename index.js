@@ -4,6 +4,7 @@ const { app ,BrowserWindow, Menu , Tray, shell, ipcRenderer,ipcMain, nativeTheme
 const dialog = require('electron').dialog;
 const path = require('path');
 var packageGet = require("./package.json");
+const Store = require('electron-store'); Store.initRenderer(); //初始化electron-store
 
 function createWindow () {
     //获取屏幕分辨率
@@ -45,7 +46,7 @@ function createWindow () {
     // 并且为你的应用加载index.html
     win.loadFile('index.html');
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 //系统托盘右键菜单
 var trayMenuTemplate = [
     {

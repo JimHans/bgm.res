@@ -2,12 +2,14 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 
-const { app , Menu , Tray, shell, ipcRenderer, nativeTheme} = nodeRequire('electron');
-const path = nodeRequire("path");
-const fs = nodeRequire('fs');
-const runtimeUrl = path.join(__dirname, './mpv/mpv.exe');
-const packUrl = path.join(process.cwd(), './resources/mpv/mpv.exe');
-let mpv = nodeRequire('node-mpv');
+const { app , Menu , Tray, shell, ipcRenderer, nativeTheme} = nodeRequire('electron'); //?使用electron
+const path = nodeRequire("path");                                     //?引入path
+const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
+const runtimeUrl = path.join(__dirname, './mpv/mpv.exe');             //?mpv播放核心地址-调试
+const packUrl = path.join(process.cwd(), './resources/mpv/mpv.exe');  //?mpv播放核心地址-打包后
+let mpv = nodeRequire('node-mpv');                                    //?引入node-mpv接口
+const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
+const store = new Store();
 
 //Version Get
 // window.onload = function () {
@@ -18,13 +20,21 @@ let mpv = nodeRequire('node-mpv');
 // function Closer(){ipcRenderer.send('MainWindow','Close');}
 // function Hider(){ipcRenderer.send('MainWindow','Hide');}
 
-/* *成功、失败横幅提示调用函数 */
+// !成功、失败、信息横幅提示调用函数
 function OKErrorStreamer(type,text,if_reload) {
   if(type=="OK") {
     document.getElementById("OKStreamer").innerHTML="✅"+text.toString();
     document.getElementById("OKStreamer").style.display="block";
     if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
     else{setTimeout(function() { document.getElementById("OKStreamer").style.display="none"; }, 4000);}
+  }
+  else if(type=="MessageOn") {
+    document.getElementById("MessageStreamer").style.animation="Ascent-Streamer-Down 0.4s ease";
+    document.getElementById("MessageStreamer").innerHTML=text.toString();
+    document.getElementById("MessageStreamer").style.display="block";
+  }
+  else if(type=="MessageOff") {
+    document.getElementById("MessageStreamer").style.display="none";
   }
   else {
     document.getElementById("ErrorStreamer").innerHTML="⛔"+text.toString();
@@ -35,15 +45,16 @@ function OKErrorStreamer(type,text,if_reload) {
   
 }
 
+// !页面加载完成后初始化数据函数[UnderConstruction]
 window.onload = function () {
-  //!Version Get
+  // *Version Get
   var package = nodeRequire("./package.json");
   document.getElementById("Title").innerText=package.title+" v"+package.version; // Get Version
   
-  //!Recent View Get <!--格式化HomePage主页继续观看内容-->
-  var bgmID = localStorage.getItem("RecentViewID");
-  var bgmEP = localStorage.getItem("RecentViewEpisode");
-  if(bgmID != '' && localStorage.getItem("RecentViewID")&&localStorage.getItem("RecentViewEpisode")){
+  // *Recent View Get <!--格式化HomePage主页继续观看内容-->
+  var bgmID = localStorage.getItem("LocalStorageRecentViewID");
+  var bgmEP = localStorage.getItem("LocalStorageRecentViewEpisode");
+  if(bgmID != '' && localStorage.getItem("LocalStorageRecentViewID")&&localStorage.getItem("LocalStorageRecentViewEpisode")){
     $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID.toString(), function(data){
     document.getElementById("RecentViewDetail").innerText=data.summary;
     document.getElementById("RecentViewName").innerText=data.name;
@@ -69,11 +80,11 @@ window.onload = function () {
     //错误回调
     }).done(function() { OKErrorStreamer("OK","加载作品信息完成",0); }).fail(function() { document.getElementById("RecentViewRatingScore").appendChild(document.createTextNode('0.0'));OKErrorStreamer("Error","无法连接Bangumi",0); });
     
-    // EP信息获取
+    // *EP信息获取
     $.getJSON("https://api.bgm.tv/v0/episodes/"+bgmEP.toString(), function(data){
     document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+data.ep+"-"+data.name;
-    //错误回调
-    }).done(function() { OKErrorStreamer("OK","加载EP信息完成",0); }).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); }); //错误回调
+    // *错误回调
+    }).done(function() { OKErrorStreamer("OK","加载EP信息完成",0); }).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); }); // *错误回调
     console.log("Success");
   }
   else{
@@ -82,9 +93,20 @@ window.onload = function () {
     document.getElementById("RecentViewRatingScore").innerText="0.0";
     document.getElementById("RecentViewProgress").innerText="您最近没有观看记录！";
   }
+
+  // *Archive Get <!--格式化ArchivePage媒体库内容-->
+  if(localStorage.getItem("LocalStorageMediaBaseNumber")){
+  document.getElementById("ArchivePageSum").innerText="共 "+localStorage.getItem("LocalStorageMediaBaseNumber")+" 部作品";}
+  var MediaBaseNumberGet = localStorage.getItem("LocalStorageMediaBaseNumber");
+  for(var MediaBaseScanCounter=1;MediaBaseScanCounter<=MediaBaseNumberGet;MediaBaseScanCounter++){
+    $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardHover'>"+
+    "<div class='ArchiveCardThumb' style='background:url(./assets/no_img.gif) no-repeat top;background-size:cover;'></div>"+
+    "<div class='ArchiveCardTitle'>"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name")+"</div>"
+    +"</div>" );
+  }
 }
 
-//TODO 手动存储API(DEV) 
+//! 手动存储API(DEV) 
 //*输入输入框ID，自动提取输入框内数据并以输入框ID相同键值存入localStorage
 function LocalSave(Key,Input){
   if(Key == 13)
@@ -99,6 +121,7 @@ function LocalSave(Key,Input){
   }
 }
 
+//! 胶囊菜单-页面切换
 function FloatBarAction(PageID) { //点击切换页面
   if(PageID == "Home"){
     document.getElementById("HomePage").style.display="block";
@@ -146,24 +169,24 @@ function FloatBarAction(PageID) { //点击切换页面
   }
 }
 
-//TODO 调用MPV播放最近播放
+//! 调用MPV播放最近播放[UnderConstruction]
 function RecentViewPlayAction() {
-  if(localStorage.getItem("RecentViewURL")){
-    var RecentViewURL = localStorage.getItem("RecentViewURL");
+  if(localStorage.getItem("LocalStorageRecentViewURL")){
+    var RecentViewURL = localStorage.getItem("LocalStorageRecentViewURL");
     process.noAsar = true; //临时禁用fs对ASAR读取
     fs.access(runtimeUrl, fs.constants.F_OK,function (err) {
-      if (err) {    
+      if (err) {  //调试播放核心 
         fs.access(RecentViewURL, fs.constants.F_OK,function (exist) {
-          if (exist) { OKErrorStreamer("Error","指定文件不存在！",1); } 
+          if (exist) { OKErrorStreamer("Error","指定文件不存在！",0); } 
           else {
             process.noAsar = false; //恢复fs对ASAR读取
             let mpvPlayer = new mpv({"binary": packUrl,},["--fps=60"]);
             mpvPlayer.load(RecentViewURL);}
         });
       } 
-      else {
+      else {  //打包后播放核心 
         fs.access(RecentViewURL, fs.constants.F_OK,function (exist) {
-          if (exist) { OKErrorStreamer("Error","指定文件不存在！",1); } 
+          if (exist) { OKErrorStreamer("Error","指定文件不存在！",0); } 
           else {
             process.noAsar = false; //恢复fs对ASAR读取
             let mpvPlayer = new mpv({"binary": runtimeUrl,},["--fps=60"]);
@@ -173,4 +196,36 @@ function RecentViewPlayAction() {
     })
     process.noAsar = false; //恢复fs对ASAR读取
   }
+}
+
+//! 媒体库目录扫描模块[UnderConstruction]
+function LocalWorkScan(){
+  if(localStorage.getItem('LocalStorageMediaBaseURL'))
+  {
+    var TargetArchiveURL = localStorage.getItem('LocalStorageMediaBaseURL');
+    if(fs.existsSync(TargetArchiveURL)){       //当目标媒体库目录存在
+      OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描媒体库，请稍后</div>",0);
+      store.clear(); //清除旧媒体库信息
+      var TargetArchiveDir = fs.readdirSync(TargetArchiveURL); //扫描目标媒体库目录
+      console.log(TargetArchiveDir.length);
+      var ScanSaveCounter = 0; //媒体编号清零
+      for(var ScanCounter=0;ScanCounter!=TargetArchiveDir.length;ScanCounter++){ //轮询找到媒体库目录下的子目录
+        if(fs.lstatSync(TargetArchiveURL+"\\"+TargetArchiveDir[ScanCounter]).isDirectory()){
+          ScanSaveCounter++;
+          console.log("Folder"+ScanSaveCounter+":"+TargetArchiveDir[ScanCounter]); //扫描debug输出
+          store.set("WorkSaveNo"+ScanSaveCounter.toString()+".URL",TargetArchiveURL+"\\"+TargetArchiveDir[ScanCounter]); //扫描到的媒体路径
+          store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Name",TargetArchiveDir[ScanCounter]); //扫描到的媒体名称默认为文件夹名
+          store.set("WorkSaveNo"+ScanSaveCounter.toString()+".bgmID",'0'); //扫描到的媒体默认bgmID为0
+          store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Cover",'0'); //扫描到的媒体默认封面为0(后期联网更新为base64)
+        }
+      }
+      localStorage.setItem("LocalStorageMediaBaseNumber",ScanSaveCounter); //存储扫描到的媒体数目
+      OKErrorStreamer("MessageOff","<div class='LoadingCircle'></div>",0); //弹出完成提示
+      OKErrorStreamer("OK","扫描完成，扫描到"+ScanSaveCounter+"个媒体",0);
+      document.getElementById("ArchivePageSum").innerText="共 "+ScanSaveCounter+" 部作品";
+      // console.log(store.get('WorkSaveNo5'));
+    }
+    else{OKErrorStreamer("Error","路径错误！",0);}
+  }
+  else{OKErrorStreamer("Error","你还没有在设置内填写媒体库路径！",0);}
 }
