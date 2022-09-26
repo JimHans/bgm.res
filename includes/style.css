@@ -9,6 +9,7 @@
     src: url(../assets/SourceHanSansHeavy.otf)
 }
 
+/* *动画关键帧定义 */
 @keyframes wrapper-gradient { /* ANI页面渐变 */
     0% {
         opacity:0;
@@ -110,6 +111,7 @@
     }
 }
 
+/* *核心窗体 */
 html {
 height: 100%;
 padding: 0;
@@ -372,6 +374,7 @@ user-select: none;
     right:2%;
     z-index: 12;
     -webkit-app-region: no-drag;
+    border: 1px solid rgb(64, 64, 64);
     backdrop-filter: blur(30px);
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
 }
@@ -472,26 +475,27 @@ user-select: none;
 	width: 100%;
 	height: 100%;
 	border: none;
-	font-size: 17px;
+	font-size: 2vmin;
 	border-bottom: 1.5px solid #afaebd;
 	color: #fff;
     background-color: #00000000;
 	font-style: italic;
 	text-transform: uppercase;
-	letter-spacing: 5px;
+	letter-spacing: 1px;
     outline: none;
 }
 .ArchiveInputLine span {
 	position: absolute;
 	bottom: 10px;
 	left: 0px;
+    font-size:2.5vmin;
 	color: #afaebd;
 	pointer-events: none;
 	transition: all 0.3s ease;
 }
 .ArchiveInputLine .line {
 	position: absolute;
-	bottom: 0px;
+	bottom: -2px;
 	height: 2px;
 	width: 100%;
 	background-color: #F09199;
@@ -503,7 +507,8 @@ user-select: none;
 	top: -10px;
 	font-size: 12px;
 	color: #F09199;
-	font-style: oblique;
+	/* font-style: oblique; */
+    font-style: italic;
 }
 .ArchiveInputLine input:focus~.line,
 .ArchiveInputLine input:valid~.line {
@@ -512,8 +517,8 @@ user-select: none;
 /* ?线性搜索框CSS结束 */
 .ArchiveCardHover{
     background-color: rgba(0, 0, 0, 0.8);
-    border-radius:7px;
-    height: 35%;
+    border-radius:8px;
+    height: 40%;
     margin:2%;
     width:16%;
     position:relative;
@@ -524,7 +529,7 @@ user-select: none;
     transition: 0.3s cubic-bezier(0,0,0.2,1);
 }
 .ArchiveCardHover:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
     transition: 0.3s cubic-bezier(0,0,0.2,1);
 }
 .ArchiveCardHover:hover:after {
@@ -533,11 +538,12 @@ user-select: none;
 }
 .ArchiveCardThumb{
     opacity: 0.9;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
+    /* border-top-left-radius: 7px;
+    border-top-right-radius: 7px; */
+    border-radius: 8px;
     transition: all 0.5s;
     width:100%;
-    height:50%;
+    height:100%;
     background-position:center;
     background-repeat:no-repeat;
     background-size:cover;
@@ -547,6 +553,8 @@ user-select: none;
     color: rgba(255, 255, 255, 0.79);
     font-family: bgmUIHeavy;
     font-size: 2vmin;
+    position: absolute;
+    bottom:30%;
     width: 92%;
     /* height: 25%; */
     margin: 4%;
@@ -559,6 +567,84 @@ user-select: none;
     -webkit-line-clamp: 2;        
 }
 .ArchiveCardTitle::-webkit-scrollbar { width: 0 !important }
+.ArchiveCardRateStar{
+    font-family: bgmUI;
+    color:rgb(255, 196, 0);
+    position: absolute;
+    left:1%;
+    width:40%;
+    text-overflow: ellipsis; 
+    /* font-size:1vw; */
+    bottom:12%;
+}
+.ArchiveCardDirectorYearCorp{
+    font-family: bgmUI;
+    color: rgba(171, 171, 171, 0.79);
+    position: absolute;
+    /* width:60%; */
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space:nowrap; 
+    /* font-size:1vw; */
+}
+
+/* ?作品id设置CSS开始 */
+.ArchivePageContentSettings {
+    display: none; /* 默认隐藏 */
+    position: fixed; 
+    z-index: 100; 
+    /* padding-top: 5%;  */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    /* overflow: auto;  */
+    border-radius: 0px;
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4);
+    animation: wrapper-gradient 2s linear;
+}
+/* 弹窗内容 */
+.ArchivePageContentSettingsContent {
+    position: absolute;
+    margin: auto;
+    border: 1px solid #888;
+    width: 40%;
+    height: 40%;
+    left:30%;
+    top:30%;
+    backdrop-filter: blur(50px);
+    /* height: 650px; */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    /* -webkit-animation: ArchivePageContentSettings-animatetop 1s cubic-bezier(0,0,0.2,1); */
+    animation:  Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
+}
+
+/* 关闭按钮 */
+.ArchivePageContentSettingsClose {
+    color: white;
+    float: right;
+    font-family: bgmUIHeavy;
+    font-size: 2.5vmin;
+    font-weight: bold;
+}
+.ArchivePageContentSettingsClose:hover,
+.ArchivePageContentSettingsClose:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+.ArchivePageContentSettingsHeader {
+    padding: 4px 16px 10px;
+    background-color: #0077ed;
+    border-radius: 8px 8px 0 0;
+    color: white;
+    font-size:2.5vmin;
+    font-family: 'bgmUIHeavy';
+    text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);
+}
+.ArchivePageContentSettingsBody {padding: 2px 16px;height:87%;overflow-y:auto;}
 /* ! 媒体库页CSS结束 */
 
 /* *设置页CSS开始-默认隐藏 */
