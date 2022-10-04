@@ -3,6 +3,7 @@
 // All of the Node.js APIs are available in this process.
 
 const { app , Menu , Tray, shell, ipcRenderer, nativeTheme} = nodeRequire('electron'); //?使用electron
+const { dialog } = nodeRequire('@electron/remote')                    //?引入remote.dialog
 const path = nodeRequire("path");                                     //?引入path
 const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
 const runtimeUrl = path.join(__dirname, './mpv/mpv.exe');             //?mpv播放核心地址-调试
@@ -159,7 +160,7 @@ function FloatBarAction(PageID) { //点击切换页面
   }
 }
 
-//! 调用MPV播放最近播放
+//! 播放-调用MPV播放最近播放
 function RecentViewPlayAction() {
   if(localStorage.getItem("LocalStorageRecentViewURL")){
     var RecentViewURL = localStorage.getItem("LocalStorageRecentViewURL");
@@ -188,7 +189,7 @@ function RecentViewPlayAction() {
   }
 }
 
-//! 媒体库目录扫描模块[UnderConstruction]
+//! 媒体库-目录扫描模块[UnderConstruction]
 function LocalWorkScan(){
   if(localStorage.getItem('LocalStorageMediaBaseURL'))
   {
@@ -214,9 +215,11 @@ function LocalWorkScan(){
           store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Director",'Unknown'); //扫描到的媒体默认监督
           store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Corp",'Corp'); //扫描到的媒体默认制作公司
           store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Cover",'./assets/banner.jpg'); //扫描到的媒体默认封面(后期联网更新为base64)
+          store.set("WorkSaveNo"+ScanSaveCounter.toString()+".ExistCondition",'Exist'); //扫描到的媒体默认状态(默认存在)
         }
       }
       localStorage.setItem("LocalStorageMediaBaseNumber",ScanSaveCounter); //存储扫描到的媒体数目
+      localStorage.setItem('LocalStorageMediaBaseDeleteNumber',0) //存储删除的媒体数目(初始0)
 
       // *使用默认刮削器自动收集初始数据
       $.ajaxSettings.async = false; //关闭同步
@@ -244,15 +247,19 @@ function LocalWorkScan(){
   else{OKErrorStreamer("Error","你还没有在设置内填写媒体库路径！",0);}
 }
 
-//! 媒体库页面初始化模块[UnderConstruction]
+//! 媒体库-页面初始化模块
 function ArchivePageInit(){
   // *Archive Get <!--格式化ArchivePage媒体库内容-->
   if(localStorage.getItem("LocalStorageMediaBaseNumber")){
-    document.getElementById("ArchivePageSum").innerText="共 "+localStorage.getItem("LocalStorageMediaBaseNumber")+" 部作品";}
+    document.getElementById("ArchivePageSum").innerText="共 "+(parseInt(localStorage.getItem("LocalStorageMediaBaseNumber"))-parseInt(localStorage.getItem("LocalStorageMediaBaseDeleteNumber"))).toString()+" 部作品";}
     var MediaBaseNumberGet = localStorage.getItem("LocalStorageMediaBaseNumber");
     document.getElementById('ArchivePageContent').innerHTML="";
+    if(localStorage.getItem("LocalStorageMediaBaseNumber")==0 || !localStorage.getItem("LocalStorageMediaBaseNumber"))
+    {document.getElementById('ArchivePageContent').innerHTML="<div style='position:absolute;left:30%;right:30%;top:30%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>暂时没有作品，请设置正确的媒体库地址并点击“扫描作品”</div>";}
     // *扫描作品bgmID获取作品信息
     for(var MediaBaseScanCounter=1;MediaBaseScanCounter<=MediaBaseNumberGet;MediaBaseScanCounter++){
+
+      if(store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".ExistCondition") == "Deleted") {continue;} //发现已删除作品，自动跳过
 
       $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardHover' style='background:url("+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover")+") no-repeat top;background-size:cover;'>"+
       "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat top;background-size:cover;'></div>"+ //封面遮罩阴影
@@ -268,17 +275,22 @@ function ArchivePageInit(){
     }
 }
 
-//! 媒体库作品设置模块[UnderConstruction]
+//! 媒体库-作品设置模块
 function ArchiveContentEditer(MediaID) {
   document.getElementById("ArchivePageContentSettingsBody").innerHTML=""; //清空body
   $("#ArchivePageContentSettingsBody").append( 
-    "<div id='ArchivePageContentSettingsCover' class='ArchiveCardHover' style='position:absolute;top:21%;height:50%;left:3%;width:23%;'></div>"+
+    "<div id='ArchivePageContentSettingsCover' class='ArchiveCardHover' style='position:absolute;top:21%;height:40%;left:3%;width:20%;'></div>"+
     "<div class='ArchiveInputLine' style='top:30%;left:35%;width:60%;height:10%'> <!-- *设置作品bgmID -->"+
     "<input type='text' id='ArchivePageContentSettingsbgmID' autocomplete='off' onkeydown='StoreSave(event.keyCode,1,"+MediaID+");' required />"+ //placeholder='BGMID可以在Bangumi作品页面URL内找到'
     "<div class='line'></div><span>请输入当前作品的BGMID</span></div>"+
-    "<div class='ArchiveInputLine' style='top:60%;left:35%;width:60%;height:10%'> <!-- *设置作品URL -->"+
+    "<div class='ArchiveInputLine' style='top:50%;left:35%;width:60%;height:10%'> <!-- *设置作品URL -->"+
     "<input type='text' id='ArchivePageContentSettingsURL' autocomplete='off'  onkeydown='StoreSave(event.keyCode,2,"+MediaID+")' required />"+   //placeholder='如果作品位置转移，可以在此重设URL'
-    "<div class='line'></div><span>请输入当前作品的URL</span></div>");
+    "<div class='line'></div><span>请输入当前作品的URL</span></div>"+
+    "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:67%;left:5%;width:20%;text-align:center;color: rgba(255, 255, 255, 0.79);'>"+store.get("WorkSaveNo"+MediaID+".Name")+"</div>"+
+    "<div style='font-family:bgmUI;color:rgba(171, 171, 171, 0.79);position:absolute;overflow:hidden;top:67%;left:30%;right:5%;text-align:right;font-size:2vmin;font-style:italic;display:-webkit-box;text-overflow:ellipsis;-webkit-box-orient:vertical;-webkit-line-clamp:2;padding-right:5px;'>原作："+store.get("WorkSaveNo"+MediaID+".Protocol")+
+    " | 监督："+store.get("WorkSaveNo"+MediaID+".Director")+" | 动画制作："+store.get("WorkSaveNo"+MediaID+".Corp")+" | 类型："+store.get("WorkSaveNo"+MediaID+".Type")+"</div>"+
+    "<div class='ArchivePageButton' style='top:85%;bottom: 5%;left:40%;width:20%;color:#ed5a65;border: 2px dashed rgb(145, 145, 145);' onclick='StoreDeleteWork("+MediaID+");'>删除作品</div>"
+    );
   
   document.getElementById('ArchivePageContentSettingsbgmID').value=store.get("WorkSaveNo"+MediaID+".bgmID"); //填入默认数据
   document.getElementById('ArchivePageContentSettingsURL').value=store.get("WorkSaveNo"+MediaID+".URL");
@@ -290,18 +302,38 @@ function ArchiveContentEditer(MediaID) {
   console.log("OKSet!");
 }
 
-//! 媒体库作品设置-存储API
+//! 媒体库-作品设置-存储API
 //*输入输入框ID，自动提取输入框内数据并存入Storage
 function StoreSave(Key,Input,WorkID){
   if(Key == 13)
   {
     if(Input == 1){var WorkbgmID = document.getElementById('ArchivePageContentSettingsbgmID').value; store.set("WorkSaveNo"+WorkID+".bgmID",WorkbgmID.toString());}
     if(Input == 2){var WorkURL = document.getElementById('ArchivePageContentSettingsURL').value; store.set("WorkSaveNo"+WorkID+".URL",WorkURL.toString());}
-    OKErrorStreamer("OK","更改成功保存！",1);
+    ArchivePageInit();
+    OKErrorStreamer("OK","更改成功保存！",0);
   }
 }
 
-//! 作品信息自动更新模块
+//! 媒体库作品设置-作品删除
+function StoreDeleteWork(WorkID){
+  var result = dialog.showMessageBoxSync({
+    type:"question",
+    buttons:["取消","确认"],
+    title:"警告",
+    message:`
+    您确定要删除作品 [`+store.get("WorkSaveNo"+WorkID+".Name")+
+    `] 吗？此操作将仅删除程序记录，您在磁盘上的文件不会被删除。`
+  });
+  if(result == 1){store.set("WorkSaveNo"+WorkID+".ExistCondition",'Deleted');
+    document.getElementById('ArchivePageContentSettings').style.display='none';
+    var MediaBaseDeleteNumber = parseInt(localStorage.getItem('LocalStorageMediaBaseDeleteNumber'));
+    localStorage.setItem('LocalStorageMediaBaseDeleteNumber',MediaBaseDeleteNumber+1);
+    ArchivePageInit();
+    OKErrorStreamer("OK","作品已从数据库删除",0);
+  }
+}
+
+//! 媒体库-作品信息更新模块
 function ArchiveMediaUpdate(){
   // *Archive Get <!--联网检索ArchivePage媒体库内容-->
   OKErrorStreamer("MessageOn","作品信息更新进行中",0);
@@ -330,6 +362,62 @@ function ArchiveMediaUpdate(){
         } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}); // *错误回调
       } 
     } $.ajaxSettings.async = true; //重新打开同步
+    ArchivePageInit();
     OKErrorStreamer("MessageOff","作品信息更新进行中",0);
-    OKErrorStreamer("OK","媒体库数据爬取完成",1); },2000);
+    OKErrorStreamer("OK","媒体库数据爬取完成",0); 
+    },2000);
+}
+
+//! 媒体库-新增作品模块
+function LocalWorkManualAddAndSave(type){
+  if(type == 'Add'){
+    document.getElementById("ArchivePageContentAddNewBody").innerHTML=""; //清空body
+    $("#ArchivePageContentAddNewBody").append( 
+      "<div class='ArchiveInputLine' style='top:20%;left:5%;width:40%;height:10%'> <!-- *设置作品bgmID -->"+
+      "<input type='text' id='ArchivePageContentAddNewbgmID' autocomplete='off' required />"+ //placeholder='BGMID可以在Bangumi作品页面URL内找到'
+      "<div class='line'></div><span>请输入作品的BGMID</span></div>"+
+      "<div class='ArchiveInputLine' style='top:20%;left:50%;width:40%;height:10%'> <!-- *设置作品URL -->"+
+      "<input type='text' id='ArchivePageContentAddNewURL' autocomplete='off' required />"+   //placeholder='如果作品位置转移，可以在此重设URL'
+      "<div class='line'></div><span>请输入作品的URL</span></div>"+
+      "<div class='ArchiveInputLine' style='top:40%;left:5%;width:40%;height:10%'> <!-- *设置作品Name -->"+
+      "<input type='text' id='ArchivePageContentAddNewName' autocomplete='off' required />"+   //placeholder='作品标题'
+      "<div class='line'></div><span>请输入作品的标题</span></div>"+
+      "<div class='ArchiveInputLine' style='top:40%;left:50%;width:40%;height:10%'> <!-- *设置作品Eps -->"+
+      "<input type='text' id='ArchivePageContentAddNewEps' autocomplete='off' value='12' required />"+   //placeholder='作品剧集长度'
+      "<div class='line'></div><span>请输入作品的话数</span></div>"+
+      "<div class='ArchiveInputLine' style='top:60%;left:5%;width:40%;height:10%'> <!-- *设置作品Type -->"+
+      "<input type='text' id='ArchivePageContentAddNewType' autocomplete='off' value='TV' required />"+   //placeholder='作品是什么类型'
+      "<div class='line'></div><span>请输入作品的类别(可选)</span></div>"+
+      "<div class='ArchiveInputLine' style='top:60%;left:50%;width:40%;height:10%'> <!-- *设置作品Year -->"+
+      "<input type='text' id='ArchivePageContentAddNewYear' autocomplete='off' required />"+   //placeholder='作品年代'
+      "<div class='line'></div><span>请输入作品的年份(可选)</span></div>"+
+      "<div class='SaverButton' style='top:85%;bottom: 5%;left:40%;width:20%;' onclick='LocalWorkManualAddAndSave(0)'>保存作品</div>"
+      );
+    document.getElementById('ArchivePageContentAddNew').style.display = "block";
+    console.log("OKSet!");
+  }
+  else {
+    console.log('Saving')
+    var WorkTotalNumberNew = parseInt(localStorage.getItem("LocalStorageMediaBaseNumber"))+1
+    localStorage.setItem("LocalStorageMediaBaseNumber",WorkTotalNumberNew); //存储新的媒体数目
+    if(document.getElementById('ArchivePageContentAddNewURL').value!='' && document.getElementById('ArchivePageContentAddNewName').value!='' 
+          && document.getElementById('ArchivePageContentAddNewbgmID').value!=''&& document.getElementById('ArchivePageContentAddNewType').value!=''){
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".URL",document.getElementById('ArchivePageContentAddNewURL').value); //媒体路径
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Name",document.getElementById('ArchivePageContentAddNewName').value); //媒体名称
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".bgmID",document.getElementById('ArchivePageContentAddNewbgmID').value); //媒体bgmID
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Score",'0.0'); //媒体默认评分
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Type",document.getElementById('ArchivePageContentAddNewType').value); //媒体默认类型
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Year",document.getElementById('ArchivePageContentAddNewYear').value); //媒体默认年代
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Eps",document.getElementById('ArchivePageContentAddNewEps').value); //媒体默认话数
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Protocol",'Unknown'); //媒体默认原案
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Director",'Unknown'); //媒体默认监督
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Corp",'Corp'); //媒体默认制作公司
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".Cover",'./assets/banner.jpg'); //媒体默认封面(后期联网更新为base64)
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".ExistCondition",'Exist'); //媒体默认状态(默认存在)
+    ArchivePageInit();
+    document.getElementById('ArchivePageContentAddNew').style.display = "none";
+    OKErrorStreamer('OK','新作品添加完成！建议点击更新按钮联网刷新一下作品详细信息',0);
+    }
+    else {OKErrorStreamer('Error','作品信息不完整！',0);}
+  }
 }

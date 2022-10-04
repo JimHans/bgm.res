@@ -4,6 +4,7 @@ const { app ,BrowserWindow, Menu , Tray, shell, ipcRenderer,ipcMain, nativeTheme
 const dialog = require('electron').dialog;
 const path = require('path');
 var packageGet = require("./package.json");
+require('@electron/remote/main').initialize(); //初始化dialog renderer
 const Store = require('electron-store'); Store.initRenderer(); //初始化electron-store
 
 function createWindow () {
@@ -46,7 +47,9 @@ function createWindow () {
     // 并且为你的应用加载index.html
     win.loadFile('index.html');
 
-  win.webContents.openDevTools();
+    require('@electron/remote/main').enable(win.webContents) // 启用 electron/remote web组件
+
+  // win.webContents.openDevTools();
 //系统托盘右键菜单
 var trayMenuTemplate = [
     {

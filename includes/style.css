@@ -80,6 +80,18 @@
         opacity:1;
     }
 }
+@keyframes Ascent-Settings { /* 作品设置页面出现 */
+    0% {
+        transform: scale(2);
+        filter: blur(20px);
+        opacity:0.4;
+    }
+    100% {
+        transform: scale(1);
+        filter: blur(0px);
+        opacity:1;
+    }
+}
 .rolled { /* *播放按钮高光 */
     position: absolute;
     top: 0;
@@ -592,7 +604,7 @@ user-select: none;
 .ArchivePageContentSettings {
     display: none; /* 默认隐藏 */
     position: fixed; 
-    z-index: 100; 
+    z-index: 110; 
     /* padding-top: 5%;  */
     top: 0;
     right: 0;
@@ -609,16 +621,16 @@ user-select: none;
     position: absolute;
     margin: auto;
     border: 1px solid #888;
-    width: 40%;
-    height: 40%;
-    left:30%;
-    top:30%;
+    width: 50%;
+    height: 60%;
+    left:25%;
+    top:20%;
     backdrop-filter: blur(50px);
     /* height: 650px; */
     border-radius: 8px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     /* -webkit-animation: ArchivePageContentSettings-animatetop 1s cubic-bezier(0,0,0.2,1); */
-    animation:  Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);
+    animation:  Ascent-Settings 0.7s cubic-bezier(0,0,0.2,1);
 }
 
 /* 关闭按钮 */
@@ -661,7 +673,37 @@ user-select: none;
     animation: wrapper-gradient 2s linear;
     overflow-y: auto;
 }
+/* 保存按钮(绿色)*/
+.SaverButton{
+    font-family: bgmUIHeavy;
+    font-size: 2.3vmin;
+    position: absolute;
+    text-align:center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius:10px;
+    border: 2px solid #2c9678;
+    color: #2c9678;
+    z-index: 100;
+    -webkit-app-region: no-drag;
+    backdrop-filter: blur(50px);
+    transition: background-color .25s;
+    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+}
+.SaverButton:hover {
+    background-color: #2c9678;
+    color:aliceblue;
+}
+.SaverButton:active {
+    background-color: #1c614d;
+}
 /* *自定义控制区 */
+.TitleBarControls:hover {
+    background-color: rgba(148, 148, 148, 0.397);
+    transition: 0.15s linear;
+}
 .cross {
     z-index: 5;
     width: 50px;
