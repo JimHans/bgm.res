@@ -59,7 +59,7 @@
                     <div id="RecentViewRatingPos" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;">NoRank</div>
                 </div>
             </div>
-            <div id="RecentViewPlay" class="RecentViewPlay" onclick="RecentViewPlayAction();"> <!--TODO首页最近观看-播放键-->
+            <div id="RecentViewPlay" class="RecentViewPlay" onclick="RecentViewPlayAction('Next');"> <!--TODO首页最近观看-播放键-->
                 <div style="width: 105%;height: 100%;position: absolute;background:url('./assets/play.svg') no-repeat center;background-size: contain;" onclick="RecentViewPlayAction();"></div>
                 <div class="rolled"></div>
             </div>
@@ -67,7 +67,7 @@
         <div id="ArchivePage" class="ArchivePage"> <!--*番剧管理页（媒体库） --> 
             <div class="ArchivePageHeader">
                 <div class="RecentViewName" style="height:auto;left:2%;top:4%;right:auto;font-size: 5vmin;">媒体库</div>
-                <div id="ArchivePageMediaUpdate" class="ArchivePageButton" style="left: 19%;width:6%;height:50%;top:25%;" onclick="ArchiveMediaUpdate();" title="更新作品信息"><img src="./assets/update.svg" style="position:absolute;width:60%"/></div> <!-- *刷新作品信息 -->
+                <div id="ArchivePageMediaUpdate" class="ArchivePageButton" style="left: 19%;width:6%;height:50%;top:25%;" onclick="ArchiveMediaUpdate();" title="更新作品信息"><img src="./assets/update.svg" style="position:absolute;height:60%"/></div> <!-- *刷新作品信息 -->
                 <div style="position: absolute;left:28%;width:3%;top:30%;bottom:30%;background: url('./assets/search.svg') no-repeat right;background-size: contain;animation: Ascent-Fonts 1s cubic-bezier(0,0,0.2,1);"></div>
                 <div class="ArchiveInputLine"> <!-- *搜索作品 -->
                     <input type="text" id="ArchivePageSearch" autocomplete="off" onkeydown=";" required />
@@ -91,6 +91,16 @@
                 <div id="ArchivePageContentAddNewBody" class="ArchivePageContentSettingsBody"></div>
                 </div>
             </div> <!-- *作品新增页 -->
+            <div id="ArchivePageContentDetails" class="ArchivePageContentDetails">
+                <div id="ArchivePageContentDetailsBlur" style="position:absolute;width: 120%;height:250%;top:-10%;left:-10%;backface-visibility: hidden;transform-style: preserve-3d;transition: all 0.7s;z-index: 0;"></div> <!--高斯模糊蒙版-->
+                <div id="ArchivePageContentDetailsTitleBlock" style="position:absolute;width: 100%;height:45%;top:0;"></div> <!--作品表头-->
+                <!--作品简介-->
+                <div class="RecentViewDetail" style="position:absolute;width: 76%;height:30%;top:45%;left:18%;right:4%;bottom:auto;margin-top: 4%;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);">
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>简介</div><div id="ArchivePageContentDetailsDetailsBlock"></div></div> 
+                <!--作品章节-->
+                <div class="RecentViewDetail" style="position:absolute;width: 76%;height:30%;top:84%;left:18%;right:4%;bottom:auto;margin-top: 4%;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);">
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>章节</div><div id="ArchivePageContentDetailsEpisodeBlock" style="position:absolute;width:100%;"></div></div> 
+            </div><!-- *作品详情页 -->
         </div>
         <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
         </div>
@@ -124,10 +134,16 @@
         <div id="OKStreamer" class="SystemStreamer"></div>
         <div id="MessageStreamer" class="SystemStreamer" style="background-color:#ffffff9a;color:black"></div>
         <div id="ErrorStreamer" class="SystemStreamer" style="background-color:#a4414f;"></div>
-        <!--  *左下角底部快捷按钮  -->
+        <!--  TODO 左下角底部快捷按钮  -->
         <div class="boxBlank" style="width: 10%;left: 4%;bottom:0%;height: 45px;border-radius: 15px 15px 0 0;background-color: rgba(0, 0, 0, 0.507);animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);">
             <a id="RefreshPage" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;left:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 15px 0 0 0;"title="刷新页面" onclick="OKErrorStreamer('OK','页面刷新中',1); "><svg t="1664862294245" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9130" width="24" height="45"><path d="M896 198.4 896 198.4l0 179.2 0 0c0 19.2-6.4 32-19.2 44.8-12.8 12.8-32 19.2-44.8 19.2l0 0-179.2 0 0 0c-19.2 0-32-6.4-44.8-19.2-25.6-25.6-25.6-64 0-89.6C620.8 320 633.6 313.6 652.8 313.6l0 0 25.6 0C627.2 275.2 576 256 518.4 256 441.6 256 377.6 281.6 332.8 332.8l0 0c-25.6 25.6-64 25.6-89.6 0-25.6-25.6-25.6-64 0-89.6l0 0C313.6 172.8 409.6 128 518.4 128c96 0 185.6 38.4 249.6 96L768 198.4l0 0c0-19.2 6.4-32 19.2-44.8 25.6-25.6 64-25.6 89.6 0C889.6 160 896 179.2 896 198.4zM416 691.2c-12.8 12.8-32 19.2-44.8 19.2l0 0L352 710.4C396.8 748.8 448 768 505.6 768c70.4 0 134.4-25.6 179.2-76.8l0 0c25.6-25.6 64-25.6 89.6 0 25.6 25.6 25.6 64 0 89.6l0 0C710.4 851.2 614.4 896 505.6 896c-96 0-185.6-38.4-249.6-96l0 32 0 0c0 19.2-6.4 32-19.2 44.8-25.6 25.6-64 25.6-89.6 0C134.4 864 128 844.8 128 825.6l0 0 0-179.2 0 0c0-19.2 6.4-32 19.2-44.8C160 588.8 172.8 582.4 192 582.4l0 0 179.2 0 0 0c19.2 0 32 6.4 44.8 19.2C441.6 627.2 441.6 665.6 416 691.2z" p-id="9131" fill="#ffffff"></path></svg></a>
             <a id="WebDev" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;right:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 0 15px 0 0;" title="开发人员选项" onclick="ipcRenderer.send('dev','Open');"><svg t="1664862154551" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7369" width="24" height="45"><path d="M911.7 385.3l-0.3-1.5c-0.2-1-0.3-1.9-0.6-2.9-0.2-0.6-0.4-1.1-0.5-1.7-0.3-0.8-0.5-1.7-0.9-2.5-0.2-0.6-0.5-1.1-0.8-1.7-0.4-0.8-0.8-1.5-1.2-2.3-0.3-0.5-0.6-1.1-1-1.6-0.8-1.2-1.7-2.4-2.6-3.6-0.5-0.6-1.1-1.3-1.7-1.9-0.4-0.5-0.9-0.9-1.4-1.3-0.6-0.6-1.3-1.1-1.9-1.6-0.5-0.4-1-0.8-1.6-1.2-0.2-0.1-0.4-0.3-0.6-0.4L531.1 117.8c-11.5-7.7-26.6-7.7-38.1 0L127.3 361.3c-0.2 0.1-0.4 0.3-0.6 0.4-0.5 0.4-1 0.8-1.6 1.2-0.7 0.5-1.3 1.1-1.9 1.6-0.5 0.4-0.9 0.9-1.4 1.3-0.6 0.6-1.2 1.2-1.7 1.9-1 1.1-1.8 2.3-2.6 3.6-0.3 0.5-0.7 1-1 1.6-0.4 0.7-0.8 1.5-1.2 2.3-0.3 0.5-0.5 1.1-0.8 1.7-0.3 0.8-0.6 1.7-0.9 2.5-0.2 0.6-0.4 1.1-0.5 1.7-0.2 0.9-0.4 1.9-0.6 2.9l-0.3 1.5c-0.2 1.5-0.3 3-0.3 4.5v243.5c0 1.5 0.1 3 0.3 4.5l0.3 1.5c0.2 1 0.4 1.9 0.6 2.9 0.2 0.6 0.3 1.1 0.5 1.7 0.3 0.9 0.6 1.7 0.9 2.5 0.2 0.6 0.5 1.1 0.8 1.7 0.4 0.8 0.7 1.5 1.2 2.3 0.3 0.5 0.6 1.1 1 1.6 0.5 0.7 0.9 1.4 1.5 2.1l1.2 1.5c0.5 0.6 1.1 1.3 1.7 1.9 0.4 0.5 0.9 0.9 1.4 1.3 0.6 0.6 1.3 1.1 1.9 1.6 0.5 0.4 1 0.8 1.6 1.2 0.2 0.1 0.4 0.3 0.6 0.4L493 905.7c5.6 3.8 12.3 5.8 19.1 5.8 6.6 0 13.3-1.9 19.1-5.8l365.6-243.5c0.2-0.1 0.4-0.3 0.6-0.4 0.5-0.4 1-0.8 1.6-1.2 0.7-0.5 1.3-1.1 1.9-1.6 0.5-0.4 0.9-0.9 1.4-1.3 0.6-0.6 1.2-1.2 1.7-1.9l1.2-1.5 1.5-2.1c0.3-0.5 0.7-1 1-1.6 0.4-0.8 0.8-1.5 1.2-2.3 0.3-0.5 0.5-1.1 0.8-1.7 0.3-0.8 0.6-1.7 0.9-2.5 0.2-0.5 0.4-1.1 0.5-1.7 0.3-0.9 0.4-1.9 0.6-2.9l0.3-1.5c0.2-1.5 0.3-3 0.3-4.5V389.8c-0.3-1.5-0.4-3-0.6-4.5zM546.4 210.5l269.4 179.4-120.3 80.4-149-99.6V210.5z m-68.8 0v160.2l-149 99.6-120.3-80.4 269.3-179.4zM180.7 454.1l86 57.5-86 57.5v-115z m296.9 358.5L208.3 633.2l120.3-80.4 149 99.6v160.2zM512 592.8l-121.6-81.2L512 430.3l121.6 81.2L512 592.8z m34.4 219.8V652.4l149-99.6 120.3 80.4-269.3 179.4zM843.3 569l-86-57.5 86-57.5v115z" p-id="7370" fill="#ffffff"></path></svg></a>
+        </div>
+        <!--  TODO 左上角关闭次级页面按钮  -->
+        <div id="GoBackPage" class="boxBlank" style="width: 10%;left: 4%;top:30px;height: 0px;border-radius: 0 0 15px 15px;background-color: rgba(0, 0, 0, 0.507);display:none;transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1)">
+            <a  class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;left:0%;width:100%;text-align: center;transition: 0.15s linear;border-radius: 0 0 15px 15px;"title="后退" 
+            onclick=" document.getElementById('ArchivePageContentDetails').style.marginLeft = '100%';document.getElementById('GoBackPage').style.height = '0px';setTimeout(function() {document.getElementById('ArchivePageContentDetails').style.display = 'none';document.getElementById('GoBackPage').style.display = 'none';},700);">
+            <svg t="1664978372617" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6697" width="50%" height="100%"><path d="M143 462h800c27.6 0 50 22.4 50 50s-22.4 50-50 50H143c-27.6 0-50-22.4-50-50s22.4-50 50-50z" p-id="6698" fill="#ffffff"></path><path d="M116.4 483.3l212.1 212.1c19.5 19.5 19.5 51.2 0 70.7s-51.2 19.5-70.7 0L45.6 554c-19.5-19.5-19.5-51.2 0-70.7 19.6-19.6 51.2-19.6 70.8 0z" p-id="6699" fill="#ffffff"></path><path d="M328.5 328.6L116.4 540.7c-19.5 19.5-51.2 19.5-70.7 0s-19.5-51.2 0-70.7l212.1-212.1c19.5-19.5 51.2-19.5 70.7 0s19.5 51.2 0 70.7z" p-id="6700" fill="#ffffff"></path></svg></a>
         </div>
     </div>
 </body>

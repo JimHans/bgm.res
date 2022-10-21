@@ -8,6 +8,7 @@ const path = nodeRequire("path");                                     //?引入p
 const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
 const runtimeUrl = path.join(__dirname, './mpv/mpv.exe');             //?mpv播放核心地址-调试
 const packUrl = path.join(process.cwd(), './resources/mpv/mpv.exe');  //?mpv播放核心地址-打包后
+let exec = nodeRequire('child_process').exec;                         //?引用exec用于CMD指令执行
 let mpv = nodeRequire('node-mpv');                                    //?引入node-mpv接口
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
 const store = new Store();
@@ -47,7 +48,7 @@ function OKErrorStreamer(type,text,if_reload) {
 }
 
 // !页面加载完成后初始化数据函数(目前仅初始化主页)
-window.onload = function () {
+function SysOnload() {
   // *Version Get
   var package = nodeRequire("./package.json");
   document.getElementById("Title").innerText=package.title+" v"+package.version; // Get Version
@@ -60,7 +61,10 @@ window.onload = function () {
     document.getElementById("RecentViewDetail").innerText=data.summary;
     document.getElementById("RecentViewName").innerText=data.name;
     document.getElementById("RecentViewTitle").innerText="继续观看: "+data.name_cn;
-    var HomePageRatingScore =document.createTextNode(data.rating.score);
+    document.getElementById("RecentViewRatingScore").innerHTML=
+    "<div id='RecentViewRatingRank' class='boxBlank' style='border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;'>NO.Null</div>"+
+    "<div id='RecentViewRatingPos' class='boxBlank' style='border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;'>NoRank</div>";
+    var HomePageRatingScore =document.createTextNode(data.rating.score.toFixed(1));
     document.getElementById("RecentViewRatingScore").appendChild(HomePageRatingScore);
     document.getElementById("RecentViewRatingRank").innerText="NO."+data.rating.rank;
     // 作品等级判定
@@ -82,10 +86,15 @@ window.onload = function () {
     }).done(function() { OKErrorStreamer("OK","加载作品信息完成",0); }).fail(function() { document.getElementById("RecentViewRatingScore").appendChild(document.createTextNode('0.0'));OKErrorStreamer("Error","无法连接Bangumi",0); });
     
     // *EP信息获取
-    $.getJSON("https://api.bgm.tv/v0/episodes/"+bgmEP.toString(), function(data){
-    document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+data.ep+"-"+data.name;
+    $.getJSON("https://api.bgm.tv/v0/episodes?subject_id="+bgmID.toString(), function(data1){
+      for(var EPTemper=0;EPTemper!=data1.data.length;EPTemper++){
+        if(data1.data[EPTemper].hasOwnProperty("ep")&&data1.data[EPTemper].ep==bgmEP) 
+        {$.getJSON("https://api.bgm.tv/v0/episodes/"+data1.data[EPTemper].id, function(data2){document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+data2.ep+"-"+data2.name;}).fail(function() {document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+bgmEP});break;}
+        else{document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+bgmEP;}
+      }
     // *错误回调
     }).done(function() { OKErrorStreamer("OK","加载EP信息完成",0); }).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); }); // *错误回调
+    $('#RecentViewProgress').attr('onclick',"console.log('OK');RecentViewPlayAction('Last');");
     console.log("Success");
   }
   else{
@@ -94,7 +103,15 @@ window.onload = function () {
     document.getElementById("RecentViewRatingScore").innerText="0.0";
     document.getElementById("RecentViewProgress").innerText="您最近没有观看记录！";
   }
-}
+}window.onload = SysOnload();
+
+// !页面大小变化时更新元素状态函数(目前仅更新作品详情)
+window.onresize=function(){  
+  document.getElementById("ArchivePageContentDetailsTitle").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制作品主标题贴左边
+  document.getElementById("ArchivePageContentDetailsTitleJp").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制日文标题贴左边
+  document.getElementById("ArchivePageContentDetailsTitleJp").style.top=(22+(document.getElementById("ArchivePageContentDetailsTitle").getBoundingClientRect().height)*2/($(window).height())*100).toString()+"%"; // 控制日文标题贴上边
+  document.getElementById("ArchivePageContentDetailsFolderURL").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制打开文件夹按钮贴左边
+} 
 
 //! 手动存储API(DEV) 
 //*输入输入框ID，自动提取输入框内数据并以输入框ID相同键值存入localStorage
@@ -160,10 +177,12 @@ function FloatBarAction(PageID) { //点击切换页面
   }
 }
 
-//! 播放-调用MPV播放最近播放
-function RecentViewPlayAction() {
-  if(localStorage.getItem("LocalStorageRecentViewURL")){
-    var RecentViewURL = localStorage.getItem("LocalStorageRecentViewURL");
+//! 播放-调用MPV播放最近播放 传入Last/Next选择上次播放或者下一话 完成后刷新
+function RecentViewPlayAction(Type) {
+  if(Type=='Last') {var RecentTempURL = "LocalStorageRecentViewURL";var RecentEP = localStorage.getItem("LocalStorageRecentViewEpisode");}
+  if(Type=='Next') {var RecentTempURL = "LocalStorageRecentViewNextURL";var RecentEP = Number(localStorage.getItem("LocalStorageRecentViewEpisode"))+1;}
+  if(localStorage.getItem(RecentTempURL)){
+    var RecentViewURL = localStorage.getItem(RecentTempURL);
     process.noAsar = true; //临时禁用fs对ASAR读取
     fs.access(runtimeUrl, fs.constants.F_OK,function (err) {
       if (err) {  //调试播放核心 
@@ -171,6 +190,11 @@ function RecentViewPlayAction() {
           if (exist) { OKErrorStreamer("Error","指定文件不存在！",0); } 
           else {
             process.noAsar = false; //恢复fs对ASAR读取
+            var MediaID = localStorage.getItem("LocalStorageRecentViewLocalID"); //更新最近播放ep集数与链接信息
+            localStorage.setItem("LocalStorageRecentViewEpisode",RecentEP);
+            localStorage.setItem("LocalStorageRecentViewURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(RecentEP)+".URL"));
+            localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(Number(RecentEP)+1)+".URL"));
+            SysOnload();
             let mpvPlayer = new mpv({"binary": packUrl,},["--fps=60"]);
             mpvPlayer.load(RecentViewURL);}
         });
@@ -180,6 +204,11 @@ function RecentViewPlayAction() {
           if (exist) { OKErrorStreamer("Error","指定文件不存在！",0); } 
           else {
             process.noAsar = false; //恢复fs对ASAR读取
+            var MediaID = localStorage.getItem("LocalStorageRecentViewLocalID"); //更新最近播放ep集数与链接信息
+            localStorage.setItem("LocalStorageRecentViewEpisode",RecentEP);
+            localStorage.setItem("LocalStorageRecentViewURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(RecentEP)+".URL"));
+            localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(Number(RecentEP)+1)+".URL"));
+            SysOnload();
             let mpvPlayer = new mpv({"binary": runtimeUrl,},["--fps=60"]);
             mpvPlayer.load(RecentViewURL);}
         });
@@ -196,6 +225,7 @@ function LocalWorkScan(){
     var TargetArchiveURL = localStorage.getItem('LocalStorageMediaBaseURL');
     if(fs.existsSync(TargetArchiveURL)){       // *当目标媒体库目录存在
       OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描媒体库，请稍后</div>",0);
+      setTimeout(function() {
       store.clear(); //清除旧媒体库信息
       var TargetArchiveDir = fs.readdirSync(TargetArchiveURL); //扫描目标媒体库目录
       console.log(TargetArchiveDir.length);
@@ -216,6 +246,8 @@ function LocalWorkScan(){
           store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Corp",'Corp'); //扫描到的媒体默认制作公司
           store.set("WorkSaveNo"+ScanSaveCounter.toString()+".Cover",'./assets/banner.jpg'); //扫描到的媒体默认封面(后期联网更新为base64)
           store.set("WorkSaveNo"+ScanSaveCounter.toString()+".ExistCondition",'Exist'); //扫描到的媒体默认状态(默认存在)
+
+          LocalWorkEpsScanModule(ScanSaveCounter.toString());
         }
       }
       localStorage.setItem("LocalStorageMediaBaseNumber",ScanSaveCounter); //存储扫描到的媒体数目
@@ -241,6 +273,7 @@ function LocalWorkScan(){
       document.getElementById("ArchivePageSum").innerText="共 "+ScanSaveCounter+" 部作品";
       setTimeout(function() {ArchiveMediaUpdate();},3000);
       // console.log(store.get('WorkSaveNo5'));
+      },1000);
     }
     else{OKErrorStreamer("Error","路径错误！",0);}
   }
@@ -262,7 +295,7 @@ function ArchivePageInit(){
       if(store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".ExistCondition") == "Deleted") {continue;} //发现已删除作品，自动跳过
 
       $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardHover' style='background:url("+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover")+") no-repeat top;background-size:cover;'>"+
-      "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat top;background-size:cover;'></div>"+ //封面遮罩阴影
+      "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
       "<div class='ArchiveCardTitle'>"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name")+"</div>"+ //名称
       "<div class='ArchiveCardRateStar'>⭐&nbsp;"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Score")+"</div>"+ //评分
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:22%;left:5%;right:5%;text-align:center;font-style:italic;'>"+
@@ -270,7 +303,8 @@ function ArchivePageInit(){
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:12%;left:40%;right:5%;text-align:right;color: rgba(255, 255, 255, 0.79);'>原作 "+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol")+"</div>"+ //制作原案
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:2%;left:45%;right:5%;text-align:right;color: rgba(255, 255, 255, 0.79);'>"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Director")+"</div>"+ //制作监督
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:2%;left:5%;right:50%;text-align:left;color: rgba(255, 255, 255, 0.79);'>"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".Corp")+"</div>"+ //制作公司
-      "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:2%;left:45%;right:5%;text-align:right;color: rgba(255, 255, 255, 0.79);' onclick='ArchiveContentEditer("+MediaBaseScanCounter.toString()+");'>编辑</div>"+ //编辑按键
+      "<div style='border-radius: 8px;transition: all 0.5s;left:0%;right:0%;top:0%;bottom:0%;position:absolute;' onclick='ArchiveMediaDetailsPage("+MediaBaseScanCounter+")'></div>"+ // 点击触发区域
+      "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:2%;left:45%;right:5%;text-align:right;color: rgba(255, 255, 255, 0.79);z-index:20;' onclick='ArchiveContentEditer("+MediaBaseScanCounter.toString()+");'>编辑</div>"+ //编辑按键
       "</div>" );
     }
 }
@@ -279,14 +313,14 @@ function ArchivePageInit(){
 function ArchiveContentEditer(MediaID) {
   document.getElementById("ArchivePageContentSettingsBody").innerHTML=""; //清空body
   $("#ArchivePageContentSettingsBody").append( 
-    "<div id='ArchivePageContentSettingsCover' class='ArchiveCardHover' style='position:absolute;top:21%;height:40%;left:3%;width:20%;'></div>"+
+    "<div id='ArchivePageContentSettingsCover' class='ArchiveCardHover' style='position:absolute;bottom:36%;left:3%;width:23%;height:auto;aspect-ratio:3/4'></div>"+
     "<div class='ArchiveInputLine' style='top:30%;left:35%;width:60%;height:10%'> <!-- *设置作品bgmID -->"+
     "<input type='text' id='ArchivePageContentSettingsbgmID' autocomplete='off' onkeydown='StoreSave(event.keyCode,1,"+MediaID+");' required />"+ //placeholder='BGMID可以在Bangumi作品页面URL内找到'
     "<div class='line'></div><span>请输入当前作品的BGMID</span></div>"+
     "<div class='ArchiveInputLine' style='top:50%;left:35%;width:60%;height:10%'> <!-- *设置作品URL -->"+
     "<input type='text' id='ArchivePageContentSettingsURL' autocomplete='off'  onkeydown='StoreSave(event.keyCode,2,"+MediaID+")' required />"+   //placeholder='如果作品位置转移，可以在此重设URL'
     "<div class='line'></div><span>请输入当前作品的URL</span></div>"+
-    "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:67%;left:5%;width:20%;text-align:center;color: rgba(255, 255, 255, 0.79);'>"+store.get("WorkSaveNo"+MediaID+".Name")+"</div>"+
+    "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:67%;left:6.5%;width:20%;text-align:center;color: rgba(255, 255, 255, 0.79);'>"+store.get("WorkSaveNo"+MediaID+".Name")+"</div>"+
     "<div style='font-family:bgmUI;color:rgba(171, 171, 171, 0.79);position:absolute;overflow:hidden;top:67%;left:30%;right:5%;text-align:right;font-size:2vmin;font-style:italic;display:-webkit-box;text-overflow:ellipsis;-webkit-box-orient:vertical;-webkit-line-clamp:2;padding-right:5px;'>原作："+store.get("WorkSaveNo"+MediaID+".Protocol")+
     " | 监督："+store.get("WorkSaveNo"+MediaID+".Director")+" | 动画制作："+store.get("WorkSaveNo"+MediaID+".Corp")+" | 类型："+store.get("WorkSaveNo"+MediaID+".Type")+"</div>"+
     "<div class='ArchivePageButton' style='top:85%;bottom: 5%;left:40%;width:20%;color:#ed5a65;border: 2px dashed rgb(145, 145, 145);' onclick='StoreDeleteWork("+MediaID+");'>删除作品</div>"
@@ -309,7 +343,8 @@ function StoreSave(Key,Input,WorkID){
   {
     if(Input == 1){var WorkbgmID = document.getElementById('ArchivePageContentSettingsbgmID').value; store.set("WorkSaveNo"+WorkID+".bgmID",WorkbgmID.toString());}
     if(Input == 2){var WorkURL = document.getElementById('ArchivePageContentSettingsURL').value; store.set("WorkSaveNo"+WorkID+".URL",WorkURL.toString());}
-    ArchivePageInit();
+    LocalWorkEpsScanModule(WorkID); //扫描作品EP信息
+    ArchivePageInit(); //更新媒体库页面
     OKErrorStreamer("OK","更改成功保存！",0);
   }
 }
@@ -333,7 +368,7 @@ function StoreDeleteWork(WorkID){
   }
 }
 
-//! 媒体库-作品信息更新模块
+//! 媒体库-作品数据信息链接BGM更新模块
 function ArchiveMediaUpdate(){
   // *Archive Get <!--联网检索ArchivePage媒体库内容-->
   OKErrorStreamer("MessageOn","作品信息更新进行中",0);
@@ -362,7 +397,7 @@ function ArchiveMediaUpdate(){
         } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}); // *错误回调
       } 
     } $.ajaxSettings.async = true; //重新打开同步
-    ArchivePageInit();
+    ArchivePageInit(); //更新媒体库页面
     OKErrorStreamer("MessageOff","作品信息更新进行中",0);
     OKErrorStreamer("OK","媒体库数据爬取完成",0); 
     },2000);
@@ -398,10 +433,10 @@ function LocalWorkManualAddAndSave(type){
   }
   else {
     console.log('Saving')
-    var WorkTotalNumberNew = parseInt(localStorage.getItem("LocalStorageMediaBaseNumber"))+1
-    localStorage.setItem("LocalStorageMediaBaseNumber",WorkTotalNumberNew); //存储新的媒体数目
     if(document.getElementById('ArchivePageContentAddNewURL').value!='' && document.getElementById('ArchivePageContentAddNewName').value!='' 
           && document.getElementById('ArchivePageContentAddNewbgmID').value!=''&& document.getElementById('ArchivePageContentAddNewType').value!=''){
+    var WorkTotalNumberNew = parseInt(localStorage.getItem("LocalStorageMediaBaseNumber"))+1
+    localStorage.setItem("LocalStorageMediaBaseNumber",WorkTotalNumberNew); //存储新的媒体数目
     store.set("WorkSaveNo"+WorkTotalNumberNew+".URL",document.getElementById('ArchivePageContentAddNewURL').value); //媒体路径
     store.set("WorkSaveNo"+WorkTotalNumberNew+".Name",document.getElementById('ArchivePageContentAddNewName').value); //媒体名称
     store.set("WorkSaveNo"+WorkTotalNumberNew+".bgmID",document.getElementById('ArchivePageContentAddNewbgmID').value); //媒体bgmID
@@ -414,10 +449,145 @@ function LocalWorkManualAddAndSave(type){
     store.set("WorkSaveNo"+WorkTotalNumberNew+".Corp",'Corp'); //媒体默认制作公司
     store.set("WorkSaveNo"+WorkTotalNumberNew+".Cover",'./assets/banner.jpg'); //媒体默认封面(后期联网更新为base64)
     store.set("WorkSaveNo"+WorkTotalNumberNew+".ExistCondition",'Exist'); //媒体默认状态(默认存在)
-    ArchivePageInit();
+    LocalWorkEpsScanModule(WorkTotalNumberNew); //扫描作品EP信息
+    ArchivePageInit(); //更新媒体库页面
     document.getElementById('ArchivePageContentAddNew').style.display = "none";
     OKErrorStreamer('OK','新作品添加完成！建议点击更新按钮联网刷新一下作品详细信息',0);
     }
     else {OKErrorStreamer('Error','作品信息不完整！',0);}
+  }
+}
+
+/* 媒体库详情页面初始化系统 */
+function ArchiveMediaDetailsPage(MediaID){
+  document.getElementById("ArchivePageContentDetailsTitleBlock").innerHTML=""; //清空TitleBlock
+  document.getElementById("ArchivePageContentDetailsDetailsBlock").innerHTML=""; //清空DetailsBlock
+  document.getElementById("ArchivePageContentDetailsEpisodeBlock").innerHTML=""; //清空EpisodeBlock
+  $("#ArchivePageContentDetailsTitleBlock").append(
+    "<div id='ArchivePageContentDetailsCover' class='ArchiveCardHover' style='position:absolute;top:7%;height:86%;left:17%;width:auto;aspect-ratio:3/4' onclick='shell.openExternal(\"https://bgm.tv/subject/"+store.get("WorkSaveNo"+MediaID+".bgmID")+"\");'></div>"+
+    "<div id='ArchivePageContentDetailsTitle' class='RecentViewName' style='height:auto;top:15%;font-size:3vw;right:25%;overflow: hidden;display: -webkit-box; text-overflow: ellipsis; -webkit-box-orient: vertical;-webkit-line-clamp: 2;   '>未知作品</div>"+
+    "<div id='ArchivePageContentDetailsTitleJp' class='RecentViewName' style='height:auto;top:15%;font-size:1.5vw;right:25%;overflow: hidden;display: -webkit-box; text-overflow: ellipsis; -webkit-box-orient: vertical;-webkit-line-clamp: 2;   '>不明な作品</div>"+
+    "<div id='ArchivePageContentDetailsFolderURL' class='ArchivePageButton' style='top:80%;bottom:0%;height:auto;font-size:2.3vmin;-webkit-app-region:unset;' onclick=\"exec('explorer "+store.get("WorkSaveNo"+MediaID+".URL").replace(/(\\)/g,"\\\\")+"');\"><svg t='1665333293331' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3428' height=45% style='margin-right:5px;'><path d='M506 894.2a33 32.9 0 1 0 66 0 33 32.9 0 1 0-66 0Z' fill='#ffffff' p-id='3429'></path><path d='M864 388.7v-4.4c0-70.7-57.3-128-128-128H511.8l-82.5-110.9c-7.4-12.9-18-16.2-27.3-16l-0.1-0.1H192.1c-70.7 0-128 57.3-128 128v542.1c0 70.7 57.3 128 128 128H407v-0.4c18.2 0 33-14.7 33-32.9s-14.8-32.9-33-32.9c-1 0-2.1 0.1-3.1 0.1h-181c-35.3 0-64-28.7-64-64 0-5.5 0.7-10.9 2-16L234 498.9l0.2-0.1c6.7-28.1 31.9-49 62.1-49.1l0.2-0.1h532.2c1.3-0.1 2.5-0.1 3.8-0.1 35.3 0 64 28.7 64 64 0 6.7-1.1 13.3-3 19.4v0.1L821 812.8c-0.1 0.6-0.3 1.1-0.4 1.7l-1.5 5.8-0.5 0.4c-1.5 3.9-3.4 7.5-5.5 11h-1.3c-2.6 4.7-5.8 9.1-9.5 12.9-11.4 10.6-26.7 17.1-43.4 17.1-1.3 0-2.6 0-3.8-0.1h-80.8c-1-0.1-2.1-0.1-3.1-0.1-18.2 0-33 14.7-33 32.9s14.8 32.9 33 32.9v0.2H763l0.5-0.4c59.1-0.2 108.7-40.4 123.2-95l0.2-0.2 67.8-285.5c2.9-10.8 4.5-22.1 4.5-33.8-0.1-59.5-40.5-109.5-95.2-123.9z m-571.5-4.9c-62 0-113.7 44.2-125.5 102.7l-0.5 0.4-38 160.3V257c0-35.3 28.7-64 64-64H383l82.7 111.3c6.6 11.4 19.2 17.2 31.5 15.8h238.5c35.2 0 63.8 28.5 64 63.7H292.5z' fill='#ffffff' p-id='3430'></path></svg>打开文件夹</div>"
+  );
+  for(var TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
+  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:11.8%;height:4vw;padding:2px;text-align:center;display:flex;justify-content:center;align-items:center;' onclick='ArchiveMediaDetailsEpInfoCard("+MediaID+","+TempCounter+");'>"+"EP "+TempCounter+"</div>" );}
+  $.getJSON("https://api.bgm.tv/v0/subjects/"+store.get("WorkSaveNo"+MediaID+".bgmID"), function(data){
+    document.getElementById("ArchivePageContentDetailsDetailsBlock").innerText=data.summary;
+    document.getElementById("ArchivePageContentDetailsTitleJp").innerText=data.name;
+  }).fail(function() {OKErrorStreamer("Error","无法连接Bangumi",0); });
+  //页面内容填充
+  console.log(MediaID);
+  document.getElementById('ArchivePageContentDetailsCover').style.background = "block";
+  document.getElementById("ArchivePageContentDetailsCover").style.background="url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
+  document.getElementById("ArchivePageContentDetailsCover").style.backgroundSize="cover"; // 加载封面
+  document.getElementById("ArchivePageContentDetailsTitle").innerHTML=store.get("WorkSaveNo"+MediaID+".Name"); // 加载标题
+  //页面可见,背景初始化
+  document.getElementById('ArchivePageContentDetails').style.marginLeft = '0%';
+  document.getElementById('ArchivePageContentDetails').style.display = 'block'; // 页面可见化
+  document.getElementById("ArchivePageContentDetailsBlur").style.background="url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
+  document.getElementById("ArchivePageContentDetailsBlur").style.backgroundSize="cover";
+  document.getElementById("ArchivePageContentDetailsBlur").style.filter="blur(20px) brightness(40%)";   // 渲染模糊背景
+  //贴边控制
+  document.getElementById("ArchivePageContentDetailsTitle").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制标题贴边
+  document.getElementById("ArchivePageContentDetailsTitleJp").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制日文标题贴左边
+  document.getElementById("ArchivePageContentDetailsTitleJp").style.top=(22+(document.getElementById("ArchivePageContentDetailsTitle").getBoundingClientRect().height)*2/($(window).height())*100).toString()+"%"; // 控制日文标题贴上边
+  document.getElementById("ArchivePageContentDetailsFolderURL").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制打开文件夹按钮贴左边
+  //返回按钮显示
+  document.getElementById('GoBackPage').style.display = 'block';
+  setTimeout(function() {document.getElementById('GoBackPage').style.height = '45px';},100); // 返回按钮可见化
+}
+
+//! 媒体库-作品详情页章节选择弹窗
+function ArchiveMediaDetailsEpInfoCard(MediaID,TempCounter){
+  if(store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL")){
+    var EPOpenURL = store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL");
+    process.noAsar = true; //临时禁用fs对ASAR读取
+    fs.access(runtimeUrl, fs.constants.F_OK,function (err) {
+      if (err) {  //调试播放核心 
+        fs.access(EPOpenURL, fs.constants.F_OK,function (exist) {
+          if (exist) { OKErrorStreamer("Error","指定文件不存在！",0); } 
+          else {
+            process.noAsar = false; //恢复fs对ASAR读取
+            let mpvPlayer = new mpv({"binary": packUrl,},["--fps=60"]);
+            mpvPlayer.load(EPOpenURL);}
+        });
+      } 
+      else {  //打包后播放核心 
+        fs.access(EPOpenURL, fs.constants.F_OK,function (exist) {
+          if (exist) { OKErrorStreamer("Error","指定文件不存在！",0); } 
+          else {
+            process.noAsar = false; //恢复fs对ASAR读取
+            let mpvPlayer = new mpv({"binary": runtimeUrl,},["--fps=60"]);
+            mpvPlayer.load(EPOpenURL);}
+        });
+      }
+    })
+    process.noAsar = false; //恢复fs对ASAR读取
+    localStorage.setItem("LocalStorageRecentViewID",store.get("WorkSaveNo"+MediaID+".bgmID"));
+    localStorage.setItem("LocalStorageRecentViewLocalID",MediaID);
+    localStorage.setItem("LocalStorageRecentViewURL",EPOpenURL);
+    localStorage.setItem("LocalStorageRecentViewEpisode",TempCounter);
+    localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
+
+    // *Recent View Get <!--格式化HomePage主页继续观看内容-->
+    var bgmID = localStorage.getItem("LocalStorageRecentViewID");
+    var bgmEP = localStorage.getItem("LocalStorageRecentViewEpisode");
+    if(bgmID != '' && localStorage.getItem("LocalStorageRecentViewID")&&localStorage.getItem("LocalStorageRecentViewEpisode")){
+      $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID.toString(), function(data){
+      document.getElementById("RecentViewDetail").innerText=data.summary;
+      document.getElementById("RecentViewName").innerText=data.name;
+      document.getElementById("RecentViewTitle").innerText="继续观看: "+data.name_cn;
+      document.getElementById("RecentViewRatingScore").innerHTML=
+      "<div id='RecentViewRatingRank' class='boxBlank' style='border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;'>NO.Null</div>"+
+      "<div id='RecentViewRatingPos' class='boxBlank' style='border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: 1.5vw;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;'>NoRank</div>";
+      var HomePageRatingScore =document.createTextNode(data.rating.score.toFixed(1));
+      document.getElementById("RecentViewRatingScore").appendChild(HomePageRatingScore);
+      document.getElementById("RecentViewRatingRank").innerText="NO."+data.rating.rank;
+      // 作品等级判定
+      if(data.rating.score > 9.5) {document.getElementById("RecentViewRatingPos").innerText="超神作";}
+        else if(data.rating.score > 8.5) {document.getElementById("RecentViewRatingPos").innerText="神作";}
+        else if(data.rating.score > 7.5) {document.getElementById("RecentViewRatingPos").innerText="力荐";}
+        else if(data.rating.score > 6.5) {document.getElementById("RecentViewRatingPos").innerText="推荐";}
+        else if(data.rating.score > 5.5) {document.getElementById("RecentViewRatingPos").innerText="还行";}
+        else if(data.rating.score > 4.5) {document.getElementById("RecentViewRatingPos").innerText="不过不失";}
+        else if(data.rating.score > 3.5) {document.getElementById("RecentViewRatingPos").innerText="较差";}
+        else if(data.rating.score > 2.5) {document.getElementById("RecentViewRatingPos").innerText="差";}
+        else if(data.rating.score > 2.5) {document.getElementById("RecentViewRatingPos").innerText="很差";}
+        else if(data.rating.score >= 1) {document.getElementById("RecentViewRatingPos").innerText="不忍直视";}
+        else {document.getElementById("RecentViewRatingPos").innerText="暂无评分";}
+      // 作品等级判定OVER
+      document.getElementById("HomePage").style.background="url('"+data.images.large+"') no-repeat center";
+      document.getElementById("HomePage").style.backgroundSize="cover";
+      //错误回调
+      }).done(function() { OKErrorStreamer("OK","加载作品信息完成",0); }).fail(function() { document.getElementById("RecentViewRatingScore").appendChild(document.createTextNode('0.0'));OKErrorStreamer("Error","无法连接Bangumi",0); });
+      
+      // *EP信息获取
+      $.getJSON("https://api.bgm.tv/v0/episodes?subject_id="+bgmID.toString(), function(data1){
+        for(var EPTemper=0;EPTemper!=data1.data.length;EPTemper++){
+          if(data1.data[EPTemper].hasOwnProperty("ep")&&data1.data[EPTemper].ep==bgmEP) 
+          {$.getJSON("https://api.bgm.tv/v0/episodes/"+data1.data[EPTemper].id, function(data2){document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+data2.ep+"-"+data2.name;}).fail(function() {document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+bgmEP});break;}
+          else{document.getElementById("RecentViewProgress").innerText="上次看到: "+"EP"+bgmEP;}
+        }// *错误回调
+      }).done(function() { OKErrorStreamer("OK","加载EP信息完成",0); }).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); }); // *错误回调
+      $('#RecentViewProgress').attr('onclick',"console.log('OK');RecentViewPlayAction('Last');");
+      console.log("Success");
+    }
+  }
+}
+
+//! 媒体库-作品ep扫描模块
+function LocalWorkEpsScanModule(MediaID){
+  if(fs.existsSync(store.get("WorkSaveNo"+MediaID+".URL"))){       // *当目标媒体库目录存在
+    // OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
+    var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")); //扫描目标媒体库目录下EP
+    console.log(TargetWorkEP.length);
+    var RealWorkEP = 0;
+    for (var TempCounter = 0;TempCounter!=TargetWorkEP.length;TempCounter++){
+      if(TargetWorkEP[TempCounter].match(/.mp4|.flv|.mkv|.rm|.rmvb|.avi|.m2ts/i)){
+        RealWorkEP += 1;store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+RealWorkEP+".URL",TargetWorkEP[TempCounter]);
+        store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+RealWorkEP+".Condition",'Unwatched');}
+    }
+    store.set("WorkSaveNo"+MediaID+".EPTrueNum",RealWorkEP);
+    // OKErrorStreamer("MessageOff","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
   }
 }

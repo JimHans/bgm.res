@@ -92,6 +92,17 @@
         opacity:1;
     }
 }
+@keyframes Details-Animate { /* 详情页右侧划入 */
+    0% {
+        transform:translatex(100%);
+        opacity: 1;
+    }
+    100% {
+        transform:translatex(0px);
+        opacity: 1;
+    }
+}
+
 .rolled { /* *播放按钮高光 */
     position: absolute;
     top: 0;
@@ -155,6 +166,7 @@ user-select: none;
     font-weight: lighter;
     color:azure;
     height:30px;
+    z-index: 100;
     text-align: center;
     width: 100%;
     background-color: #202020;
@@ -657,6 +669,37 @@ user-select: none;
     text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);
 }
 .ArchivePageContentSettingsBody {padding: 2px 16px;height:87%;overflow-y:auto;}
+
+/* ?作品详情CSS开始 */
+.ArchivePageContentDetails{
+    color:aliceblue;
+    width: 100%;
+    top:0px;
+    bottom:0px;
+    position:absolute;
+    background: #00000000;
+    background-size:cover;
+    display:none;
+    z-index: 50;
+    overflow-y: auto;
+    overflow-x: hidden;
+    animation: Details-Animate 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/*ArchivePageContentDetails滚动条样式*/
+.ArchivePageContentDetails::-webkit-scrollbar {
+    width: 4px;    
+}
+.ArchivePageContentDetails::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(141, 140, 140, 0.2);
+    background: rgba(196, 196, 196, 0.621);
+}
+.ArchivePageContentDetails::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0px;
+    background: rgba(59, 59, 59, 0.744);
+}
 /* ! 媒体库页CSS结束 */
 
 /* *设置页CSS开始-默认隐藏 */
