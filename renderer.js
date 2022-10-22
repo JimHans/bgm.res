@@ -487,6 +487,7 @@ function ArchiveMediaDetailsPage(MediaID){
   document.getElementById("ArchivePageContentDetailsBlur").style.background="url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
   document.getElementById("ArchivePageContentDetailsBlur").style.backgroundSize="cover";
   document.getElementById("ArchivePageContentDetailsBlur").style.filter="blur(20px) brightness(40%)";   // 渲染模糊背景
+  document.getElementById("ArchivePageContentDetails").scrollTo(0,0); //页面回顶部
   //贴边控制
   document.getElementById("ArchivePageContentDetailsTitle").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制标题贴边
   document.getElementById("ArchivePageContentDetailsTitleJp").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制日文标题贴左边
