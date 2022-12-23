@@ -12,11 +12,11 @@ function createWindow () {
     var screenElectron = require('electron').screen;
     // 创建主程序浏览器窗口
     const win = new BrowserWindow({
-      width:  (screenElectron.getPrimaryDisplay().workAreaSize.width)*0.5,
-      height: (screenElectron.getPrimaryDisplay().workAreaSize.width)*0.5*(11/16),
+      width:  (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3,
+      height: (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3*(10/16),
       // height: (screenElectron.getPrimaryDisplay().workAreaSize.height)*0.5,
-      minWidth: 600,
-      minHeight: 350,
+      minWidth: 650,
+      minHeight: 400,
       //x: screenElectron.getPrimaryDisplay().workAreaSize.width-360,
       //y: screenElectron.getPrimaryDisplay().workAreaSize.height-500,
       alwaysOnTop: false,        //不置顶显示

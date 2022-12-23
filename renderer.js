@@ -111,6 +111,8 @@ window.onresize=function(){
   document.getElementById("ArchivePageContentDetailsTitleJp").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制日文标题贴左边
   document.getElementById("ArchivePageContentDetailsTitleJp").style.top=(22+(document.getElementById("ArchivePageContentDetailsTitle").getBoundingClientRect().height)*2/($(window).height())*100).toString()+"%"; // 控制日文标题贴上边
   document.getElementById("ArchivePageContentDetailsFolderURL").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制打开文件夹按钮贴左边
+
+  document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none'; //自动关闭作品播放卡片
 } 
 
 //! 手动存储API(DEV) 
@@ -180,7 +182,7 @@ function FloatBarAction(PageID) { //点击切换页面
 //! 播放-调用MPV播放最近播放 传入Last/Next选择上次播放或者下一话 完成后刷新
 function RecentViewPlayAction(Type) {
   if(Type=='Last') {var RecentTempURL = "LocalStorageRecentViewURL";var RecentEP = localStorage.getItem("LocalStorageRecentViewEpisode");}
-  if(Type=='Next') {var RecentTempURL = "LocalStorageRecentViewNextURL";var RecentEP = Number(localStorage.getItem("LocalStorageRecentViewEpisode"))+1;}
+  if(Type=='Next') {var RecentTempURL = "LocalStorageRecentViewNextURL";var RecentEP = Number(localStorage.getItem("LocalStorageRecentViewEpisode"))+1;store.set("WorkSaveNo"+localStorage.getItem("LocalStorageRecentViewLocalID")+".EPDetails.EP"+(RecentEP-1).toString()+'.Condition','Watched')}
   if(localStorage.getItem(RecentTempURL)){
     var RecentViewURL = localStorage.getItem(RecentTempURL);
     process.noAsar = true; //临时禁用fs对ASAR读取
@@ -460,21 +462,87 @@ function LocalWorkManualAddAndSave(type){
 
 /* 媒体库详情页面初始化系统 */
 function ArchiveMediaDetailsPage(MediaID){
+  var bgmID = store.get("WorkSaveNo"+MediaID+".bgmID");
   document.getElementById("ArchivePageContentDetailsTitleBlock").innerHTML=""; //清空TitleBlock
   document.getElementById("ArchivePageContentDetailsDetailsBlock").innerHTML=""; //清空DetailsBlock
   document.getElementById("ArchivePageContentDetailsEpisodeBlock").innerHTML=""; //清空EpisodeBlock
+  document.getElementById("ArchivePageContentDetailsTagBlock").innerHTML=""; //清空TagBlock
+  document.getElementById("ArchivePageContentDetailsStaffBlock").innerHTML=""; //清空StaffBlock
   $("#ArchivePageContentDetailsTitleBlock").append(
     "<div id='ArchivePageContentDetailsCover' class='ArchiveCardHover' style='position:absolute;top:7%;height:86%;left:17%;width:auto;aspect-ratio:3/4' onclick='shell.openExternal(\"https://bgm.tv/subject/"+store.get("WorkSaveNo"+MediaID+".bgmID")+"\");'></div>"+
     "<div id='ArchivePageContentDetailsTitle' class='RecentViewName' style='height:auto;top:15%;font-size:3vw;right:25%;overflow: hidden;display: -webkit-box; text-overflow: ellipsis; -webkit-box-orient: vertical;-webkit-line-clamp: 2;   '>未知作品</div>"+
     "<div id='ArchivePageContentDetailsTitleJp' class='RecentViewName' style='height:auto;top:15%;font-size:1.5vw;right:25%;overflow: hidden;display: -webkit-box; text-overflow: ellipsis; -webkit-box-orient: vertical;-webkit-line-clamp: 2;   '>不明な作品</div>"+
-    "<div id='ArchivePageContentDetailsFolderURL' class='ArchivePageButton' style='top:80%;bottom:0%;height:auto;font-size:2.3vmin;-webkit-app-region:unset;' onclick=\"exec('explorer "+store.get("WorkSaveNo"+MediaID+".URL").replace(/(\\)/g,"\\\\")+"');\"><svg t='1665333293331' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3428' height=45% style='margin-right:5px;'><path d='M506 894.2a33 32.9 0 1 0 66 0 33 32.9 0 1 0-66 0Z' fill='#ffffff' p-id='3429'></path><path d='M864 388.7v-4.4c0-70.7-57.3-128-128-128H511.8l-82.5-110.9c-7.4-12.9-18-16.2-27.3-16l-0.1-0.1H192.1c-70.7 0-128 57.3-128 128v542.1c0 70.7 57.3 128 128 128H407v-0.4c18.2 0 33-14.7 33-32.9s-14.8-32.9-33-32.9c-1 0-2.1 0.1-3.1 0.1h-181c-35.3 0-64-28.7-64-64 0-5.5 0.7-10.9 2-16L234 498.9l0.2-0.1c6.7-28.1 31.9-49 62.1-49.1l0.2-0.1h532.2c1.3-0.1 2.5-0.1 3.8-0.1 35.3 0 64 28.7 64 64 0 6.7-1.1 13.3-3 19.4v0.1L821 812.8c-0.1 0.6-0.3 1.1-0.4 1.7l-1.5 5.8-0.5 0.4c-1.5 3.9-3.4 7.5-5.5 11h-1.3c-2.6 4.7-5.8 9.1-9.5 12.9-11.4 10.6-26.7 17.1-43.4 17.1-1.3 0-2.6 0-3.8-0.1h-80.8c-1-0.1-2.1-0.1-3.1-0.1-18.2 0-33 14.7-33 32.9s14.8 32.9 33 32.9v0.2H763l0.5-0.4c59.1-0.2 108.7-40.4 123.2-95l0.2-0.2 67.8-285.5c2.9-10.8 4.5-22.1 4.5-33.8-0.1-59.5-40.5-109.5-95.2-123.9z m-571.5-4.9c-62 0-113.7 44.2-125.5 102.7l-0.5 0.4-38 160.3V257c0-35.3 28.7-64 64-64H383l82.7 111.3c6.6 11.4 19.2 17.2 31.5 15.8h238.5c35.2 0 63.8 28.5 64 63.7H292.5z' fill='#ffffff' p-id='3430'></path></svg>打开文件夹</div>"
+    "<div id='ArchivePageContentDetailsFolderURL' class='ArchivePageButton' style='top:80%;bottom:0%;height:auto;font-size:2.3vmin;-webkit-app-region:unset;' onclick=\"exec('explorer "+store.get("WorkSaveNo"+MediaID+".URL").replace(/(\\)/g,"\\\\").replace(/(&)/g,"^&")+"');\"><svg t='1665333293331' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3428' height=45% style='margin-right:5px;'><path d='M506 894.2a33 32.9 0 1 0 66 0 33 32.9 0 1 0-66 0Z' fill='#ffffff' p-id='3429'></path><path d='M864 388.7v-4.4c0-70.7-57.3-128-128-128H511.8l-82.5-110.9c-7.4-12.9-18-16.2-27.3-16l-0.1-0.1H192.1c-70.7 0-128 57.3-128 128v542.1c0 70.7 57.3 128 128 128H407v-0.4c18.2 0 33-14.7 33-32.9s-14.8-32.9-33-32.9c-1 0-2.1 0.1-3.1 0.1h-181c-35.3 0-64-28.7-64-64 0-5.5 0.7-10.9 2-16L234 498.9l0.2-0.1c6.7-28.1 31.9-49 62.1-49.1l0.2-0.1h532.2c1.3-0.1 2.5-0.1 3.8-0.1 35.3 0 64 28.7 64 64 0 6.7-1.1 13.3-3 19.4v0.1L821 812.8c-0.1 0.6-0.3 1.1-0.4 1.7l-1.5 5.8-0.5 0.4c-1.5 3.9-3.4 7.5-5.5 11h-1.3c-2.6 4.7-5.8 9.1-9.5 12.9-11.4 10.6-26.7 17.1-43.4 17.1-1.3 0-2.6 0-3.8-0.1h-80.8c-1-0.1-2.1-0.1-3.1-0.1-18.2 0-33 14.7-33 32.9s14.8 32.9 33 32.9v0.2H763l0.5-0.4c59.1-0.2 108.7-40.4 123.2-95l0.2-0.2 67.8-285.5c2.9-10.8 4.5-22.1 4.5-33.8-0.1-59.5-40.5-109.5-95.2-123.9z m-571.5-4.9c-62 0-113.7 44.2-125.5 102.7l-0.5 0.4-38 160.3V257c0-35.3 28.7-64 64-64H383l82.7 111.3c6.6 11.4 19.2 17.2 31.5 15.8h238.5c35.2 0 63.8 28.5 64 63.7H292.5z' fill='#ffffff' p-id='3430'></path></svg>打开文件夹</div>"+
+    //评分系统
+    "<div id='ArchivePageContentDetailsRating' class='RecentViewRating' style='padding:0;height:95%'>"+
+    "<div id='ArchivePageContentDetailsRatingScore' style='position:relative;right:0%;width:100%;font-size: 8vmin;font-family:bgmUIHeavy;text-align: right;'>"+
+    "<div id='ArchivePageContentDetailsRatingRank' class='boxBlank' style='border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: 1.9vmin;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;'>NO.Null</div>"+
+    "<div id='ArchivePageContentDetailsRatingPos' class='boxBlank' style='border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: 1.9vmin;font-family:bgmUI;height: 28%;width:30%;left:10%;backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;'>NoRank</div>"+
+    "</div>"+"<div style='position:relative;height:40%;width:100%;bottom:0%;margin-top:14%'>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo10' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>10</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo9' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>9</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo8' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>8</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo7' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>7</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo6' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>6</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo5' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>5</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo4' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>4</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo3' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>3</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo2' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>2</div></div>"+
+    "<div class='LoadScoreBar'><div class='ScoreBar' id='ArchivePageContentDetailsScoreBarNo1' style='height:30%'></div><div style='position:absolute;bottom: -25%;font-size: 2vmin;text-align: center;width: 100%;'>1</div></div>"+
+    "</div><div id='ArchivePageContentDetailsScoreRatePeople' style='position:relative;margin-top:-1%;width:90%;height:10%;left:10px;text-align:none;color:rgb(172, 172, 172);font-size:2.3vmin'></div></div>"
   );
+  //?填充评分
+  $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID.toString(), function(data){
+    var ArchivePageContentDetailsRatingScore =document.createTextNode(data.rating.score.toFixed(1));
+    document.getElementById("ArchivePageContentDetailsRatingScore").appendChild(ArchivePageContentDetailsRatingScore);
+    $("#ArchivePageContentDetailsRatingScore").append("<div style='font-size:2vmin;margin-top: -10px;font-weight: normal;color: rgb(172, 172, 172);text-decoration: underline;font-family: bgmUI;' onclick=\"window.open('https://netaba.re/subject/"+bgmID.toString()+"')\">查看趋势</div>");
+    document.getElementById("ArchivePageContentDetailsRatingRank").innerText="NO."+data.rating.rank;
+    // 作品等级判定
+    if(data.rating.score > 9.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="超神作";}
+      else if(data.rating.score > 8.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="神作";}
+      else if(data.rating.score > 7.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="力荐";}
+      else if(data.rating.score > 6.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="推荐";}
+      else if(data.rating.score > 5.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="还行";}
+      else if(data.rating.score > 4.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="不过不失";}
+      else if(data.rating.score > 3.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="较差";}
+      else if(data.rating.score > 2.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="差";}
+      else if(data.rating.score > 2.5) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="很差";}
+      else if(data.rating.score >= 1) {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="不忍直视";}
+      else {document.getElementById("ArchivePageContentDetailsRatingPos").innerText="暂无评分";}
+    // 作品等级判定OVER
+    // 填充一分一段表，打分信息
+    for(var Tempi = 1;Tempi<=10;Tempi++){
+      document.getElementById('ArchivePageContentDetailsScoreBarNo'+Tempi.toString()).style.height=((data.rating.count[Tempi]/data.rating.total)*100).toString()+'%'
+    }document.getElementById('ArchivePageContentDetailsScoreRatePeople').innerText=data.collection.wish+'想看/'+data.collection.collect+'看过/'+data.collection.doing+'在看/'+data.collection.on_hold+'搁置/'+data.collection.dropped+'搁置'
+    //错误回调
+    }).done(function() { OKErrorStreamer("OK","加载作品信息完成",0); }).fail(function() { document.getElementById("ArchivePageContentDetailsRatingScore").appendChild(document.createTextNode('0.0'));OKErrorStreamer("Error","无法连接Bangumi",0); });
+    
+  //?填充EP选集列表
   for(var TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
-  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:11.8%;height:4vw;padding:2px;text-align:center;display:flex;justify-content:center;align-items:center;' onclick='ArchiveMediaDetailsEpInfoCard("+MediaID+","+TempCounter+");'>"+"EP "+TempCounter+"</div>" );}
+  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:12.1%;height:4vw;padding:2px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:#ffffff0a' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+");'>"+"EP "+TempCounter+"</div>" );
+  //检测是否已播放过
+  if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}
+  } 
+
+  //?填充Tag,中英文作品名，作品详情
   $.getJSON("https://api.bgm.tv/v0/subjects/"+store.get("WorkSaveNo"+MediaID+".bgmID"), function(data){
     document.getElementById("ArchivePageContentDetailsDetailsBlock").innerText=data.summary;
     document.getElementById("ArchivePageContentDetailsTitleJp").innerText=data.name;
-  }).fail(function() {OKErrorStreamer("Error","无法连接Bangumi",0); });
+
+    //填充Tag
+    for(var Tempj = 0;Tempj!=data.tags.length;Tempj++)
+    $("#ArchivePageContentDetailsTagBlock").append("<div class='ArchivePageContentTag' onclick='window.open(\"https://bgm.tv/anime/tag/"+data.tags[Tempj].name+"\")'>"+data.tags[Tempj].name+"</div>");
+
+    //填充作品详情
+    for(var Tempj = 0;Tempj!=data.infobox.length;Tempj++){
+    if(data.infobox[Tempj].key=='别名'){
+      $("#ArchivePageContentDetailsStaffBlock").append("<div id='ArchivePageContentDetailsStaffNickName'style='width:100%;margin:5px;margin-top:10px'>"+data.infobox[Tempj].key+': </div>');
+      for(var Tempk = 0;Tempk!=data.infobox[Tempj].value.length;Tempk++)$("#ArchivePageContentDetailsStaffNickName").append(data.infobox[Tempj].value[Tempk].v+"&nbsp;&nbsp;");}
+    else $("#ArchivePageContentDetailsStaffBlock").append("<div style='width:100%;margin:5px;margin-top:10px'>"+data.infobox[Tempj].key+': '+data.infobox[Tempj].value+"</div>");}
+
+  }).done(function(){document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+55).toString()+'%';})
+  .fail(function() {OKErrorStreamer("Error","无法连接Bangumi",0); document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+50).toString()+'%';});
+  
   //页面内容填充
   console.log(MediaID);
   document.getElementById('ArchivePageContentDetailsCover').style.background = "block";
@@ -486,7 +554,7 @@ function ArchiveMediaDetailsPage(MediaID){
   document.getElementById('ArchivePageContentDetails').style.display = 'block'; // 页面可见化
   document.getElementById("ArchivePageContentDetailsBlur").style.background="url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
   document.getElementById("ArchivePageContentDetailsBlur").style.backgroundSize="cover";
-  document.getElementById("ArchivePageContentDetailsBlur").style.filter="blur(20px) brightness(40%)";   // 渲染模糊背景
+  document.getElementById("ArchivePageContentDetailsBlur").style.filter="blur(40px) brightness(40%)";   // 渲染模糊背景
   document.getElementById("ArchivePageContentDetails").scrollTo(0,0); //页面回顶部
   //贴边控制
   document.getElementById("ArchivePageContentDetailsTitle").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制标题贴边
@@ -499,7 +567,47 @@ function ArchiveMediaDetailsPage(MediaID){
 }
 
 //! 媒体库-作品详情页章节选择弹窗
-function ArchiveMediaDetailsEpInfoCard(MediaID,TempCounter){
+function ArchiveMediaDetailsEpInfoCard(event,MediaID,TempCounter){
+  var ev = event || window.event;
+  var scrollY = document.getElementById('ArchivePageContentDetails').scrollTop;
+  document.getElementById('RecentViewEpisodePlayCard').style.left=((ev.clientX-130)/($(window).width())*100)+'%'
+  document.getElementById('RecentViewEpisodePlayCard').style.top=(((ev.clientY + scrollY)-220))+'px'
+  document.getElementById('RecentViewEpisodePlayCard').style.display='block'
+  document.getElementById('RecentViewEpisodePlayCardBack').style.display='block'
+  var bgmID = store.get("WorkSaveNo"+MediaID+".bgmID");
+  var bgmEP = TempCounter;
+  // *EP信息获取
+  $.getJSON("https://api.bgm.tv/v0/episodes?subject_id="+bgmID.toString(), function(data1){
+    for(var EPTemper=0;EPTemper!=data1.data.length;EPTemper++){
+      if(data1.data[EPTemper].hasOwnProperty("ep")&&data1.data[EPTemper].ep==bgmEP) 
+      {$.getJSON("https://api.bgm.tv/v0/episodes/"+data1.data[EPTemper].id, function(data2){
+        document.getElementById("RecentViewPlayEPInfo").innerText="ep"+data2.ep+": "+data2.name;document.getElementById("RecentViewPlayEPInfo").title="ep"+data2.ep+": "+data2.name;
+        document.getElementById("RecentViewPlayEPInfoCN").innerText="中文标题: "+data2.name_cn;document.getElementById("RecentViewPlayEPInfoCN").title="中文标题: "+data2.name_cn;
+        document.getElementById("RecentViewPlayEPInfoLength").innerText="时长: "+data2.duration;
+      }).fail(function() {document.getElementById("RecentViewPlayEPInfo").innerText="ep"+bgmEP});break;}
+      else{document.getElementById("RecentViewPlayEPInfo").innerText="ep"+bgmEP;}
+    }}).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); }); // *错误回调
+  document.getElementById('RecentViewEpisodePlayCard').innerHTML="<div style='left: 12px;top: 6px;position:absolute'>设置状态</div><div id='RecentViewEpisodePlayCardProgressWatched' class='RecentViewEpisodePlayCardProgressBtn' style='left:10px;border-top-right-radius: 0;border-bottom-right-radius: 0px;' onclick='store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition\",\"Watched\");"+
+  /*点击标注看过*/"document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"rgb(240 145 153)\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px rgb(240 145 153)\"'>看过</div>"+
+  /*点击标注看到此ep*/"<div id='RecentViewEpisodePlayCardProgressWatchedTill' class='RecentViewEpisodePlayCardProgressBtn' style='left: 64px;border-radius: 0px;border-left-width:0px;border-right-width:0px' onclick='for(var Tempj=1;Tempj<="+TempCounter+";Tempj++)"+
+  "{store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP\"+Tempj+\".Condition\",\"Watched\");document.getElementById(\"ArchivePageContentDetailsEpisodeNo\"+Tempj).style.boxShadow=\"0px 0px 0px 2px rgb(240 145 153)\"}"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatchedTill\").style.backgroundColor=\"#4897ff\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatchedTill\").style.color=\"#000\"'>看到</div>"+
+  /*点击撤销观看此ep*/"<div class='RecentViewEpisodePlayCardProgressBtn' style='left: 114px;border-top-left-radius: 0;border-bottom-left-radius: 0;' onclick='store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition\",\"Unwatched\");"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"#00000055\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"rgb(172, 172, 172)\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px #ffffff4a\"'>撤销</div>"+
+  
+  "<div class='RecentViewEpisodePlayCardPlay' style='right:10px;top:13px;width:28%;height:31%;border:0px solid' onclick='ArchiveMediaDetailsEpInfoPlayer("+MediaID+","+TempCounter+");'>"+
+  "<div style='width: 105%;height: 100%;position: absolute;background:url(./assets/play.svg) no-repeat center;background-size: contain;'></div>"+
+  "<div class='rolledEpisodePlayCard'></div></div><div style='position:absolute;left:10px;right:10px;height:2px;top:77px;border-radius:5px;background:#ffffff1f'></div>"+
+  "<div id='RecentViewPlayEPInfo' style='position:absolute;left:15px;right:15px;bottom:10px;top:90px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
+  "<div id='RecentViewPlayEPInfoCN' style='position:absolute;left:15px;right:15px;bottom:10px;top:115px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
+  "<div id='RecentViewPlayEPInfoLength' style='position:absolute;left:15px;right:15px;bottom:10px;top:140px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"
+  //检测看过，自动高亮
+  if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition")=='Watched'){document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.backgroundColor="rgb(240 145 153)";document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.color="#000"}
+}
+
+//! 媒体库-作品详情页章节选择并播放
+function ArchiveMediaDetailsEpInfoPlayer(MediaID,TempCounter){
+  console.log(MediaID,TempCounter)
   if(store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL")){
     var EPOpenURL = store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL");
     process.noAsar = true; //临时禁用fs对ASAR读取

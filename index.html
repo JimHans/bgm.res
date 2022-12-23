@@ -92,14 +92,30 @@
                 </div>
             </div> <!-- *作品新增页 -->
             <div id="ArchivePageContentDetails" class="ArchivePageContentDetails">
-                <div id="ArchivePageContentDetailsBlur" style="position:absolute;width: 120%;height:250%;top:-10%;left:-10%;backface-visibility: hidden;transform-style: preserve-3d;transition: all 0.7s;z-index: 0;"></div> <!--高斯模糊蒙版-->
-                <div id="ArchivePageContentDetailsTitleBlock" style="position:absolute;width: 100%;height:45%;top:0;"></div> <!--作品表头-->
+                <div id="ArchivePageContentDetailsBlur" style="position:absolute;width: 120%;height:200%;top:-10%;left:-10%;backface-visibility: hidden;transform-style: preserve-3d;transition: all 0.7s;z-index: 0;padding:50px"></div> <!--高斯模糊蒙版-->
+                <div id="ArchivePageContentDetailsTitleBlock" style="position:relative;width: 100%;height:45%;top:0;"></div> <!--作品表头-->
                 <!--作品简介-->
-                <div class="RecentViewDetail" style="position:absolute;width: 76%;height:30%;top:45%;left:18%;right:4%;bottom:auto;margin-top: 4%;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);">
-                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>简介</div><div id="ArchivePageContentDetailsDetailsBlock"></div></div> 
+                <div class="RecentViewDetail" style="position:relative;width: 76%;height:auto;margin-top:6%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:45%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;margin-bottom: 20px;'>简介</div><div id="ArchivePageContentDetailsDetailsBlock" style="margin:10px"></div></div> 
                 <!--作品章节-->
-                <div class="RecentViewDetail" style="position:absolute;width: 76%;height:30%;top:84%;left:18%;right:4%;bottom:auto;margin-top: 4%;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);">
-                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>章节</div><div id="ArchivePageContentDetailsEpisodeBlock" style="position:absolute;width:100%;"></div></div> 
+                <div id='ArchivePageContentDetailsEpisodeBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;height:40%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;"> <!--top:84%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height:auto'>章节</div><div id="ArchivePageContentDetailsEpisodeBlock" style="position:relative;width:100%;margin-top:20px;"></div>
+                    <div style="position:absolute;height:12%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #000000b3)">
+                    <svg id='ArchivePageContentDetailsEpisodeBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 3%;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsEpisodeBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
+                </div> 
+                <!--作品标签-->
+                <div class="RecentViewDetail" style="position:relative;width: 76%;height:auto;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:84%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>标签</div><div id="ArchivePageContentDetailsTagBlock" style="position:relative;width:100%;margin-top: 15px;"></div></div> 
+                <!--作品STAFF-->
+                <div id='ArchivePageContentDetailsStaffBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;height:40%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;"> <!--top:84%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height: auto;'>详情</div><div id="ArchivePageContentDetailsStaffBlock" style="position:relative;width:100%;margin-top:20px;"></div> 
+                    <div style="position:absolute;height:12%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #000000b3)">
+                    <svg id='ArchivePageContentDetailsStaffBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 3%;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsStaffBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
+                </div>
+                <!--作品角色-->
+                <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 76%;height:38%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:5%;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:84%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>角色</div><div id="ArchivePageContentDetailsCharacterBlock" style="position:absolute;width:100%;"></div></div> 
+                <div class="RecentViewEpisodePlayCard" id="RecentViewEpisodePlayCard"></div><div class="RecentViewEpisodePlayCardBack" id="RecentViewEpisodePlayCardBack" onclick="document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';"></div>
             </div><!-- *作品详情页 -->
         </div>
         <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
@@ -142,12 +158,43 @@
         <!--  TODO 左上角关闭次级页面按钮  -->
         <div id="GoBackPage" class="boxBlank" style="width: 10%;left: 4%;top:30px;height: 0px;border-radius: 0 0 15px 15px;background-color: rgba(0, 0, 0, 0.507);display:none;transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1)">
             <a  class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;left:0%;width:100%;text-align: center;transition: 0.15s linear;border-radius: 0 0 15px 15px;"title="后退" 
-            onclick=" document.getElementById('ArchivePageContentDetails').style.marginLeft = '100%';document.getElementById('GoBackPage').style.height = '0px';setTimeout(function() {document.getElementById('ArchivePageContentDetails').style.display = 'none';document.getElementById('GoBackPage').style.display = 'none';},700);">
+            onclick=" document.getElementById('ArchivePageContentDetails').style.marginLeft = '100%';document.getElementById('GoBackPage').style.height = '0px';setTimeout(function() {document.getElementById('ArchivePageContentDetails').style.display = 'none';document.getElementById('GoBackPage').style.display = 'none';},700);document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';">
             <svg t="1664978372617" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6697" width="50%" height="100%"><path d="M143 462h800c27.6 0 50 22.4 50 50s-22.4 50-50 50H143c-27.6 0-50-22.4-50-50s22.4-50 50-50z" p-id="6698" fill="#ffffff"></path><path d="M116.4 483.3l212.1 212.1c19.5 19.5 19.5 51.2 0 70.7s-51.2 19.5-70.7 0L45.6 554c-19.5-19.5-19.5-51.2 0-70.7 19.6-19.6 51.2-19.6 70.8 0z" p-id="6699" fill="#ffffff"></path><path d="M328.5 328.6L116.4 540.7c-19.5 19.5-51.2 19.5-70.7 0s-19.5-51.2 0-70.7l212.1-212.1c19.5-19.5 51.2-19.5 70.7 0s19.5 51.2 0 70.7z" p-id="6700" fill="#ffffff"></path></svg></a>
         </div>
     </div>
 </body>
 
 <script src="./renderer.js"></script>
+<!-- 作品详情章节点击展开/收起 -->
+<script>
+    var ArchivePageContentDetailsEpisodeBlockUnfoldCounter = 0;
+    function ArchivePageContentDetailsEpisodeBlockUnfoldFunc(){
+        if(ArchivePageContentDetailsEpisodeBlockUnfoldCounter%2==0){
+        document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.height='auto';
+        document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='5%';
+        document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(180deg)';
+        document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+65).toString()+'%';}
+        else {
+            document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.height='40%';
+            document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='1.1%';
+            document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(0deg)';
+            document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+55).toString()+'%';}
+        ArchivePageContentDetailsEpisodeBlockUnfoldCounter+=1;
+    }
+    var ArchivePageContentDetailsStaffBlockUnfoldCounter = 0;
+    function ArchivePageContentDetailsStaffBlockUnfoldFunc(){
+        if(ArchivePageContentDetailsStaffBlockUnfoldCounter%2==0){
+        document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='auto';
+        document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='5%';
+        document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(180deg)';
+        document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+65).toString()+'%';}
+        else {
+            document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='40%';
+            document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='1.1%';
+            document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(0deg)';
+            document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+55).toString()+'%';}
+        ArchivePageContentDetailsStaffBlockUnfoldCounter+=1;
+    }
+</script>
 
 </html>
