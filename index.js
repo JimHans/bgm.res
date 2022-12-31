@@ -33,12 +33,13 @@ function createWindow () {
       maximizable: true,
       minimizable: true,
       resizable: true,           //窗口可调节大小
-      icon: './assets/app.ico',
+      icon: path.join(__dirname, './assets/app.ico'),
       webPreferences: {
         devTools: true,
         nodeIntegration: true,
         enableRemoteModule: true,
         contextIsolation: false,
+        webviewTag: true,
         zoomFactor: 1,
         preload: path.join(__dirname, 'preload.js')
       }
@@ -160,5 +161,16 @@ app.on('activate', () => {
   }
 })
 
+//设置任务栏快速任务
+app.setUserTasks([
+  {
+    program: process.execPath,
+    arguments: '--new-window',
+    iconPath: path.join(__dirname, './assets/app.ico'),
+    iconIndex: 0,
+    title: '打开媒体库',
+    description: '新建一个BGM.res窗口'
+  }
+])
 // 您可以把应用程序其他的流程写在在此文件中
 // 代码也可以拆分成几个文件，然后用 require 导入。

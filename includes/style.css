@@ -111,7 +111,7 @@
     height: 100%;
     background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0)0, rgba(255, 255, 255, .2)50%, rgba(255, 255, 255, 0)100%);
     transform: skewX(-35deg);
-    animation: rolled 6s .2s ease both infinite;
+    animation: rolled 5s .2s ease both infinite;
     overflow: hidden;
 }
 @keyframes rolled {
@@ -612,7 +612,16 @@ user-select: none;
     white-space:nowrap; 
     /* font-size:1vw; */
 }
-
+.ArchiveCardProgressShower{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    position: absolute;
+    top:0%;
+    width: 0%;  
+    left:0%;
+    height:8px;
+    background-color: rgba(240, 145, 153 ,0.8);
+}
 /* ?作品id设置CSS开始 */
 .ArchivePageContentSettings {
     display: none; /* 默认隐藏 */
@@ -707,6 +716,33 @@ user-select: none;
     position:absolute;
     bottom:0;  
     border-radius:5px;
+}
+.ArchiveCardCharacterHover{
+    width:auto;
+    height:8vw;
+    padding:0px;
+    text-align:right;
+    display:flex;
+    /* justify-content:center; */
+    align-items:center;
+    box-shadow:0px 0px 0px 2px #ffffff4a;
+    background-color:#ffffff0a;
+    border-radius:8px;
+    margin:1.7%;
+    position:relative;
+    float: left;
+    backdrop-filter: blur(60px);
+    transform: scale(1);
+    transition: 0.3s cubic-bezier(0,0,0.2,1);
+    flex:auto;
+}
+.ArchiveCardCharacterHover:hover {
+    transform: translate3d(1%, 1%, 0) scale(1.05);
+    transition: 0.3s cubic-bezier(0,0,0.2,1);
+}
+.ArchiveCardCharacterHover:hover:after {
+    transform: scale(1);
+    transition: 0.3s cubic-bezier(0,0,0.2,1);
 }
 /*ArchivePageContentDetails滚动条样式*/
 .ArchivePageContentDetails::-webkit-scrollbar {
@@ -835,6 +871,27 @@ user-select: none;
 }
 /* ! 媒体库页CSS结束 */
 
+/* *qBittorrnet页CSS开始-默认隐藏 */
+.TorrnetPage{
+    color:aliceblue;
+    font-family: bgmUI;
+    font-size: 2vmin;
+    border-radius:15px;
+    position: absolute;
+    top: 45px;
+    left: 16%;
+    right:1%;
+    bottom:2%;
+    background-color: #00000058;
+    border:2px solid rgb(66, 66, 66);
+    -webkit-app-region: no-drag;
+    backdrop-filter: blur(30px);
+    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+    overflow-y: auto;
+    z-index: 10;
+    display: none;
+}
+
 /* *设置页CSS开始-默认隐藏 */
 .SettingsPage{
     color:aliceblue;
@@ -848,6 +905,19 @@ user-select: none;
     display: none;
     animation: wrapper-gradient 2s linear;
     overflow-y: auto;
+}
+.SettingsPage::-webkit-scrollbar {
+    width: 4px;    
+}
+.SettingsPage::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(141, 140, 140, 0.2);
+    background: rgba(196, 196, 196, 0.621);
+}
+.SettingsPage::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0px;
+    background: rgba(59, 59, 59, 0.744);
 }
 /* 保存按钮(绿色)*/
 .SaverButton{

@@ -21,6 +21,7 @@
     <div class="container">
         <div class="TitleBar"> <!--*标题栏-->
             <img src="./assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+            <img src="./assets/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
             <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;">BGM.res</a>
             <!-- <div class="cross" onclick="Closer()"></div>
             <div class="hider" onclick="Hider()"></div> 不需要的自定义container-->
@@ -100,7 +101,7 @@
                 <!--作品章节-->
                 <div id='ArchivePageContentDetailsEpisodeBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;height:40%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;"> <!--top:84%;-->
                     <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height:auto'>章节</div><div id="ArchivePageContentDetailsEpisodeBlock" style="position:relative;width:100%;margin-top:20px;"></div>
-                    <div style="position:absolute;height:12%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #000000b3)">
+                    <div id="ArchivePageContentDetailsEpisodeBlockUnfoldContainer" style="position:absolute;height:20%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #00000098);transition: all .5s ease;">
                     <svg id='ArchivePageContentDetailsEpisodeBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 3%;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsEpisodeBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
                 </div> 
                 <!--作品标签-->
@@ -109,19 +110,36 @@
                 <!--作品STAFF-->
                 <div id='ArchivePageContentDetailsStaffBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;height:40%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;"> <!--top:84%;-->
                     <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height: auto;'>详情</div><div id="ArchivePageContentDetailsStaffBlock" style="position:relative;width:100%;margin-top:20px;"></div> 
-                    <div style="position:absolute;height:12%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #000000b3)">
+                    <div id="ArchivePageContentDetailsStaffBlockUnfoldContainer" style="position:absolute;height:20%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #00000098);transition: background .5s ease;">
                     <svg id='ArchivePageContentDetailsStaffBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 3%;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsStaffBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
                 </div>
                 <!--作品角色-->
-                <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 76%;height:38%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:5%;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:84%;-->
-                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;'>角色</div><div id="ArchivePageContentDetailsCharacterBlock" style="position:absolute;width:100%;"></div></div> 
+                <div class="RecentViewDetail" style="position:relative;width: 76%;height:60%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:5%;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:84%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height: auto;'>角色</div><div id="ArchivePageContentDetailsCharacterBlock" style="position:relative;width:auto;height:auto;margin-top:20px;display:flex;flex-wrap: wrap;"></div>
+                </div> 
+                <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 76%;height:1%;margin-top:3%;left:18%;right:4%;bottom:auto;padding: 0%;-webkit-app-region:unset;backdrop-filter: blur(0px);background-color: rgba(0, 0, 0, 0);"> <!--top:84%;--></div>
+                <!--作品播放卡片-->
                 <div class="RecentViewEpisodePlayCard" id="RecentViewEpisodePlayCard"></div><div class="RecentViewEpisodePlayCardBack" id="RecentViewEpisodePlayCardBack" onclick="document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';"></div>
             </div><!-- *作品详情页 -->
         </div>
         <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
+            <script>
+                if(localStorage.getItem('LocalStorageqBittorrnetURL')){
+                    document.getElementById('TorrnetPage').innerHTML="<webview id='qbitwebview' src='"+localStorage.getItem('LocalStorageqBittorrnetURL')+"' style='width: 100%;height: 100%'></webview> "
+                    const webview =document.getElementById('qbitwebview')
+                    
+                    webview.addEventListener('did-stop-loading', () => { 
+                        if(webview.getTitle()!='qBittorrent Web UI') {document.getElementById('TorrnetPage').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbitdisconnect.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
+                        "<div style='position:absolute;left: 10%;right: 10%;top: 55%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size: 4vmin;text-align: center;'>很抱歉，qBittorrnet Web UI暂时不可达</div>"+
+                        "<div style='position:absolute;left: 10%;right: 10%;top: 65%;bottom:20%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.3);font-size: 3vmin;text-align: center;'>请检查您的网络是否连接正常，或者是否填写了不正确的URL</div>"}
+                    })
+                } else {document.getElementById('TorrnetPage').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbittorrnet.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
+                "<div style='position:absolute;left: 10%;right: 10%;top: 55%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size: 4vmin;text-align: center;'>使用qBittorrnet Web UI 管理您的媒体库</div>"+
+                "<div style='position:absolute;left: 10%;right: 10%;top: 65%;bottom:20%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.3);font-size: 3vmin;text-align: center;'>在设置内填写您的Web UI地址(URL)，立即开始使用吧</div>"}
+            </script>
         </div>
         <div id="SettingsPage" class="SettingsPage"> <!--*设置页 -->
-            <div class="Cover"></div>
+            <div class="Cover" style="height:130%"></div>
             <div class="RecentViewName" style="left:20%;top:6%;font-size: 4vw;">🛠️设置页</div>
             <div style="position:absolute;z-index:12;left:20%;top:21%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟继续观看影片ID:</div>
             <div class="boxBlank" style="top: 20%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
@@ -139,8 +157,12 @@
             <div class="boxBlank" style="top: 80%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *媒体库URL -->
                 <input type="text" id="LocalStorageMediaBaseURL" autocomplete="off" class="TspInput" placeholder="请输入需要扫描的媒体库路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageMediaBaseURL')">
             </div>
+            <div style="position:absolute;z-index:12;left:20%;top:101%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟qBittorrnet远程路径:</div>
+            <div class="boxBlank" style="top: 100%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *qBittorrnetURL -->
+                <input type="text" id="LocalStorageqBittorrnetURL" autocomplete="off" class="TspInput" placeholder="请输入qBittorrnet远程面板路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageqBittorrnetURL')">
+            </div>
 
-            <div style="bottom:1%;right:1%;position: absolute;text-align: center;z-index: 100;"> <!-- *版本信息 -->
+            <div style="bottom:1%;right:1%;position: fixed;text-align: center;z-index: 100;"> <!-- *版本信息 -->
                 Node.js <span id="node-version"></span>
                 , Chromium <span id="chrome-version"></span>
                 , Electron <span id="electron-version"></span>
@@ -170,15 +192,19 @@
     var ArchivePageContentDetailsEpisodeBlockUnfoldCounter = 0;
     function ArchivePageContentDetailsEpisodeBlockUnfoldFunc(){
         if(ArchivePageContentDetailsEpisodeBlockUnfoldCounter%2==0){
+            document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.height='0px';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.height='auto';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='5%';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(180deg)';
-        document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+65).toString()+'%';}
+        document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000000)';
+        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';}, 300);    }
         else {
             document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.height='40%';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='1.1%';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(0deg)';
-            document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+55).toString()+'%';}
+            document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000098)';
+            document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.height='20%';
+            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';}, 300);    }
         ArchivePageContentDetailsEpisodeBlockUnfoldCounter+=1;
     }
     var ArchivePageContentDetailsStaffBlockUnfoldCounter = 0;
@@ -187,12 +213,14 @@
         document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='auto';
         document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='5%';
         document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(180deg)';
-        document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+65).toString()+'%';}
+        document.getElementById('ArchivePageContentDetailsStaffBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000000)';
+        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 500);    }
         else {
             document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='40%';
             document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='1.1%';
             document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(0deg)';
-            document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+55).toString()+'%';}
+            document.getElementById('ArchivePageContentDetailsStaffBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000098)';
+            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 500);    }
         ArchivePageContentDetailsStaffBlockUnfoldCounter+=1;
     }
 </script>

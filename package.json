@@ -1,7 +1,7 @@
 {
   "name": "bgm.res",
   "title": "BGM.res",
-  "version": "0.9.0",
+  "version": "0.10.0.2023",
   "description": "BGM.res-A local bangumi manager",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "build": {
     "productName": "bgm.res",
     "appId": "com.Zerolite.bgm-res",
-    "copyright": "2022 Zerolite Studio All Rights Reserved.",
+    "copyright": "2023 Zerolite Studio All Rights Reserved.",
     "asar": true,
     "extraResources": [
       {
