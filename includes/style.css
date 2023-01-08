@@ -134,6 +134,27 @@
     }
 }
 
+@keyframes wordsLoop { /*文字滚动动画*/
+    0% {
+        transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-300%);
+        -webkit-transform: translateX(-300%);
+    }
+}
+@-webkit-keyframes wordsLoop { /*文字滚动动画*/
+    0% {
+        transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-300%);
+        -webkit-transform: translateX(-300%);
+    }
+}
+
 /* *核心窗体 */
 html {
 height: 100%;
@@ -183,7 +204,8 @@ user-select: none;
     background-size: auto;
     border-radius:15px;
     box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
-    -webkit-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
+    -webkit-box-shadow:0px 0px 7px -1px rgb(25 25 25 / 55%);
+    /* -webkit-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75); */
     -moz-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
     border: #CBCBCB;
     top: 21%;
@@ -198,20 +220,26 @@ user-select: none;
     position:absolute;
     background-color: rgba(0, 0, 0, 0);
     border-radius:10px;
+    transform: scale(1);
     /* border: 2px solid rgb(66, 66, 66);  */
     box-shadow: 0px 0px 10px -1px #3a3a3abf;
-    -webkit-box-shadow: 0px 0px 10px -1px #3a3a3abf;
+    -webkit-box-shadow: 0px 0px 0px 1px #3a3a3abf;
+    /* -webkit-box-shadow: 0px 0px 10px -1px #3a3a3abf; */
     -moz-box-shadow: 0px 0px 10px -1px #3a3a3abf;
     left: 15%;
     right:15%;
     -webkit-app-region: no-drag;
-    transition: background-color .25s;
+    transition: all .25s ease;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .BarBrick:hover {
     background-color: rgba(93, 93, 93, 0.397);
+}
+.BarBrick:active {
+    transform: scale(0.9);
+    transition: all .2s ease-out;
 }
 .BarBrick::after {
     content: '';
@@ -431,6 +459,7 @@ user-select: none;
     backdrop-filter: blur(30px);
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
     overflow-y: auto;
+    content-visibility: auto;
 }
 /*ArchivePageContent滚动条样式*/
 .ArchivePageContent::-webkit-scrollbar {
@@ -540,26 +569,33 @@ user-select: none;
 	transform: scaleX(1);
 }
 /* ?线性搜索框CSS结束 */
-.ArchiveCardHover{
+.ArchiveCardHover{/*不透明加个屁的高斯模糊，卡死活该*/
     background-color: rgba(0, 0, 0, 0.8);
     border-radius:8px;
-    height: 40%;
-    margin:2%;
-    width:16%;
+    /* height: 40%; */
+    height: 100%;
+    font-size: 17px;
+    /* margin:2%; */
+    /* width:16%; */
+    width:100%;
     position:relative;
     float: left;
     box-shadow:0 0 8px rgba(0, 0, 0, 0.664);
-    backdrop-filter: blur(30px);
+    /* backdrop-filter: blur(30px); 不透明加个屁的高斯模糊，卡死活该*/
     transform: scale(1);
-    transition: 0.3s cubic-bezier(0,0,0.2,1);
+    transition: transform 0.3s cubic-bezier(0,0,0.2,1);
 }
 .ArchiveCardHover:hover {
-    transform: translate3d(1%, 1%, 0) scale(1.2);
-    transition: 0.3s cubic-bezier(0,0,0.2,1);
+    transform: translateY(-2%) scale(1.1);
+    transition: transform 0.3s cubic-bezier(0,0,0.2,1);
 }
 .ArchiveCardHover:hover:after {
     transform: scale(1);
-    transition: 0.3s cubic-bezier(0,0,0.2,1);
+    transition: transform 0.3s cubic-bezier(0,0,0.2,1);
+}
+.ArchiveCardHover:active {
+    transform: scale(1);
+    transition: transform 0.3s cubic-bezier(0,0,0.2,1);
 }
 .ArchiveCardThumb{
     opacity: 0.9;
@@ -577,7 +613,7 @@ user-select: none;
     text-align: left;
     color: rgba(255, 255, 255, 0.79);
     font-family: bgmUIHeavy;
-    font-size: 2vmin;
+    /* font-size: 2vmin; */font-size: 19px;
     position: absolute;
     bottom:30%;
     width: 92%;
@@ -636,7 +672,7 @@ user-select: none;
     border-radius: 0px;
     background-color: rgb(0,0,0); 
     background-color: rgba(0,0,0,0.4);
-    animation: wrapper-gradient 2s linear;
+    /* animation: wrapper-gradient 2s linear; */
 }
 /* 弹窗内容 */
 .ArchivePageContentSettingsContent {
@@ -732,16 +768,21 @@ user-select: none;
     position:relative;
     float: left;
     backdrop-filter: blur(60px);
-    transform: scale(1);
     transition: 0.3s cubic-bezier(0,0,0.2,1);
     flex:auto;
 }
 .ArchiveCardCharacterHover:hover {
     transform: translate3d(1%, 1%, 0) scale(1.05);
+    color:#333;
+    background-color: #eeeeeeb0;
     transition: 0.3s cubic-bezier(0,0,0.2,1);
 }
 .ArchiveCardCharacterHover:hover:after {
     transform: scale(1);
+    transition: 0.3s cubic-bezier(0,0,0.2,1);
+}
+.ArchiveCardCharacterHover:active {
+    transform: scale(0.95);
     transition: 0.3s cubic-bezier(0,0,0.2,1);
 }
 /*ArchivePageContentDetails滚动条样式*/
@@ -774,12 +815,90 @@ user-select: none;
     color:#333;
     background-color: #eeeeeeb0;
 }
+.ArchivePageContentTag:active {
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0,0,0.2,1);
+}
+/* 作品角色信息样式 */
+.ArchivePageContentDetailsCharacterContainer{
+    font-family: bgmUI;
+    font-size: 3vmin;
+    color:rgb(172, 172, 172);
+    border-radius:15px;
+    z-index: 100;
+    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+    transition: transform .5s ease;
+    /* overflow: hidden; */
+    position:relative;
+    width: 76%;
+    height:auto;
+    margin-top:3%;
+    left:18%;
+    right:4%;
+    bottom:auto;
+    margin-bottom:3%;
+    padding: 1.1%;
+    -webkit-app-region:unset;
+    backdrop-filter: blur(50px);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+/*ArchivePageContentDetailsCharacterContainer滚动条样式*/
+/* .ArchivePageContentDetailsCharacterContainer::-webkit-scrollbar {
+    width: 4px;    
+}
+.ArchivePageContentDetailsCharacterContainer::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(141, 140, 140, 0.2);
+    background: rgba(196, 196, 196, 0.621);
+}
+.ArchivePageContentDetailsCharacterContainer::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0px;
+    background: rgba(59, 59, 59, 0.744);
+} */
+.ArchivePageContentDetailsCharacterBlock{
+    position:relative;
+    width:auto;
+    height:auto;
+    margin-top:20px;
+    display:flex;
+    flex-wrap: wrap;
+}
+.ArchivePageContentLastCardToTop{
+    position: absolute;
+    left:0%;
+    top:0%;
+    width:100%;
+    height:100%;
+    color:#333;
+    background-color: #eceeee;
+    z-index: 12;
+    opacity:0;
+    text-align: center;
+    font-family: bgmUIHeavy;
+    font-size: 3.5vmin;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease;
+    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+}
+.ArchivePageContentLastCardToTop:hover{
+    opacity:1;
+    transition: opacity .3s ease;
+}
+.ArchivePageContentLastCardToTop:active{
+    background-color: #cccccc;
+    transition: background-color .3s ease;
+}
+
 /* 媒体库播放卡片 */
 .RecentViewEpisodePlayCard{
     position:absolute;
     z-index: 150;
     width:260px;
-    height:170px;
+    height:230px;
     border-radius: 10px;
     border: 2px solid #ffffff1f;
     color: rgb(172, 172, 172);
@@ -844,15 +963,16 @@ user-select: none;
     transition: 0s;
 }
 .RecentViewEpisodePlayCardProgressBtn{
-    top: 36px;
+    top: 152px;
     width: 50px;
-    height: 15%;
+    height: 13%;
     border: 2px solid #ffffff00;
     position: absolute;
     border-radius: 7px;
     text-align: center;
     transition: all .3s ease;
     background-color: #00000055;
+    line-height: 28.6px;
 }
 .RecentViewEpisodePlayCardProgressBtn:hover{
     color:#333;
@@ -904,8 +1024,26 @@ user-select: none;
     z-index: 10;
     display: none;
     animation: wrapper-gradient 2s linear;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
+/* .SettingsPageContainer{
+    color:aliceblue;
+    font-family: bgmUI;
+    font-size: 2vmin;
+    border-radius:15px;
+    position: absolute;
+    top: 3%;
+    left: 16%;
+    right:1%;
+    bottom:2%;
+    background-color: #00000058;
+    border:2px solid rgb(66, 66, 66);
+    -webkit-app-region: no-drag;
+    backdrop-filter: blur(30px);
+    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+    overflow-y: auto;
+    z-index: 10;
+} */
 .SettingsPage::-webkit-scrollbar {
     width: 4px;    
 }
@@ -945,6 +1083,7 @@ user-select: none;
 .SaverButton:active {
     background-color: #1c614d;
 }
+
 /* *自定义控制区 */
 .TitleBarControls:hover {
     background-color: rgba(148, 148, 148, 0.397);
@@ -977,6 +1116,7 @@ background-color: black;
 }
 table { border-collapse: collapse; }
 table, th, td { border: 1px solid black; }
+
 /* *成功、失败横幅提示 */
 .SystemStreamer {
     z-index: 12;

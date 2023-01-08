@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <html>
 <head>
-    <link rel="stylesheet" href="./includes/style.css">
+    <link rel="stylesheet" href="./includes/style.css"> <!--主界面样式表-->
+    <link rel="stylesheet" href="./includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表(设置界面)-->
     <meta charset="UTF-8">
     <title>BGM.res</title>
     <style>
@@ -76,10 +77,15 @@
                     <span>请输入搜索内容</span>
                 </div>
                 <div id="ArchivePageAdd" class="ArchivePageButton" style="right: 20%;width:15%;height:auto" onclick="LocalWorkManualAddAndSave('Add');">手动添加作品</div>
-                <div id="ArchivePageScan" class="ArchivePageButton" style="right: 5%;" onclick="LocalWorkScan();">扫描作品</div>
+                <div id="ArchivePageScan" class="ArchivePageButton" style="right: 5%;border-top-right-radius: 0;border-bottom-right-radius: 0;" onclick="LocalWorkScanModify();">扫描改动</div>
+                <div id="ArchivePageScanExtMenu" class="ArchivePageButton" style="right: 2.9%;width:2%;border-top-left-radius: 0;border-bottom-left-radius: 0;" onclick="ArchivePageScanExtMenuShower();" >
+                    <svg id='ArchivePageScanExtMenuIcon' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;left: 0;right: 0;width:50%;margin:auto;transition: all .6s ease;"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
                 <div id="ArchivePageSum" class="ArchivePageSum">共 -- 部作品</div>
             </div>
-            <div id="ArchivePageContent" class="ArchivePageContent"></div> <!-- *作品列表 -->
+            <!--媒体库header扩展菜单-->
+            <div id="ArchivePageFullScan" class="ArchivePageButton" style="animation: wrapper-gradient .3s cubic-bezier(0,0,0.2,1);right: 4.4%;top: 12%;bottom: auto;height:5%;width: 11.23%;border-top-right-radius: 0;border-top-left-radius: 0;display:none;z-index:50;line-height: 250%;" onclick="LocalWorkScan();">全局扫描</div>
+            
+            <div id="ArchivePageContent" class="ArchivePageContent" style="display: grid;grid-gap: 35px;grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));grid-auto-rows: 290px;grid-auto-flow: dense;row-gap: 40px;padding: 30px;"></div> <!-- *作品列表 -->
             <div id="ArchivePageContentSettings" class="ArchivePageContentSettings">
                 <div class="ArchivePageContentSettingsContent">
                 <div class="ArchivePageContentSettingsHeader"><span class="ArchivePageContentSettingsClose" onclick="document.getElementById('ArchivePageContentSettings').style.display='none'">&times;</span> 作品详情设置</div>
@@ -100,7 +106,9 @@
                     <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;margin-bottom: 20px;'>简介</div><div id="ArchivePageContentDetailsDetailsBlock" style="margin:10px"></div></div> 
                 <!--作品章节-->
                 <div id='ArchivePageContentDetailsEpisodeBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;height:40%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;"> <!--top:84%;-->
-                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height:auto'>章节</div><div id="ArchivePageContentDetailsEpisodeBlock" style="position:relative;width:100%;margin-top:20px;"></div>
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height:auto'>章节</div>
+                    <!-- <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height:auto'>本篇</div> -->
+                    <div id="ArchivePageContentDetailsEpisodeBlock" style="position:relative;width:auto;margin-top:20px;display: grid;grid-gap: 25px;grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));grid-auto-rows: 55px;grid-auto-flow: dense;row-gap: 30px;padding: 20px;"></div>
                     <div id="ArchivePageContentDetailsEpisodeBlockUnfoldContainer" style="position:absolute;height:20%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #00000098);transition: all .5s ease;">
                     <svg id='ArchivePageContentDetailsEpisodeBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 3%;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsEpisodeBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
                 </div> 
@@ -114,10 +122,14 @@
                     <svg id='ArchivePageContentDetailsStaffBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 3%;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsStaffBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
                 </div>
                 <!--作品角色-->
-                <div class="RecentViewDetail" style="position:relative;width: 76%;height:60%;margin-top:3%;left:18%;right:4%;bottom:auto;margin-bottom:5%;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:84%;-->
-                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height: auto;'>角色</div><div id="ArchivePageContentDetailsCharacterBlock" style="position:relative;width:auto;height:auto;margin-top:20px;display:flex;flex-wrap: wrap;"></div>
+                <div class="ArchivePageContentDetailsCharacterContainer"> <!--top:84%;-->
+                    <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height: auto;'>角色</div><div id="ArchivePageContentDetailsCharacterBlock" class="ArchivePageContentDetailsCharacterBlock"></div>
                 </div> 
-                <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 76%;height:1%;margin-top:3%;left:18%;right:4%;bottom:auto;padding: 0%;-webkit-app-region:unset;backdrop-filter: blur(0px);background-color: rgba(0, 0, 0, 0);"> <!--top:84%;--></div>
+                <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 78%;height:65px;margin-top:1%;left:18%;right:4%;bottom:auto;margin-bottom:3%;padding: 0%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;border:2px solid #ffffff1f" onclick="document.getElementById('ArchivePageContentDetails').scrollTop = 0;" title="点击可以回顶部哦"> <!--top:84%;-->
+                    <div id='ArchivePageContentLastCardHitokoto' class='RecentViewName' style='top:10px;font-size:20px;left: 1%;position: relative;height: auto;'>已经到底部啦~</div>
+                    <div id='ArchivePageContentLastCardHitokotoFrom' class='RecentViewName' style='bottom:8px;right:10px;font-size:15px;position: absolute;text-align: right;top:unset'></div>
+                    <div id='ArchivePageContentLastCardToTop' class='ArchivePageContentLastCardToTop'>↑ 回顶部 ↑</div>
+                </div>
                 <!--作品播放卡片-->
                 <div class="RecentViewEpisodePlayCard" id="RecentViewEpisodePlayCard"></div><div class="RecentViewEpisodePlayCardBack" id="RecentViewEpisodePlayCardBack" onclick="document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';"></div>
             </div><!-- *作品详情页 -->
@@ -139,7 +151,118 @@
             </script>
         </div>
         <div id="SettingsPage" class="SettingsPage"> <!--*设置页 -->
-            <div class="Cover" style="height:130%"></div>
+            <div class="Winui3setTab" id="SettingsPageSetTab"> <!--设置tab-->
+                <h3 style="position:absolute;margin-left:15px;font-size:25px;line-height:60px;margin-top:0">设置</h3>
+                <div class="Winui3setTabBrickHighlight" id="SettingsPageSetTabHighLight" style="right:293px"></div>
+                <div class="Winui3setTabBrick" id="SettingsPageSetTabA" style="right:280px" onclick="SettingsPageSetpageAShower()">
+                    <svg t="1658426400568" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15439" height=55% style='left:5px;'><path d="M682.666667 170.666667l21.333333 42.666666v320h128V213.333333l23.04-42.666666L832 64h-128l-21.333333 106.666667z" fill="#90A4AE" p-id="15440"></path><path d="M768 192c62.506667 0 64-128 64-128h-128s1.706667 128 64 128z" fill="#B0BEC5" p-id="15441"></path><path d="M680.746667 533.333333h174.506666l38.826667 183.253334a81.92 81.92 0 0 1 1.92 17.706666V874.666667a85.333333 85.333333 0 0 1-85.333333 85.333333h-85.333334a85.333333 85.333333 0 0 1-85.333333-85.333333v-140.373334a81.92 81.92 0 0 1 1.92-17.706666z" fill="#40A9FF" p-id="15442"></path><path d="M661.333333 448m21.333334 0l170.666666 0q21.333333 0 21.333334 21.333333l0 42.666667q0 21.333333-21.333334 21.333333l-170.666666 0q-21.333333 0-21.333334-21.333333l0-42.666667q0-21.333333 21.333334-21.333333Z" fill="#5C6BC0" p-id="15443"></path><path d="M234.666667 359.04V832a128 128 0 0 0 256 0V359.04zM362.666667 896a64 64 0 1 1 64-64 64 64 0 0 1-64 64z" fill="#FF9800" p-id="15444"></path><path d="M490.666667 410.666667H234.666667v45.44l256 87.893333v-133.333333z" fill="#EF6C00" p-id="15445"></path><path d="M466.986667 85.333333v209.92h-208.64V85.333333A234.666667 234.666667 0 0 0 128 294.186667 177.92 177.92 0 0 0 277.333333 469.333333a528 528 0 0 0 85.333334 7.253334 528 528 0 0 0 85.333333-7.253334 177.92 177.92 0 0 0 149.333333-175.36A234.666667 234.666667 0 0 0 466.986667 85.333333z" fill="#FF9800" p-id="15446"></path></svg>
+                    &nbsp;&nbsp;&nbsp;&nbsp;通用</div>
+                <div class="Winui3setTabBrick" id="SettingsPageSetTabB" onclick="SettingsPageSetpageBShower()" style="right:175px">
+                    <svg t="1658426137514" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3578" height=55% style='left:5px;'><path d="M114.0736 307.2l-1.4336 0.73728v418.33472L512 942.08V511.20128z" fill="#00000033" p-id="3579"></path><path d="M930.73408 302.72512L521.3184 92.16 128.50176 294.07232l-15.86176 8.2944L521.3184 501.76l4.79232-2.16064L931.84 303.45216v-0.3584l-1.10592-0.36864zM526.11072 499.6096L521.3184 501.76l4.79232-2.16064z" fill="#91D5FF" p-id="3580"></path><path d="M1006.40768 264.31488a68.21888 68.21888 0 0 0-29.04064-30.39232L548.00384 7.68a67.51232 67.51232 0 0 0-62.49472 0L56.50432 232.448a66.44736 66.44736 0 0 0-17.64352 15.74912 73.25696 73.25696 0 0 0-11.02848 14.27456A67.87072 67.87072 0 0 0 20.48 291.76832v439.33696a67.33824 67.33824 0 0 0 36.7616 59.31008l428.99456 224.79872c9.32864 5.29408 19.79392 8.31488 30.5152 8.78592h5.15072a64.53248 64.53248 0 0 0 26.10176-6.9632L976.9984 792.25856A67.33824 67.33824 0 0 0 1013.76 732.93824V291.76832a64.23552 64.23552 0 0 0-7.35232-27.45344z m-80.50688 39.90528l-404.3776 199.168-4.77184 2.56v427.25376L107.60192 719.02208V303.85152l15.81056-8.41728L516.75136 89.67168l408.04352 213.8112 1.10592 0.73728z" fill="#40A9FF" p-id="3581"></path></svg>
+                    &nbsp;&nbsp;&nbsp;个性化</div>
+                <div class="Winui3setTabBrick" id="SettingsPageSetTabC" onclick="SettingsPageSetpageCShower()"style="right:70px">
+                    <svg class="icon" height=55% style='left:5px;' viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="856"><path d="M926.48448 781.15328l-272.97792-423.71072V160.03072h25.40544V92.16H350.1824v67.87072h25.43104v197.41184L102.62016 781.1584A97.792 97.792 0 0 0 184.9344 931.84h659.2512a97.76128 97.76128 0 0 0 82.29888-150.68672zM870.46656 848.384a29.33248 29.33248 0 0 1-26.28096 15.58528H184.9344a29.91104 29.91104 0 0 1-25.18016-46.08l283.8016-440.49408V160.03072h142.00832V377.3952l283.81184 440.48896a29.27104 29.27104 0 0 1 1.09056 30.49984z" fill="#5288F5" p-id="857"></path><path d="M652.288 572.63104H376.832v-68.4544h275.456v68.4544z" fill="#F79C42" p-id="858"></path></svg>
+                    &nbsp;&nbsp;&nbsp;实验室</div>
+                <div class="Winui3setTabBrickSmall" id="SettingsPageSetTabInfo" onclick="SettingsPageSetpageInfoShower()"style="right:20px;">
+                    <svg t="1670141928749" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3107" height=55%><path d="M512 1024A512 512 0 1 1 512 0a512 512 0 0 1 0 1024zM448 448v384h128V448H448z m0-256v128h128V192H448z" p-id="3108" id="SettingsPageInfoIcon" style="fill:#bbb"></path></svg>
+                    </div>
+            </div>
+            <div class="Winui3setpage" id="SettingsPageSetpageA">
+                <div class="Winui3setpageINNER">
+                    <div class="Winui3brickContainer" style="background-color:#2b4f6c"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#5fb5fc" p-id="1392" style="--darkreader-inline-fill: #5fb5fc;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">你可以在这里设置一些通用设置项</p></div>
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">📱 媒体库设置</h2>
+                    <div class="Winui3brickContainer">设定媒体库目录<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写你的媒体库目录" required></div>
+                    <div class="Winui3brickContainer">手动重新扫描<button type="button" value="点击扫描" class="Winui3button">点击扫描</button></div>
+                    <div class="Winui3brickContainer">手动更新媒体库信息<button type="button" value="点击刷新" class="Winui3button">点击刷新</button></div>
+                    <div class="Winui3brickContainer">启动后自动更新媒体库<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="showModelSwitch"><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">启动后媒体库自动增量扫描<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="showTextureSwitch"><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer"><div>设定字幕文件夹<br><a class="Winui3brickSubtitle" style="font-size: 13px;">设定后，系统将自动在媒体库显示该文件夹，方便调用字幕</a></div>
+                    <input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写字幕文件夹名称" required></div>
+
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">📱 网络探针</h2>
+                    <div class="Winui3brickContainer"><div>API通路检测<br><a class="Winui3brickSubtitle" style="font-size: 13px;">检测作品信息api源站https://api.bgm.tv/是否联通</a></div><button type="button" value="点击刷新" class="Winui3button">点击检测</button></div>
+                    <div class="Winui3brickContainer"><div style='margin-right:120px;overflow: hidden;text-overflow: ellipsis; white-space:nowrap;'>软件更新通路检测<br><a class="Winui3brickSubtitle" style="font-size: 13px;">检测软件更新api源https://api.github.com/repos/jimhans/bgm.res/releases/latest是否联通</a></div><button type="button" value="点击刷新" class="Winui3button">点击检测</button></div>
+                    
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">📱 qBittorrnet Web UI</h2>
+                    <div class="Winui3brickContainer">设定qBittorrnet Web UI地址<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写qBittorrnet Web UI URL" required></div>
+
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">📱 杂项</h2>
+                    <div class="Winui3brickContainer" style="height: 60px;color: #ff4848;"><div>清除数据<br><a class="Winui3brickSubtitle" style="font-size: 13px;color: #ff4848;"> 清除所有用户数据（谨慎操作！）</a></div>
+                    <button type="button" value="清除数据" onclick="localStorage.clear();" class="Winui3button_red" style="width:120px">清除所有数据</button>
+                    </div>
+                    
+                    <!-- <div class="Winui3box">
+                        <button type="button" value="保存并应用" onclick="submitA();" class="Winui3button">保存并应用</button>
+                    </div> -->
+                </div>
+            </div>
+            <div class="Winui3setpage" id="SettingsPageSetpageB" style="display: none;">
+                <div class="Winui3setpageINNER">
+                    <div class="Winui3brickContainer" style="background-color:#2b4f6c"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#5fb5fc" p-id="1392" style="--darkreader-inline-fill: #5fb5fc;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">你可以在此自定义包括软件界面、媒体库样式等组件的显示方式</p></div>
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">媒体库个性化设置</h2>
+                    <div class="Winui3brickContainer">作品详情启用分数展示<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="modelRandSwitch" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">启用标准差计算<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="textureRandSwitch" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">媒体库卡片显示观看进度<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showHitokoto" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">作品详情启用续集展示<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showWelcome" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">作品详情启用角色展示<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showWelcome" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">作品详情优先展示角色中文名<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showWelcome" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">作品详情展示角色CV<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showWelcome" /><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">作品详情启用翻译(测试)<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showWelcome" /><div class="Winui3slider"></div></label></div>
+                    
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">软件界面个性化设置</h2>
+                    <div class="Winui3brickContainer" style="height: 100px;">
+                        <div id="localBubbleCurrentPath" style="margin:auto 10px;text-align: center;height:80px;width:80px;background-size:cover;border-radius:7px;box-shadow: 0px 0px 5px 0px rgba(45, 45, 45, 0.75);"></div>
+                        <div href="javascript:;" class="button">选择文件<input id="localBubbleSelect" type="file" class="Winui3inputFile" accept="image/*" onchange="javascript:{document.getElementById('fileInfoBubble').innerHTML = document.getElementById('localBubbleSelect').value;}"></div>
+                    </div>
+                    <div class="Winui3brickContainer">当前选定背景<div id="Winui3fileInfoBubble" class="fileInfo" style="border: none;text-overflow:ellipsis">未选定</div></div>
+                    <div class="Winui3brickContainer">软件主题色<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写HEX或RGB/RGBA颜色" required></div>
+                    <div class="Winui3brickContainer">亮色主题<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showWelcome" /><div class="Winui3slider"></div></label></div>
+                    
+                    <!-- <div class="box">
+                        <button type="button" value="保存并应用" onclick="submitB();" class="Winui3button">保存并应用</button>
+                    </div> -->
+
+                </div>
+            </div>
+            <div class="Winui3setpage" id="SettingsPageSetpageC" style="display: none;">
+                <div class="Winui3setpageINNER">
+                    <div class="Winui3brickContainer" style="background-color:#433519"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#fce100" p-id="1392" style="--darkreader-inline-fill: #fce100;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">这里的设置具有实验性</p></div>
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">数据库手动修改</h2>
+                    <div class="Winui3brickContainer">设置继续观看作品bgmID<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写继续观看影片ID(bgmID)" required></div>
+                    <div class="Winui3brickContainer">设置继续观看作品ep<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写继续观看影片ep(集数)" required></div>
+                    <div class="Winui3brickContainer">设置继续观看作品URL<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写继续观看影片URL(本地位置)" required></div>
+                    <div class="Winui3brickContainer">设置继续观看作品下一话URL<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写继续观看影片下一话URL(本地位置)" required></div>
+                    <div class="Winui3brickContainer">设置继续观看作品媒体库ID<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写继续观看影片媒体库ID(媒体库内顺序)" required></div>
+                    <div class="Winui3brickContainer">设置媒体库作品总数<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写媒体库作品总数(含已删除)" required></div>
+                    
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">高级功能</h2>
+                    <div class="Winui3brickContainer">开发人员选项<label class="Winui3switch"><input class="input" type="checkbox" name="checkboxC" value="developerMode"><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer"><div>恢复旧版设置<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式设置界面</a></div><label class="Winui3switch"><input class="input" type="checkbox" name="checkboxC" value="developerMode"><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">自定义媒体库匹配正则表达式<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写适合你媒体库命名规范的匹配表达式" required></div>
+                    <!-- <div class="box">
+                        <button type="button" value="保存并应用" onclick="submitC();" class="btn">保存并应用</button>
+                    </div> -->
+                </div>
+            </div>
+            <div class="Winui3setpage" id="SettingsPageSetpageInfo" style="display: none;">
+                <div class="Winui3setpageINNER">
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">🚀 关于BGM.res</h2>
+                    <!-- *软件版本信息 -->
+                    <div style="text-align: center;margin:20px"><img src="./assets/bgm.res-info.png" alt="App Info" width="330" height="100"></div>
+                    <div class="Winui3brickContainer">当前版本<p id="App-version" class="Winui3brickRightText"></p></div>
+                    <div class="Winui3brickContainer" id="SettingsPageUpdateChecker_if_have_update"><div id="SettingsPageUpdateChecker_update_ver_get" style="position:absolute;left:10px"></div>
+                    <button type="button" value="查看更新" onclick="shell.openExternal('https://github.com/JimHans/bgm.res/releases/latest');" class="Winui3button" id="SettingsPageUpdateChecker_update_button">查看更新</button></div>
+                    <div class="Winui3brickContainer">Build Version<p id="Build-version" class="Winui3brickRightText"></p></div>
+                    <div class="Winui3brickContainer">Designed By<span class="Winui3brickRightText">JimHan @ Zerolite Studio</span></div>
+                    <!-- *框架版本信息 -->
+                    <div class="Winui3brickContainer">Node.js 版本<span id="node-version" class="Winui3brickRightText"></span></div>
+                    <div class="Winui3brickContainer">Electron 框架版本<span id="electron-version" class="Winui3brickRightText"></span></div>
+                    <div class="Winui3brickContainer">Chromium 内核版本<span id="chrome-version" class="Winui3brickRightText"></span></div>
+                    <div class="Winui3brickContainer">v8 引擎版本<span id="v8-version" class="Winui3brickRightText"></span></div>
+                </div>
+            </div>
+
+            <div style="display: none;">
             <div class="RecentViewName" style="left:20%;top:6%;font-size: 4vw;">🛠️设置页</div>
             <div style="position:absolute;z-index:12;left:20%;top:21%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟继续观看影片ID:</div>
             <div class="boxBlank" style="top: 20%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
@@ -162,18 +285,21 @@
                 <input type="text" id="LocalStorageqBittorrnetURL" autocomplete="off" class="TspInput" placeholder="请输入qBittorrnet远程面板路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageqBittorrnetURL')">
             </div>
 
-            <div style="bottom:1%;right:1%;position: fixed;text-align: center;z-index: 100;"> <!-- *版本信息 -->
+            <!-- *版本信息 -->
+            <!-- <div style="bottom:1%;right:1%;position: fixed;text-align: center;z-index: 100;">
                 Node.js <span id="node-version"></span>
                 , Chromium <span id="chrome-version"></span>
                 , Electron <span id="electron-version"></span>
+            </div> -->
             </div>
         </div>
+
         <!--  *成功、失败横幅提示  -->
         <div id="OKStreamer" class="SystemStreamer"></div>
         <div id="MessageStreamer" class="SystemStreamer" style="background-color:#ffffff9a;color:black"></div>
         <div id="ErrorStreamer" class="SystemStreamer" style="background-color:#a4414f;"></div>
         <!--  TODO 左下角底部快捷按钮  -->
-        <div class="boxBlank" style="width: 10%;left: 4%;bottom:0%;height: 45px;border-radius: 15px 15px 0 0;background-color: rgba(0, 0, 0, 0.507);animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);">
+        <div class="boxBlank" style="width: 10%;left: 4%;bottom:0%;height: 45px;border-radius: 15px 15px 0 0;background-color: rgba(0, 0, 0, 0.507);animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);backdrop-filter: blur(30px);">
             <a id="RefreshPage" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;left:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 15px 0 0 0;"title="刷新页面" onclick="OKErrorStreamer('OK','页面刷新中',1); "><svg t="1664862294245" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9130" width="24" height="45"><path d="M896 198.4 896 198.4l0 179.2 0 0c0 19.2-6.4 32-19.2 44.8-12.8 12.8-32 19.2-44.8 19.2l0 0-179.2 0 0 0c-19.2 0-32-6.4-44.8-19.2-25.6-25.6-25.6-64 0-89.6C620.8 320 633.6 313.6 652.8 313.6l0 0 25.6 0C627.2 275.2 576 256 518.4 256 441.6 256 377.6 281.6 332.8 332.8l0 0c-25.6 25.6-64 25.6-89.6 0-25.6-25.6-25.6-64 0-89.6l0 0C313.6 172.8 409.6 128 518.4 128c96 0 185.6 38.4 249.6 96L768 198.4l0 0c0-19.2 6.4-32 19.2-44.8 25.6-25.6 64-25.6 89.6 0C889.6 160 896 179.2 896 198.4zM416 691.2c-12.8 12.8-32 19.2-44.8 19.2l0 0L352 710.4C396.8 748.8 448 768 505.6 768c70.4 0 134.4-25.6 179.2-76.8l0 0c25.6-25.6 64-25.6 89.6 0 25.6 25.6 25.6 64 0 89.6l0 0C710.4 851.2 614.4 896 505.6 896c-96 0-185.6-38.4-249.6-96l0 32 0 0c0 19.2-6.4 32-19.2 44.8-25.6 25.6-64 25.6-89.6 0C134.4 864 128 844.8 128 825.6l0 0 0-179.2 0 0c0-19.2 6.4-32 19.2-44.8C160 588.8 172.8 582.4 192 582.4l0 0 179.2 0 0 0c19.2 0 32 6.4 44.8 19.2C441.6 627.2 441.6 665.6 416 691.2z" p-id="9131" fill="#ffffff"></path></svg></a>
             <a id="WebDev" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;right:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 0 15px 0 0;" title="开发人员选项" onclick="ipcRenderer.send('dev','Open');"><svg t="1664862154551" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7369" width="24" height="45"><path d="M911.7 385.3l-0.3-1.5c-0.2-1-0.3-1.9-0.6-2.9-0.2-0.6-0.4-1.1-0.5-1.7-0.3-0.8-0.5-1.7-0.9-2.5-0.2-0.6-0.5-1.1-0.8-1.7-0.4-0.8-0.8-1.5-1.2-2.3-0.3-0.5-0.6-1.1-1-1.6-0.8-1.2-1.7-2.4-2.6-3.6-0.5-0.6-1.1-1.3-1.7-1.9-0.4-0.5-0.9-0.9-1.4-1.3-0.6-0.6-1.3-1.1-1.9-1.6-0.5-0.4-1-0.8-1.6-1.2-0.2-0.1-0.4-0.3-0.6-0.4L531.1 117.8c-11.5-7.7-26.6-7.7-38.1 0L127.3 361.3c-0.2 0.1-0.4 0.3-0.6 0.4-0.5 0.4-1 0.8-1.6 1.2-0.7 0.5-1.3 1.1-1.9 1.6-0.5 0.4-0.9 0.9-1.4 1.3-0.6 0.6-1.2 1.2-1.7 1.9-1 1.1-1.8 2.3-2.6 3.6-0.3 0.5-0.7 1-1 1.6-0.4 0.7-0.8 1.5-1.2 2.3-0.3 0.5-0.5 1.1-0.8 1.7-0.3 0.8-0.6 1.7-0.9 2.5-0.2 0.6-0.4 1.1-0.5 1.7-0.2 0.9-0.4 1.9-0.6 2.9l-0.3 1.5c-0.2 1.5-0.3 3-0.3 4.5v243.5c0 1.5 0.1 3 0.3 4.5l0.3 1.5c0.2 1 0.4 1.9 0.6 2.9 0.2 0.6 0.3 1.1 0.5 1.7 0.3 0.9 0.6 1.7 0.9 2.5 0.2 0.6 0.5 1.1 0.8 1.7 0.4 0.8 0.7 1.5 1.2 2.3 0.3 0.5 0.6 1.1 1 1.6 0.5 0.7 0.9 1.4 1.5 2.1l1.2 1.5c0.5 0.6 1.1 1.3 1.7 1.9 0.4 0.5 0.9 0.9 1.4 1.3 0.6 0.6 1.3 1.1 1.9 1.6 0.5 0.4 1 0.8 1.6 1.2 0.2 0.1 0.4 0.3 0.6 0.4L493 905.7c5.6 3.8 12.3 5.8 19.1 5.8 6.6 0 13.3-1.9 19.1-5.8l365.6-243.5c0.2-0.1 0.4-0.3 0.6-0.4 0.5-0.4 1-0.8 1.6-1.2 0.7-0.5 1.3-1.1 1.9-1.6 0.5-0.4 0.9-0.9 1.4-1.3 0.6-0.6 1.2-1.2 1.7-1.9l1.2-1.5 1.5-2.1c0.3-0.5 0.7-1 1-1.6 0.4-0.8 0.8-1.5 1.2-2.3 0.3-0.5 0.5-1.1 0.8-1.7 0.3-0.8 0.6-1.7 0.9-2.5 0.2-0.5 0.4-1.1 0.5-1.7 0.3-0.9 0.4-1.9 0.6-2.9l0.3-1.5c0.2-1.5 0.3-3 0.3-4.5V389.8c-0.3-1.5-0.4-3-0.6-4.5zM546.4 210.5l269.4 179.4-120.3 80.4-149-99.6V210.5z m-68.8 0v160.2l-149 99.6-120.3-80.4 269.3-179.4zM180.7 454.1l86 57.5-86 57.5v-115z m296.9 358.5L208.3 633.2l120.3-80.4 149 99.6v160.2zM512 592.8l-121.6-81.2L512 430.3l121.6 81.2L512 592.8z m34.4 219.8V652.4l149-99.6 120.3 80.4-269.3 179.4zM843.3 569l-86-57.5 86-57.5v115z" p-id="7370" fill="#ffffff"></path></svg></a>
         </div>
@@ -186,10 +312,15 @@
     </div>
 </body>
 
+<!-- 软件全局渲染器 -->
 <script src="./renderer.js"></script>
+<!-- 设置界面控制器 -->
+<script src="./js/SettingsPage.js"></script>
+
 <!-- 作品详情章节点击展开/收起 -->
-<script>
+<script> //作品详情卡片控件
     var ArchivePageContentDetailsEpisodeBlockUnfoldCounter = 0;
+    //作品详情章节卡片展开收回控制
     function ArchivePageContentDetailsEpisodeBlockUnfoldFunc(){
         if(ArchivePageContentDetailsEpisodeBlockUnfoldCounter%2==0){
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.height='0px';
@@ -197,32 +328,49 @@
         document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='5%';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(180deg)';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000000)';
-        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';}, 300);    }
+        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+20).toString()+'%';}, 300);    }
         else {
             document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.height='40%';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='1.1%';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(0deg)';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000098)';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.height='20%';
-            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';}, 300);    }
+            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+20).toString()+'%';}, 300);    }
         ArchivePageContentDetailsEpisodeBlockUnfoldCounter+=1;
     }
     var ArchivePageContentDetailsStaffBlockUnfoldCounter = 0;
+    //作品详情制作信息卡片展开收回控制
     function ArchivePageContentDetailsStaffBlockUnfoldFunc(){
         if(ArchivePageContentDetailsStaffBlockUnfoldCounter%2==0){
         document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='auto';
         document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='5%';
         document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(180deg)';
         document.getElementById('ArchivePageContentDetailsStaffBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000000)';
-        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 500);    }
+        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+20).toString()+'%';}, 500);    }
         else {
             document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='40%';
             document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='1.1%';
             document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(0deg)';
             document.getElementById('ArchivePageContentDetailsStaffBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000098)';
-            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 500);    }
+            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+20).toString()+'%';}, 500);    }
         ArchivePageContentDetailsStaffBlockUnfoldCounter+=1;
     }
+</script>
+<script>
+    var ArchivePageScanExtMenuShowerCounter = 0;
+    function ArchivePageScanExtMenuShower(){
+        if(ArchivePageScanExtMenuShowerCounter%2==0){
+        document.getElementById('ArchivePageFullScan').style.display='block';
+        document.getElementById('ArchivePageScanExtMenu').style.borderBottomRightRadius='0';
+        document.getElementById('ArchivePageScan').style.borderBottomLeftRadius='0';
+        document.getElementById('ArchivePageScanExtMenuIcon').style.transform='rotateX(180deg)';
+    }else{
+        document.getElementById('ArchivePageFullScan').style.display='none';
+        document.getElementById('ArchivePageScanExtMenu').style.borderBottomRightRadius='10px';
+        document.getElementById('ArchivePageScan').style.borderBottomLeftRadius='10px';
+        document.getElementById('ArchivePageScanExtMenuIcon').style.transform='rotateX(0deg)';
+    }ArchivePageScanExtMenuShowerCounter++;
+}
 </script>
 
 </html>

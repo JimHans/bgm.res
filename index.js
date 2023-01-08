@@ -12,8 +12,8 @@ function createWindow () {
     var screenElectron = require('electron').screen;
     // 创建主程序浏览器窗口
     const win = new BrowserWindow({
-      width:  (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3,
-      height: (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3*(10/16),
+      width:  (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3*(18/16),
+      height: (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3*(11/16),
       // height: (screenElectron.getPrimaryDisplay().workAreaSize.height)*0.5,
       minWidth: 650,
       minHeight: 400,
