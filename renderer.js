@@ -497,7 +497,8 @@ function ArchiveMediaUpdate(){
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Score",data.rating.score); 
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Year",data.date.substring(0,4));
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Eps",data.eps);
-          store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name_cn);
+          if(data.name_cn!=""){store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name_cn);}
+          else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Type",data.platform); 
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover",data.images.large); 
         }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}); // *错误回调
@@ -546,7 +547,8 @@ function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Score",data.rating.score); 
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Year",data.date.substring(0,4));
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Eps",data.eps);
-          store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name_cn);
+          if(data.name_cn!=null){store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name_cn);}
+          else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Type",data.platform); 
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover",data.images.large); 
         }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}).done(function(){ArchivePageInit(); /*更新媒体库页面*/OKErrorStreamer("MessageOff","作品信息更新进行中",0);
@@ -695,7 +697,7 @@ function ArchiveMediaDetailsPage(MediaID){
     for(var Tempi = 1;Tempi<=10;Tempi++){
       document.getElementById('ArchivePageContentDetailsScoreBarNo'+Tempi.toString()).style.height=((data.rating.count[Tempi]/data.rating.total)*100).toString()+'%'
       ScoreAverage+=Tempi*data.rating.count[Tempi];
-    }document.getElementById('ArchivePageContentDetailsScoreRatePeople').innerText=data.collection.wish+'想看/'+data.collection.collect+'看过/'+data.collection.doing+'在看/'+data.collection.on_hold+'搁置/'+data.collection.dropped+'搁置'
+    }document.getElementById('ArchivePageContentDetailsScoreRatePeople').innerText=data.collection.wish+'想看/'+data.collection.collect+'看过/'+data.collection.doing+'在看/'+data.collection.on_hold+'搁置/'+data.collection.dropped+'抛弃'
     //计算标准差
     ScoreAverage/=data.rating.total;
     for(var Tempi = 1;Tempi<=10;Tempi++){ScoreSD+=data.rating.count[Tempi]*(Tempi-ScoreAverage)*(Tempi-ScoreAverage);}
@@ -708,7 +710,7 @@ function ArchiveMediaDetailsPage(MediaID){
     
   //?填充EP选集列表
   for(var TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
-  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:100%;height:100%;padding:0px;font-size:3vmin;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:#ffffff0a' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+");'>"+"EP "+TempCounter+"</div>" );
+  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:100%;height:100%;padding:0px;font-size:3vmin;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:#ffffff0a;backdrop-filter: blur(30px)' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+");'>"+"EP "+TempCounter+"</div>" );
   //width:12.1%;height:4vw;padding:2px;
   //检测是否已播放过
   if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}

@@ -237,7 +237,7 @@
                     
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">高级功能</h2>
                     <div class="Winui3brickContainer">开发人员选项<label class="Winui3switch"><input class="input" type="checkbox" name="checkboxC" value="developerMode"><div class="Winui3slider"></div></label></div>
-                    <div class="Winui3brickContainer"><div>恢复旧版设置<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式设置界面</a></div><label class="Winui3switch"><input class="input" type="checkbox" name="checkboxC" value="developerMode"><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer"><div>恢复旧版设置<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式设置界面</a></div><button type="button" value="点击临时切换" class="Winui3button" onclick="document.getElementById('SettingsPageSetTab').style.display='none';document.getElementById('SettingsPageSetpageC').style.display='none';document.getElementById('SettingsPageOld').style.display='block';">点击临时切换</button></div>
                     <div class="Winui3brickContainer">自定义媒体库匹配正则表达式<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写适合你媒体库命名规范的匹配表达式" required></div>
                     <!-- <div class="box">
                         <button type="button" value="保存并应用" onclick="submitC();" class="btn">保存并应用</button>
@@ -262,8 +262,8 @@
                 </div>
             </div>
 
-            <div style="display: none;">
-            <div class="RecentViewName" style="left:20%;top:6%;font-size: 4vw;">🛠️设置页</div>
+            <div id='SettingsPageOld' style="display: none;overflow-y: auto;position:absolute;height:100%;left:0;right:0;background-color:#00000098">
+            <div class="RecentViewName" style="left:20%;top:6%;font-size: 4vw;">🛠️设置页（旧版）</div>
             <div style="position:absolute;z-index:12;left:20%;top:21%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟继续观看影片ID:</div>
             <div class="boxBlank" style="top: 20%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
                 <input type="text" id="LocalStorageRecentViewID" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewID')">
