@@ -114,8 +114,9 @@
     height: 60px;
     text-align: center;
     position:absolute;
-    background-color: #272727;
+    background-color: #272727dd;
     border-radius: 7px;
+    backdrop-filter: blur(200px);
     top:  10px;
     left: 16%;
     right:16px;
@@ -202,6 +203,7 @@
     align-items: center;
     font-size:16px;
     user-select: none;
+    transition: all .5s ease;
 }
 .Winui3brickSubtitle{
     z-index: 0;font-size: 13px;color: #b9b9b9;

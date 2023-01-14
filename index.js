@@ -116,6 +116,43 @@ ipcMain.on("dev",(event,data) => {
   if(data == 'Open') {win.webContents.openDevTools();}
 });
 
+//监听作品编辑窗口打开信号
+ipcMain.on('MediaSettings', (event, arg) => {
+  // 创建子页面
+  let setwidth = screenElectron.getPrimaryDisplay().workAreaSize.width;
+  var MediaSettings = new BrowserWindow({
+    width: parseInt((setwidth/2)*(6/5)),
+    height: parseInt((setwidth/2)*(3/4)),
+    minWidth: 500,
+    minHeight: 360,
+    skipTaskbar: false,//显示在任务栏
+    alwaysOnTop: false,//置顶显示
+    transparent: false,//底部透明
+    frame: true,
+      titleBarStyle: "hidden",
+      titleBarOverlay: {
+        color: "#202020",
+        symbolColor: "white", },
+    resizable: true,
+    icon: path.join(__dirname, './assets/app.ico'),
+    show: true,
+    webPreferences: {
+      devTools: true,
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    }
+  });
+  MediaSettings.loadFile('MediaSettings.html');// 并且为你的应用加载index.html
+  require('@electron/remote/main').enable(MediaSettings.webContents) // 启用 electron/remote web组件
+  // MediaSettings.webContents.openDevTools();
+  MediaSettings.on('ready-to-show', function () {
+  MediaSettings.webContents.send('data',arg.data); // 发送消息
+  MediaSettings.show() // 初始化后再显示
+  });
+  MediaSettings.on('closed', () => { MediaSettings = null });
+});
+
 // // alternatively use these to
 // // dynamically change vibrancy
 // win.setVibrancy([options])
