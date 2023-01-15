@@ -796,10 +796,11 @@ function ArchiveMediaDetailsPage(MediaID){
     var Chara_Data = data;
     function ArchiveMediaDetailsPageCharacterFiller(Tempj){
       $.getJSON("https://api.bgm.tv/v0/characters/"+data[Tempj].id, function(data2){
-        if(data2.infobox[0].key=='简体中文名') Chara_Data_NameCN = data2.infobox[0].value;else Chara_Data_NameCN = Chara_Data[Tempj].name;
+        if(data2.infobox[0].key=='简体中文名') var Chara_Data_NameCN = data2.infobox[0].value;else var Chara_Data_NameCN = Chara_Data[Tempj].name;
+        if(Chara_Data[Tempj].actors[0]!=null) var Chara_Data_CV = Chara_Data[Tempj].actors[0].name;else var Chara_Data_CV = '未知';
         $("#ArchivePageContentDetailsCharacterBlock").append( "<div id='ArchivePageContentDetailsCharacterNo"+Tempj+"' class='ArchiveCardCharacterHover' onclick='window.open(\"https://bgm.tv/character/"+Chara_Data[Tempj].id+"\");'>"+
         "<div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+Chara_Data[Tempj].images.medium+"\") no-repeat top;background-size:cover;border-radius:8px;border-top-right-radius:0;border-bottom-right-radius:0;'></div>"+
-        "<div style='position:relative;margin-right:0%;margin-left:1%;margin-top:8px;height:100%;border-radius:8px;width: 100%;text-align: left;width:fit-content;padding:10px;white-space:nowrap;font-size:1.5vw'><b>"+Chara_Data[Tempj].name+"<br/>("+Chara_Data_NameCN+")</b><br/>"+Chara_Data[Tempj].relation+", CV:"+Chara_Data[Tempj].actors[0].name+"</div></div>")
+        "<div style='position:relative;margin-right:0%;margin-left:1%;margin-top:8px;height:100%;border-radius:8px;width: 100%;text-align: left;width:fit-content;padding:10px;white-space:nowrap;font-size:1.5vw'><b>"+Chara_Data[Tempj].name+"<br/>("+Chara_Data_NameCN+")</b><br/>"+Chara_Data[Tempj].relation+", CV:"+Chara_Data_CV+"</div></div>")
       }).done(function(){document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+20).toString()+'%';});
     }
     for(let Tempj=0;Tempj!=data.length;Tempj++){ArchiveMediaDetailsPageCharacterFiller(Tempj)}

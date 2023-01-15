@@ -5,7 +5,7 @@
 <br/>
 <p align="center">
 <img src="https://img.shields.io/badge/Build-passing-green.svg?style=flat-square">
-<img src="https://img.shields.io/badge/Version-0.12.0 Beta-pink.svg?style=flat-square">
+<img src="https://img.shields.io/badge/Version-0.12.2 Beta-pink.svg?style=flat-square">
 <img src="https://img.shields.io/badge/Electron-20.3.8-blue.svg?style=flat-square">
 <img src="https://img.shields.io/badge/License-GPL v3.0-purple.svg?style=flat-square">
 </p>
@@ -52,17 +52,12 @@
 **设置**
 - [x] WinUI 3风格设置界面
 ---
-## 📺安装方法：
----
 ## 🖥软件截图：
 ---
-## 📚使用指南：
-
+## 📚安装方法、使用指南、FAQ
+- 请见项目Wiki页面
 ---
 ## 📌注意事项：
-
----
-## 🤔FAQ
 
 <br/>
 
