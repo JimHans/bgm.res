@@ -488,7 +488,8 @@ user-select: none;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.7);
     border-radius:10px;
-    border: 1px dashed rgb(145, 145, 145);
+    /* border: 1px dashed rgb(145, 145, 145); */
+    border: 2px solid rgb(145 145 145 / 56%);
     top: 30%;
     bottom: 30%;
     z-index: 100;
@@ -508,6 +509,10 @@ user-select: none;
     transform: scale(10);
     opacity: 0;
     transition: all .6s;
+}
+.ArchivePageButton:active {
+    background-color: rgba(148, 148, 148, 0.295);
+    transition: .3s;
 }
 .ArchivePageButton:active::after {
     transform: scale(0);

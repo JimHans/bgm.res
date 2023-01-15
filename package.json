@@ -1,8 +1,8 @@
 {
   "name": "bgm.res",
-  "title": "BGM.res",
-  "version": "0.12.0",
-  "description": "BGM.res-A local bangumi manager",
+  "title": "bgm.res",
+  "version": "0.12.1",
+  "description": "bgm.res-A local bangumi manager",
   "buildinf": "Build 2023-01-15 Beta",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "dist": "electron-builder"
   },
   "keywords": [
-    "BGM.res",
+    "bgm.res",
     "bangumi",
     "local manager"
   ],
