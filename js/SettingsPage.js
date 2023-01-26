@@ -41,3 +41,88 @@ function SettingsPageSetpageInfoShower() { //点击显示关于界面
     document.getElementById("SettingsPageSetTab").style.height="60px";
 
 }
+
+function SettingsPageAPIPing(ButtonID) { //网络探针
+    let p = new Ping();
+    let urlstore = ["https://api.bgm.tv/","https://netaba.re/","https://api.github.com/repos/jimhans/bgm.res/releases/latest"]
+    document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].innerHTML='检测中...'
+    document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].style.color ="#b9b9b9";
+    p.ping(urlstore[ButtonID], function(err,data) {
+        if (err) {console.log("error loading resource");
+            // document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].innerHTML ="检测超时，"+data+"ms "+err;
+            // document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].style.color ="#ff4848";
+        }
+        if(Number(data)>999){
+            document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].innerHTML ="检测超时，"+data+"ms "+err;
+            document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].style.color ="#ff4848";}
+        else if(Number(data)<6){
+            document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].innerHTML ="检测超时，网络断开";
+            document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].style.color ="#ff4848";}
+        else{document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].innerHTML =urlstore[ButtonID]+"检测正常，延时："+data+'ms';
+            console.log(data);}
+    });
+    
+}
+
+function SettingsPageSaveConfig(checkboxName,checkboxID,key,type) { //数据保存
+    if(type == 'checkbox') {
+        let Value = document.getElementsByName(checkboxName)[checkboxID].checked;
+        sysdata.set("Settings."+checkboxName.toString()+"."+key.toString(),Value);
+        OKErrorStreamer("OK","设置完成，刷新或重启客户端生效",0);
+    }
+    else if(type == 'fillblank') {
+        let Value = document.getElementsByName(checkboxName)[checkboxID].value;
+        if(Value!=""){sysdata.set("Settings."+checkboxName.toString()+"."+key.toString(),Value);
+        OKErrorStreamer("OK","设置完成，刷新或重启客户端生效",0);}
+        else {sysdata.set("Settings."+checkboxName.toString()+"."+key.toString(),Value);OKErrorStreamer("Error","输入不能为空",0);}
+    }
+}
+
+function SettingsPageConfigInit() { //数据初始化
+    var KeyStoreA=['LocalStorageMediaBaseURL',
+            "LocalStorageAutoUpdateArchive",
+			"LocalStorageAutoUpdateArchiveInfo",
+            "LocalStorageMediaSubFolderName",
+			"LocalStorageqBittorrnetURL"
+			]
+    //初始化PageA
+    for(let Temp = 0;Temp!=KeyStoreA.length;Temp++){
+        if(sysdata.get("Settings.checkboxA."+KeyStoreA[Temp])!=''){
+            if(document.getElementsByName('checkboxA')[Temp].type=='checkbox') 
+                document.getElementsByName('checkboxA')[Temp].checked=sysdata.get("Settings.checkboxA."+KeyStoreA[Temp])
+            else
+                document.getElementsByName('checkboxA')[Temp].value=sysdata.get("Settings.checkboxA."+KeyStoreA[Temp])}
+    }
+
+    var KeyStoreB=['LocalStorageMediaShowSciMark',
+                    'LocalStorageMediaShowStd',"LocalStorageMediaShowProgress","LocalStorageMediaShowRelative","LocalStorageMediaShowCharacter",
+                    "LocalStorageMediaShowCharacterCN","LocalStorageMediaShowCharacterCV","LocalStorageMediaShowTranslation","LocalStorageMediaShowStaff",
+                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode"]
+    //初始化PageB
+    for(let Temp = 0;Temp!=KeyStoreB.length;Temp++){ //Object.keys(sysdata.get("Settings.checkboxB"))
+        if(sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])!=''){
+            if(document.getElementsByName('checkboxB')[Temp].type=='checkbox') 
+                document.getElementsByName('checkboxB')[Temp].checked=sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])
+            else
+                document.getElementsByName('checkboxB')[Temp].value=sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])}
+    }document.getElementById('Winui3fileInfoBubble').innerText='当前选定背景图片为：'+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage")
+    
+    var KeyStoreC=["LocalStorageMediaShowOldSettingPage",
+                "LocalStorageMediaScanExpression",
+                "LocalStorageRecentViewID",
+                "LocalStorageRecentViewEpisode",
+                "LocalStorageRecentViewEpisodeType",
+                "LocalStorageRecentViewURL",
+                "LocalStorageRecentViewNextURL",
+                "LocalStorageRecentViewLocalID",
+                "LocalStorageMediaBaseNumber",
+                "LocalStorageMediaBaseDeleteNumber"]
+    //初始化PageC
+    for(let Temp = 0;Temp!=KeyStoreC.length;Temp++){
+        if(sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])!=''){
+            if(document.getElementsByName('checkboxC')[Temp].type=='checkbox') 
+                document.getElementsByName('checkboxC')[Temp].checked=sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])
+            else
+                document.getElementsByName('checkboxC')[Temp].value=sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])}
+    }
+}

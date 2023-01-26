@@ -102,6 +102,15 @@
         opacity: 1;
     }
 }
+@keyframes Element-Rotation {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
 
 .rolled { /* *播放按钮高光 */
     position: absolute;
@@ -213,11 +222,16 @@ user-select: none;
     z-index: 100;
     -webkit-app-region: no-drag;
     backdrop-filter: blur(30px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .BarBrick {
-    height: 15%;
+    /* height: 15%; */
+    aspect-ratio: 1.24;
     text-align: center;
-    position:absolute;
+    /* position:absolute; */
+    position: relative;
     background-color: rgba(0, 0, 0, 0);
     border-radius:10px;
     transform: scale(1);
@@ -225,9 +239,12 @@ user-select: none;
     box-shadow: 0px 0px 10px -1px #3a3a3abf;
     -webkit-box-shadow: 0px 0px 0px 1px #3a3a3abf;
     /* -webkit-box-shadow: 0px 0px 10px -1px #3a3a3abf; */
-    -moz-box-shadow: 0px 0px 10px -1px #3a3a3abf;
-    left: 15%;
-    right:15%;
+    /* -moz-box-shadow: 0px 0px 10px -1px #3a3a3abf; */
+    /* left: 15%;
+    right:15%; */
+    margin: 15%;
+    margin-top: 20%;
+    margin-bottom:5%;
     -webkit-app-region: no-drag;
     transition: all .25s ease;
     display: flex;
@@ -278,7 +295,7 @@ user-select: none;
     font-weight:bolder;
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
 }
-
+/* 最近播放标题 */
 .RecentViewName{
     position: absolute;
     left:18%;
@@ -294,7 +311,7 @@ user-select: none;
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
 }
 .RecentViewName::-webkit-scrollbar { width: 0 !important }
-
+/* 最近播放详情 */
 .RecentViewDetail{
     font-family: bgmUI;
     font-size: 3vmin;
@@ -316,7 +333,7 @@ user-select: none;
     overflow-y: auto;
 }
 .RecentViewDetail::-webkit-scrollbar { width: 0 !important }
-
+/* 最近播放进度与评分 */
 .RecentViewProgress{
     font-family: bgmUI;
     font-size: 3vmin;
@@ -347,7 +364,7 @@ user-select: none;
     -webkit-app-region: no-drag;
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
 }
-
+/* 继续播放按钮 */
 .RecentViewPlay{
     font-family: bgmUI;
     font-size: 2vmin;
@@ -390,7 +407,7 @@ user-select: none;
     opacity: .5;
     transition: 0s;
 }
-
+/* 背景遮罩 */
 .Cover{
     width: 100%;
     top:0px;
@@ -416,6 +433,7 @@ user-select: none;
     display: none;
     animation: wrapper-gradient 2s linear;
 }
+/* 媒体库标题栏 */
 .ArchivePageHeader{
     font-family: bgmUI;
     font-size: 2vmin;
@@ -444,6 +462,7 @@ user-select: none;
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
     bottom:10%;
 }
+/* 媒体库内容容器 */
 .ArchivePageContent{
     font-family: bgmUI;
     font-size: 2vmin;
@@ -475,7 +494,41 @@ user-select: none;
     border-radius: 3px;
     background: rgba(160, 160, 160, 0.231);
 }
-
+/* 媒体库搜索建议卡片 */
+.ArchivePageSearchSuggestion{
+    font-family: bgmUI;
+    font-size: 2vmin;
+    border-radius:15px;
+    position: relative;
+    -webkit-app-region: no-drag;
+    border: 1px solid rgb(64, 64, 64);
+    backdrop-filter: blur(60px);
+    width: 30%;
+    left: 3%;
+    height: auto;
+    top: 15%;
+    z-index: 50;
+    margin: auto;
+    display:none;
+    max-height: 50%;
+    overflow: auto;
+    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+}
+/*ArchivePageSearchSuggestion滚动条样式*/
+.ArchivePageSearchSuggestion::-webkit-scrollbar {
+    width: 4px;    
+}
+.ArchivePageSearchSuggestion::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(141, 140, 140, 0.2);
+    background: rgba(255, 255, 255, 0.505);
+}
+.ArchivePageSearchSuggestion::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 3px;
+    background: rgba(160, 160, 160, 0.231);
+}
+/* 媒体库界面按钮样式 */
 .ArchivePageButton{
     font-family: bgmUI;
     font-size: 2vmin;
@@ -538,8 +591,8 @@ user-select: none;
 	border-bottom: 1.5px solid #afaebd;
 	color: #fff;
     background-color: #00000000;
-	font-style: italic;
-	text-transform: uppercase;
+	/* font-style: italic; */
+	/* text-transform: uppercase; */
 	letter-spacing: 1px;
     outline: none;
 }
@@ -887,20 +940,6 @@ user-select: none;
     backdrop-filter: blur(50px);
     background-color: rgba(0, 0, 0, 0.2);
 }
-/*ArchivePageContentDetailsCharacterContainer滚动条样式*/
-/* .ArchivePageContentDetailsCharacterContainer::-webkit-scrollbar {
-    width: 4px;    
-}
-.ArchivePageContentDetailsCharacterContainer::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    box-shadow: inset 0 0 5px rgba(141, 140, 140, 0.2);
-    background: rgba(196, 196, 196, 0.621);
-}
-.ArchivePageContentDetailsCharacterContainer::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    border-radius: 0px;
-    background: rgba(59, 59, 59, 0.744);
-} */
 .ArchivePageContentDetailsCharacterBlock{
     position:relative;
     width:auto;
@@ -909,6 +948,33 @@ user-select: none;
     display:flex;
     flex-wrap: wrap;
 }
+
+/* 作品制作人员信息样式 */
+.ArchivePageContentDetailsPersonBlock{
+    position:relative;
+    width:auto;
+    height:auto;
+    margin-top:20px;
+    display:flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+/*ArchivePageContentDetailsPersonBlock滚动条样式*/
+.ArchivePageContentDetailsPersonBlock::-webkit-scrollbar {
+    width: 8px;    
+}
+.ArchivePageContentDetailsPersonBlock::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(141, 140, 140, 0.2);
+    background: rgba(196, 196, 196, 0.621);
+}
+.ArchivePageContentDetailsPersonBlock::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: rgba(59, 59, 59, 0.744);
+}
+
 .ArchivePageContentLastCardToTop{
     position: absolute;
     left:0%;

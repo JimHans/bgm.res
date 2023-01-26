@@ -1,0 +1,38 @@
+{
+	"Settings": {
+		"checkboxA": {
+			"LocalStorageMediaBaseURL": null,
+			"LocalStorageAutoUpdateArchive": false,
+			"LocalStorageAutoUpdateArchiveInfo": false,
+			"LocalStorageMediaSubFolderName": "default",
+			"LocalStorageqBittorrnetURL": null
+		},
+		"checkboxB": {
+			"LocalStorageMediaShowSciMark": false,
+			"LocalStorageMediaShowStd": true,
+			"LocalStorageMediaShowProgress": true,
+			"LocalStorageMediaShowRelative": true,
+			"LocalStorageMediaShowCharacter": true,
+			"LocalStorageMediaShowCharacterCN": false,
+			"LocalStorageMediaShowCharacterCV": true,
+			"LocalStorageMediaShowTranslation": true,
+			"LocalStorageMediaShowStaff": true,
+			"LocalStorageSystemBackgroundImage": null,
+			"LocalStorageSystemCustomColor": null,
+			"LocalStorageSystemShowModifiedCover": false,
+			"LocalStorageSystemOpenLightMode": false
+		},
+		"checkboxC": {
+			"LocalStorageMediaShowOldSettingPage": false,
+			"LocalStorageMediaScanExpression": "default",
+			"LocalStorageRecentViewID": null,
+			"LocalStorageRecentViewEpisode": null,
+			"LocalStorageRecentViewEpisodeType": "EP",
+			"LocalStorageRecentViewURL": null,
+			"LocalStorageRecentViewNextURL": null,
+			"LocalStorageRecentViewLocalID": null,
+			"LocalStorageMediaBaseNumber": null,
+			"LocalStorageMediaBaseDeleteNumber": null
+		}
+	}
+}

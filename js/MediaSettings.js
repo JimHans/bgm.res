@@ -1,6 +1,7 @@
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
 const store = new Store();                                            //?创建electron-store存储资源库对象
 const ipc = nodeRequire('electron').ipcRenderer;
+const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
 const { dialog } = nodeRequire('@electron/remote')                    //?引入remote.dialog 对话框弹出api
 var MediaID = 0;var MediaSettingsSPNumber = 1;
 ipc.on('data', (e,arg) => {MediaID = arg;console.log(MediaID);MediaPageLoad(MediaID);});
@@ -32,6 +33,7 @@ function MediaPageLoad(MediaID){
     let WorkEPNumber = store.get("WorkSaveNo"+MediaID+".EPTrueNum");
     document.getElementById("MediaSettingsSetpageB").innerHTML='';
     $('#MediaSettingsSetpageB').append("<div class='Winui3brickContainer' style='background-color:#2b4f6c'><svg t='1669908006524' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='1391' width='20' height='20'><path d='M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z' fill='#5fb5fc' p-id='1392' style='--darkreader-inline-fill: #5fb5fc;' data-darkreader-inline-fill=''></path><path d='M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z' fill='#000' p-id='1393' style='--darkreader-inline-fill: #181a1b;' data-darkreader-inline-fill=''></path></svg><p style='margin-left:13px;font-size: 15px;font-weight: bold;'>你可以在此修改本作品的EP信息，包括纠正错误对应的章节，或者增加新的本篇章节/番外篇</p></div>"+
+    "<div class='Winui3brickContainer'>自动扫描EP章节<button type='button' value='点击扫描EP' class='Winui3button' onclick='LocalWorkEpsScanModule("+MediaID+")'>点击扫描</button></div>"+
     "<div class='Winui3brickContainer'>添加EP章节<button type='button' value='点击添加EP' class='Winui3button' onclick='MediaSettingsESPAdder(\"EP\")'>点击添加</button></div>");
     //?作品EP列表初始化
     for(let Tempi = 1;Tempi<=WorkEPNumber;Tempi++){
@@ -227,4 +229,22 @@ function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
         MediaPageLoad(MediaID);}); // *错误回调
         } else{OKErrorStreamer("MessageOff","作品信息更新进行中",0);OKErrorStreamer("Error","bgmID无效",0);}
     },2000);
+}
+
+//! 作品ep扫描模块
+function LocalWorkEpsScanModule(MediaID){
+    if(fs.existsSync(store.get("WorkSaveNo"+MediaID+".URL"))){       // *当目标媒体库目录存在
+        // OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
+        var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")); //扫描目标媒体库目录下EP
+        console.log(TargetWorkEP.length);
+        var RealWorkEP = 0;
+        for (var TempCounter = 0;TempCounter!=TargetWorkEP.length;TempCounter++){
+        if(TargetWorkEP[TempCounter].match(/\.mp4|\.flv|\.mkv|\.rm|\.rmvb|\.avi|\.m2ts/i)){
+            RealWorkEP += 1;store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+RealWorkEP+".URL",TargetWorkEP[TempCounter]);
+            store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+RealWorkEP+".Condition",'Unwatched');}
+        }
+        store.set("WorkSaveNo"+MediaID+".EPTrueNum",RealWorkEP);
+        MediaPageLoad(MediaID);
+      // OKErrorStreamer("MessageOff","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
+    }
 }
