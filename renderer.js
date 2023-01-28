@@ -143,8 +143,11 @@ function SysOnload() {
   }
 
   if(sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage")) //判断是否启用自定义背景
-  {document.getElementById('ArchivePage').style.background="url("+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage").toString()+") no-repeat";
+  {document.getElementById('HomePage').style.background="url("+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage").toString()+") no-repeat";
+  document.getElementById('HomePage').style.backgroundSize='cover';
+  document.getElementById('ArchivePage').style.background="url("+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage").toString()+") no-repeat";
   document.getElementById('ArchivePage').style.backgroundSize='cover';
+  document.getElementsByClassName('ArchivePageHeader')[0].style.backgroundColor= '#00000058';
   document.getElementById('SettingsPage').style.background="url("+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage").toString()+") no-repeat";
   document.getElementById('SettingsPage').style.backgroundSize='cover';}
   if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //判断是否启用自定义主题色
@@ -454,7 +457,7 @@ function LocalWorkScanModify(){
       OKErrorStreamer("MessageOff","<div class='LoadingCircle'></div>",0); //弹出完成提示
       OKErrorStreamer("OK","扫描完成，新增"+ScanSaveCounter+"个媒体",0);
       document.getElementById("ArchivePageSum").innerText="共 "+(Number(LocalStorageMediaBaseNumber)+Number(ScanSaveCounter)-Number(DeleteNumberSaver))+" 部作品";
-      setTimeout(function() {for(let ScanCounter=1;ScanCounter<=ScanSaveCounter;ScanCounter++){ArchiveMediaUpdate((Number(LocalStorageMediaBaseNumber)+Number(ScanCounter)));}},3000);
+      setTimeout(function() {for(let ScanCounter=1;ScanCounter<=ScanSaveCounter;ScanCounter++){ArchiveMediaUpdateSingle((Number(LocalStorageMediaBaseNumber)+Number(ScanCounter)));}},3000);
       // console.log(store.get('WorkSaveNo5'));
       },1000);
     }
@@ -523,14 +526,18 @@ function ArchivePageMediaSearch(Key){
     document.getElementById('ArchivePageSearchSuggestionBack').style.display='block';
     let MediaNumber = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");//localStorage.getItem("LocalStorageMediaBaseNumber");
     let SearchKeyWord = document.getElementById('ArchivePageSearch').value;
+    let SerachResultGetted = 0;
     for(let ScanCounter=1;ScanCounter<=MediaNumber;ScanCounter++){
       let StoreGet = store.get("WorkSaveNo"+ScanCounter+".Name");
         if(StoreGet.match(eval('/'+SearchKeyWord+'/'))&&store.get("WorkSaveNo"+ScanCounter+".ExistCondition")!='Deleted'){
+          SerachResultGetted = 1;
           $("#ArchivePageSearchSuggestion").append("<div class='Winui3brickContainer'>"+"<div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+store.get("WorkSaveNo"+ScanCounter+".Cover")+"\") no-repeat top;background-size:cover;border-radius:8px;'></div>"+
           "<div style='position:relative;margin-left:10px;margin-right:40px;overflow:hidden'>"+StoreGet+"<br/><div style='position:relative;font-size:15px;margin-top:5px;color: #aaa;'>"+store.get("WorkSaveNo"+ScanCounter+".Year")+"/"+store.get("WorkSaveNo"+ScanCounter+".Director")+"/"+store.get("WorkSaveNo"+ScanCounter+".Type")+"</div></div>"+
           "<button type='button' value='进入' class='Winui3button' style='width:30px' onclick='ArchiveMediaDetailsPage("+ScanCounter+")'><svg t='1673884147084' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='5739' width='15' height='15'><path d='M245.034251 895.239428l383.063419-383.063419L240.001631 124.07997l0.070608-0.033769c-12.709463-13.137205-20.530592-31.024597-20.530592-50.731428 0-40.376593 32.736589-73.111135 73.115228-73.111135 19.705807 0 37.591153 7.819083 50.730405 20.528546l0.034792-0.035816 438.686251 438.681134-0.035816 0.034792c13.779841 13.281491 22.3838 31.915897 22.3838 52.586682 0 0.071631 0 0.106424 0 0.178055 0 0.072655 0 0.10847 0 0.144286 0 20.669762-8.603959 39.341007-22.3838 52.623521l0.035816 0.033769L343.426165 1003.661789l-0.180102-0.179079c-13.140275 12.565177-30.950919 20.313651-50.588165 20.313651-40.378639 0-73.115228-32.736589-73.115228-73.114205C219.544717 928.512229 229.432924 908.664182 245.034251 895.239428z' p-id='5740' fill='#ffffff'></path></svg></button>"+"</div>")
       }
     }
+    if( SerachResultGetted == 0){
+      $("#ArchivePageSearchSuggestion").append("<div class='Winui3brickContainer'><div style='position:relative;margin:auto;overflow:hidden;text-align:center'>在媒体库中没有找到结果</div></div>")}
   },100)}
 
 }
@@ -772,6 +779,7 @@ function ArchiveMediaDetailsPage(MediaID){
   document.getElementById("ArchivePageContentDetailsStaffBlock").innerHTML=""; //清空StaffBlock
   document.getElementById("ArchivePageContentDetailsCharacterBlock").innerHTML=""; //清空CharacterBlock
   document.getElementById("ArchivePageContentDetailsPersonBlock").innerHTML=""; //清空PersonBlock
+  document.getElementById("ArchivePageContentDetailsRelativeBlock").innerHTML=""; //清空RelativeBlock
   //?填充标题&评分条UI
   $("#ArchivePageContentDetailsTitleBlock").append(
     "<div id='ArchivePageContentDetailsCover' class='ArchiveCardHover' style='position:absolute;top:7%;height:86%;left:17%;width:auto;aspect-ratio:3/4;margin:2%' onclick='shell.openExternal(\"https://bgm.tv/subject/"+store.get("WorkSaveNo"+MediaID+".bgmID")+"\");'></div>"+
@@ -905,6 +913,30 @@ function ArchiveMediaDetailsPage(MediaID){
   }).done(function(){document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';})
   .fail(function() {OKErrorStreamer("Error","无法连接Bangumi",0); document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';});
   }else {$("#ArchivePageContentDetailsCharacterBlock").append("<div style='position:relative;margin:auto;margin-bottom:5%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3.5vmin'>角色信息已隐藏</div>")}
+
+  //?填充作品相关条目
+  if(1){ //判断是否显示相关条目信息
+    $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID+"/subjects", function(data){
+      var Chara_Data = data; function ArchiveMediaDetailsPageRelativeFiller(Tempj){
+        $.getJSON("https://api.bgm.tv/v0/subjects/"+data[Tempj].id, function(data2){
+          if(data2.name_cn!='') var Chara_Data_NameCN = data2.name_cn;else var Chara_Data_NameCN = Chara_Data[Tempj].name;
+          $("#ArchivePageContentDetailsRelativeBlock").append( "<div class='ArchiveCardCharacterHover' onclick='window.open(\"https://bgm.tv/subject/"+Chara_Data[Tempj].id+"\");'>"+
+          "<div id='ArchivePageContentDetailsRelativeBlockImg"+Tempj+"' style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+Chara_Data[Tempj].images.medium+"\") no-repeat top;background-size:cover;border-radius:8px;border-top-right-radius:0;border-bottom-right-radius:0;'></div>"+
+          "<div style='position:relative;margin-right:0%;margin-left:1%;margin-top:8px;height:100%;border-radius:8px;width: 100%;text-align: left;width:fit-content;padding:10px;white-space:nowrap;font-size:1.5vw'><b>"+Chara_Data[Tempj].name+"<br/>("+Chara_Data_NameCN+")</b><br/>"+Chara_Data[Tempj].relation+"</div></div>")
+          switch(Chara_Data[Tempj].relation){
+            case '原声集':case '片头曲':case '片尾曲':case '角色歌':case '广播剧':case '插入歌':
+              {$("#ArchivePageContentDetailsRelativeBlockImg"+Tempj).append('<div style="position: absolute;right: 0;height: 30%;bottom: 0;background: #000000aa;border-top-left-radius: 9px;aspect-ratio: 1;display: flex;justify-content: center;align-items: center;backdrop-filter: blur(30px);"><svg t="1674916796215" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="11808" style="height: 75%;"><path d="M405.333333 704m-192 0a192 192 0 1 0 384 0 192 192 0 1 0-384 0Z" fill="#e6e6e6" p-id="11809"></path><path d="M512 128v576h85.333333V298.666667l234.666667 64v-149.333334z" fill="#e6e6e6" p-id="11810"></path></svg></div>');break;}
+            case '书籍':
+              {$("#ArchivePageContentDetailsRelativeBlockImg"+Tempj).append('<div style="position: absolute;right: 0;height: 30%;bottom: 0;background: #000000aa;border-top-left-radius: 9px;aspect-ratio: 1;display: flex;justify-content: center;align-items: center;backdrop-filter: blur(30px);"><svg t="1674916763560" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9938" style="height: 65%;"><path d="M896 128v832H224a96 96 0 1 1 0-192h608V0H192C121.6 0 64 57.6 64 128v768c0 70.4 57.6 128 128 128h768V128h-64z" p-id="9939" fill="#e6e6e6"></path><path d="M224.064 832H224a32 32 0 0 0 0 64h607.968v-64H224.064z" p-id="9940" fill="#e6e6e6"></path></svg></div>');break;}
+            case '画集':
+              {$("#ArchivePageContentDetailsRelativeBlockImg"+Tempj).append('<div style="position: absolute;right: 0;height: 30%;bottom: 0;background: #000000aa;border-top-left-radius: 9px;aspect-ratio: 1;display: flex;justify-content: center;align-items: center;backdrop-filter: blur(30px);"><svg t="1674917033209" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15205" style="height: 65%;"><path d="M725.333333 938.666667H170.666667c-46.933333 0-85.333333-38.4-85.333334-85.333334V298.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667v512c0 21.333333 17.066667 42.666667 42.666666 42.666666h512c21.333333 0 42.666667 17.066667 42.666667 38.4v4.266667c0 21.333333-17.066667 42.666667-42.666667 42.666667z m-366.933333-170.666667C302.933333 768 256 721.066667 256 665.6V187.733333C256 132.266667 302.933333 85.333333 358.4 85.333333h477.866667C891.733333 85.333333 938.666667 132.266667 938.666667 187.733333v477.866667c0 55.466667-46.933333 102.4-102.4 102.4H358.4z m81.066667-85.333333H810.666667c21.333333-4.266667 38.4-21.333333 42.666666-42.666667v-128l-119.466666-106.666667-294.4 277.333334zM384 298.666667c0 46.933333 38.4 85.333333 85.333333 85.333333s85.333333-38.4 85.333334-85.333333-38.4-85.333333-85.333334-85.333334-85.333333 38.4-85.333333 85.333334z" p-id="15206" fill="#e6e6e6"></path></svg></div>');break;}  
+          }
+        }).done(function(){document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+20).toString()+'%';});
+      }
+      for(let Tempj=0;Tempj!=data.length;Tempj++){ArchiveMediaDetailsPageRelativeFiller(Tempj)}
+    }).done(function(){document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';})
+    .fail(function() {OKErrorStreamer("Error","无法连接Bangumi",0); document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+10).toString()+'%';});
+    } else {$("#ArchivePageContentDetailsRelativeBlock").append("<div style='position:relative;margin:auto;margin-bottom:5%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3.5vmin'>相关条目信息已隐藏</div>")}
 
   //?填充作品制作人员
   if(sysdata.get("Settings.checkboxB.LocalStorageMediaShowStaff")){ //判断是否显示制作人员信息

@@ -102,7 +102,7 @@
         opacity: 1;
     }
 }
-@keyframes Element-Rotation {
+@keyframes Element-Rotation { /* 旋转动画 */
     0% {
         -webkit-transform: rotate(0deg);
     }
@@ -348,6 +348,14 @@ user-select: none;
     -webkit-app-region: no-drag;
     backdrop-filter: blur(30px);
     animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+    transition: background-color .25s;
+}
+.RecentViewProgress:hover {
+    background-color: rgba(134, 134, 134, 0.441);
+}
+.RecentViewProgress:active {
+    transform: scale(1);
+    background-color: rgba(1, 1, 1, 0.441);
 }
 .RecentViewRating{
     font-family: bgmUI;
