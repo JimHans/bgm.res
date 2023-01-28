@@ -3,7 +3,7 @@
   "title": "bgm.res",
   "version": "0.13.1",
   "description": "bgm.res-A local bangumi manager",
-  "buildinf": "Build 2023-01-27 Beta",
+  "buildinf": "Build 2023-01-28 Beta",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
