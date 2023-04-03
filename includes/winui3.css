@@ -388,3 +388,21 @@ input:checked + .Winui3slider:before { /*开关动效*/
     text-align: right;
     transition: all ease .3s;
 }
+
+/*!页面元素下拉菜单样式*/
+.Winui3selectMenu{
+    padding: 5px;
+    font-size:15px;
+    border-radius:7px;
+    position:absolute;
+    width:105px;
+    height:30px;
+    right:20px;
+    color:#b9b9b9;
+    border:0px;
+    outline: none;
+    background: url(../assets/downarrow.png) no-repeat scroll right center #2a2a2a;
+    appearance: none;
+    padding-left: 15px;
+    background-size: contain;
+}

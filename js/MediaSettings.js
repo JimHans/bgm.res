@@ -11,6 +11,17 @@ var MediaID = 0;var MediaSettingsSPNumber = 1;
 ipc.on('data', (e,arg) => {MediaID = arg;console.log(MediaID);MediaPageLoad(MediaID);});
 
 function MediaPageLoad(MediaID){
+
+    if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //初始化自定义颜色
+    {
+    let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    document.getElementById("MediaSettingsSetTabHighLight").style.backgroundColor=CustomColorData;
+    document.getElementById("MediaSettingsSetTabHighLight").style.boxShadow="0px 0px 1px 1px "+CustomColorData;
+    let customcolorstyle=document.createElement('style');//创建一个<style>标签
+    let customchangeText=document.createTextNode('.Winui3inputText:focus{border-bottom:2px solid '+CustomColorData+'}')//更改后伪元素的样式
+    customcolorstyle.appendChild(customchangeText);//把样式添加到style标签里
+    document.body.appendChild(customcolorstyle);//把内联样式表添加到html中    
+    }
     //?标题初始化
     let MediaName = store.get("WorkSaveNo"+MediaID+".Name");
     document.getElementsByTagName("title")[0].innerText=MediaName+'-作品编辑';

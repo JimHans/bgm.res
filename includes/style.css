@@ -205,8 +205,8 @@ user-select: none;
 }
 .FloatBar{
     font-family: bgmUI;
-    width: 10%;
-    height: 60%;
+    width: 12%;
+    height: 75%;
     text-align: center;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.507);
@@ -217,39 +217,40 @@ user-select: none;
     /* -webkit-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75); */
     -moz-box-shadow: 0px 0px 10px -1px rgba(125, 125, 125, 0.75);
     border: #CBCBCB;
-    top: 21%;
-    left: 4%;
+    top: 15%;
+    left: 3%;
     z-index: 100;
     -webkit-app-region: no-drag;
     backdrop-filter: blur(30px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
 }
 .BarBrick {
     /* height: 15%; */
-    aspect-ratio: 1.24;
+    /* aspect-ratio: 1.24; */
+    aspect-ratio: 2;
     text-align: center;
     /* position:absolute; */
     position: relative;
     background-color: rgba(0, 0, 0, 0);
     border-radius:10px;
     transform: scale(1);
-    /* border: 2px solid rgb(66, 66, 66);  */
-    box-shadow: 0px 0px 10px -1px #3a3a3abf;
-    -webkit-box-shadow: 0px 0px 0px 1px #3a3a3abf;
+    border: 3px solid rgb(66, 66, 66,0); 
+    /* box-shadow: 0px 0px 10px -1px #3a3a3abf; */
+    /* -webkit-box-shadow: 0px 0px 0px 1px #3a3a3abf; */
     /* -webkit-box-shadow: 0px 0px 10px -1px #3a3a3abf; */
     /* -moz-box-shadow: 0px 0px 10px -1px #3a3a3abf; */
-    /* left: 15%;
-    right:15%; */
-    margin: 15%;
+    /* margin: 15%; */
+    margin:10%;
     margin-top: 20%;
     margin-bottom:5%;
     -webkit-app-region: no-drag;
     transition: all .25s ease;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
+    padding-left: 10px;
 }
 .BarBrick:hover {
     background-color: rgba(93, 93, 93, 0.397);
@@ -271,6 +272,18 @@ user-select: none;
     transform: scale(0);
     opacity: .5;
     transition: 0s;
+}
+.avatar{ 
+    position: relative;
+    border-radius: 50%;
+    border:3px solid #ccc;
+    height:55%;
+    /* margin-top:10%; */
+    aspect-ratio: 1;
+    background-size: cover;
+    box-shadow: 0px 0px 10px -1px rgba(81, 81, 81, 0.75);
+    -webkit-box-shadow: 0px 0px 10px -1px rgba(81, 81, 81, 0.75);
+    -moz-box-shadow: 0px 0px 10px -1px rgba(81, 81, 81, 0.75);
 }
 
 /* *主页CSS开始 */

@@ -6,17 +6,19 @@ const path = require('path');
 var packageGet = require("./package.json");
 require('@electron/remote/main').initialize(); //初始化dialog renderer
 const Store = require('electron-store'); Store.initRenderer(); //初始化electron-store
+let userpage = null;/*用户页面全局对象*/
 
 function createWindow () {
     //获取屏幕分辨率
     var screenElectron = require('electron').screen;
+    var screenwidthcalc = Math.min(parseInt(screenElectron.getPrimaryDisplay().workAreaSize.width),parseInt(screenElectron.getPrimaryDisplay().workAreaSize.height))
     // 创建主程序浏览器窗口
     const win = new BrowserWindow({
-      width:  (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3*(18/16),
-      height: (screenElectron.getPrimaryDisplay().workAreaSize.width)*2/3*(11/16),
+      width:  parseInt(screenwidthcalc*(1.35)),
+      height: parseInt(screenwidthcalc*(0.8)),
       // height: (screenElectron.getPrimaryDisplay().workAreaSize.height)*0.5,
-      minWidth: 650,
-      minHeight: 400,
+      minWidth: 1000,
+      minHeight: 600,
       //x: screenElectron.getPrimaryDisplay().workAreaSize.width-360,
       //y: screenElectron.getPrimaryDisplay().workAreaSize.height-500,
       alwaysOnTop: false,        //不置顶显示
@@ -153,6 +155,49 @@ ipcMain.on('MediaSettings', (event, arg) => {
   MediaSettings.on('closed', () => { MediaSettings = null });
 });
 
+function userpageShow () {
+  //窗口打开监听
+  var setheight = screenElectron.getPrimaryDisplay().workAreaSize.height;
+  //新建窗口
+  userpage = new BrowserWindow({
+    width: parseInt(setheight*0.4),
+    height: parseInt(setheight*0.75),
+    minWidth: 470,
+    minHeight: 320,
+    skipTaskbar: false,//显示在任务栏
+    alwaysOnTop: false,//置顶显示
+    transparent: false,//底部透明
+    frame: true,
+      titleBarStyle: "hidden",
+      titleBarOverlay: {
+        color: "#202020",
+        symbolColor: "white", },
+    resizable: true,
+    icon: path.join(__dirname, './assets/app.ico'),
+    show: true,
+    webPreferences: {
+      devTools: true,
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    }
+  });
+  // 并且为你的应用加载index.html
+  userpage.loadFile('./pages/userpage.html');
+  require('@electron/remote/main').enable(userpage.webContents) // 启用 electron/remote web组件
+  // userpage.webContents.openDevTools();
+}
+
+//监听用户信息页打开信号
+ipcMain.on("userpage",(event,data) => {
+  console.log(data);
+  if(data == 'Open') {
+    if(userpage==null||userpage.isDestroyed()){userpageShow ();}
+    else {userpage.show();}
+  }
+  if(data == 'Close') {event.preventDefault(); userpage.close();}
+});
+
 // // alternatively use these to
 // // dynamically change vibrancy
 // win.setVibrancy([options])
@@ -175,6 +220,23 @@ tray.setToolTip(packageGet.name+" v"+packageGet.version);
 app.setAppUserModelId(packageGet.name+" v"+packageGet.version);
 //设置此图标的上下文菜单
 tray.setContextMenu(contextMenu);
+
+app.setAsDefaultProtocolClient('bgmres');
+//注册唤醒链接，处理回调数据
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {app.quit();} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 聚焦到myWindow这个窗口
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.focus();
+      let commands = commandLine.slice();
+      // commandLine 是一个数组， 其中最后一个数组元素为我们唤醒的链接
+      activeUrl = decodeURI(commands.pop());
+      win.webContents.send('logincode',activeUrl)
+    }
+  });
+}
 }
 
 // Electron会在初始化完成并且准备好创建浏览器窗口时调用这个方法

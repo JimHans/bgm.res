@@ -7,6 +7,7 @@ function SettingsPageSetpageAShower() { //点击显示通用设置页面A
     document.getElementById("SettingsPageSetTabHighLight").style.width="70px";
     document.getElementById("SettingsPageSetTab").style.height="60px";
 
+
 }
 
 function SettingsPageSetpageBShower() { //点击显示个性化设置页面B
@@ -79,6 +80,19 @@ function SettingsPageSaveConfig(checkboxName,checkboxID,key,type) { //数据保�
 }
 
 function SettingsPageConfigInit() { //数据初始化
+
+    if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")){ //初始化自定义颜色
+        let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+        document.getElementById("SettingsPageSetTabHighLight").style.backgroundColor=CustomColorData;
+        document.getElementById("SettingsPageSetTabHighLight").style.boxShadow="0px 0px 1px 1px "+CustomColorData;
+        let customcolorstyle=document.createElement('style');//创建一个<style>标签
+        let customchangeText=document.createTextNode('.Winui3inputText:focus{border-bottom:2px solid '+CustomColorData+'}')//更改后伪元素的样式
+        let customchangeSwitch=document.createTextNode('input:checked + .Winui3slider {background-color: '+CustomColorData+';box-shadow: 0px 0px 0px 1px '+CustomColorData+
+        ';} input:checked + .Winui3slider:before{box-shadow: 0px 0px 0px 1px '+CustomColorData+';}input:checked + .Winui3slider:hover{background:'+CustomColorData+';filter:brightness(1.2);}')//更改后伪元素的样式
+        customcolorstyle.appendChild(customchangeText);customcolorstyle.appendChild(customchangeSwitch);//把样式添加到style标签里
+        document.body.appendChild(customcolorstyle);//把内联样式表添加到html中
+    }
+
     var KeyStoreA=['LocalStorageMediaBaseURL',
             "LocalStorageAutoUpdateArchive",
 			"LocalStorageAutoUpdateArchiveInfo",

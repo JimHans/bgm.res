@@ -1,0 +1,27 @@
+.ArchivePageContentDetailsfull-star {
+    display: inline-block;
+    aspect-ratio: 1;
+    height: 70%;
+    /* background-size: 25px 25px; */
+    background-size: cover;
+    margin-right: 10px;
+    background-image: url(../assets/stars/fullstar.png);
+}
+.ArchivePageContentDetailsempty-star {
+    display: inline-block;
+    aspect-ratio: 1;
+    height: 70%;
+    /* background-size: 25px 25px; */
+    background-size: cover;
+    margin-right: 10px;
+    background-image: url('../assets/stars/emptystar.png');
+}
+.ArchivePageContentDetailshalf-star {
+    display: inline-block;
+    aspect-ratio: 1;
+    height: 70%;
+    /* background-size: 25px 25px; */
+    background-size: cover;
+    margin-right: 10px;
+    background-image: url('../assets/stars/halfstar.png');
+}

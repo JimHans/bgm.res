@@ -34,5 +34,9 @@
 			"LocalStorageMediaBaseNumber": null,
 			"LocalStorageMediaBaseDeleteNumber": null
 		}
+	},
+	"UserData": {
+		"UserToken": null,
+		"userpageProgressSyncOptions": "Disabled"
 	}
 }
