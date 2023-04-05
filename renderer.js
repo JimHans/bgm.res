@@ -1385,7 +1385,7 @@ function ArchiveMediaBonusScan(TargetMediaURL,MediaID){
     let CardHover = store.get("WorkSaveNo"+MediaID+".Cover"); //获取封面
     let TargetMediaDirHasExtra = 0; //判断是否存在特典
     for(let ScanCounter=0;ScanCounter!=TargetMediaDir.length;ScanCounter++){ //轮询找到特典子目录
-      if(fs.lstatSync(TargetMediaURL+"\\"+TargetMediaDir[ScanCounter]).isDirectory()&&TargetMediaDir[ScanCounter]=='Extra'){ArchiveMediaBonusScan(TargetMediaURL+"\\Extra",MediaID);}
+      if(fs.lstatSync(TargetMediaURL+"\\"+TargetMediaDir[ScanCounter]).isDirectory()&&/extra/i.test(TargetMediaDir[ScanCounter])){ArchiveMediaBonusScan(TargetMediaURL+"\\"+TargetMediaDir[ScanCounter],MediaID); TargetMediaDirHasExtra+=1;}
       else if(fs.lstatSync(TargetMediaURL+"\\"+TargetMediaDir[ScanCounter]).isDirectory()){
         let CoverIcon = TargetMediaType= '';
         if (/cd|music|audio/i.test(TargetMediaDir[ScanCounter])) {TargetMediaType = '特典CD、OST';
