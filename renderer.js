@@ -874,6 +874,7 @@ function ArchiveMediaDetailsPage(MediaID){
           success: function (data2) {
             document.getElementById('ArchivePageContentDetailsSelfRankBlockDate').innerHTML="收藏日期："+data2.updated_at.substring(0,10);
             document.getElementById('ArchivePageContentDetailsSelfRankBlockComment').innerHTML="吐槽："+data2.comment;
+            document.getElementById('ArchivePageContentDetailsSelfRankBlockComment').title="吐槽："+data2.comment;
             let SelfScoreVal=data2.rate; let index = parseInt(SelfScoreVal / 2);let spans = document.getElementsByName('ArchivePageContentDetailsSelfRankBlockStars');
             for (let j = index; j < 5; j++) {spans[j].className = 'ArchivePageContentDetailsempty-star'}
             for (let k = 0; k < index; k++) {spans[k].className = 'ArchivePageContentDetailsfull-star'}
@@ -970,7 +971,7 @@ function ArchiveMediaDetailsPage(MediaID){
 
   //?填充EP选集列表
   for(let TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
-  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:100%;height:100%;padding:0px;font-size:3vmin;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:#ffffff0a;backdrop-filter: blur(30px)' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
+  $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:100%;height:100%;padding:0px;font-size:3vmin;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:rgb(0,0,0,0.05);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
   //width:12.1%;height:4vw;padding:2px;
   //检测是否已播放过
   if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}
