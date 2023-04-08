@@ -16,7 +16,7 @@ let SysdataOption={
   name:"sysdata",//文件名称,默认 config
   fileExtension:"json",//文件后缀,默认json
 }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
-
+var IfArchivePageIsInit = 0;                                          //?是否已经初始化过Archive页面
 
 //Version Get
 // window.onload = function () {
@@ -31,7 +31,7 @@ let SysdataOption={
 function OKErrorStreamer(type,text,if_reload) {
   if(type=="OK") {
     document.getElementById("OKStreamer").innerHTML="✅ "+text.toString();
-    document.getElementById("OKStreamer").style.display="block";
+    document.getElementById("OKStreamer").style.display="table";
     if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
     else{setTimeout(function() { document.getElementById("OKStreamer").style.display="none"; }, 4000);}
   }
@@ -215,7 +215,7 @@ function FloatBarAction(PageID) { //点击切换页面
     document.getElementById("ArchivePage").style.display="block";
     document.getElementById("TorrnetPage").style.display="none";
     document.getElementById("SettingsPage").style.display="none";
-    ArchivePageInit();
+    if(!IfArchivePageIsInit){ArchivePageInit();IfArchivePageIsInit = true; }//初始化ArchivePage同时记录打开状态
 
     document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
     document.getElementById("Archive").style.border="3px solid rgb(240 145 153)";
@@ -479,6 +479,7 @@ function LocalWorkScanModify(){
 
 //! 媒体库-页面初始化模块
 function ArchivePageInit(){
+  OKErrorStreamer("MessageOn","正在加载媒体库",0); //加载提示
   // *Archive Get <!--格式化ArchivePage媒体库内容-->
   if(sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber")){
     document.getElementById("ArchivePageSum").innerText="共 "+(parseInt(sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber"))-parseInt(sysdata.get("Settings.checkboxC.LocalStorageMediaBaseDeleteNumber"))).toString()+" 部作品";}
@@ -486,10 +487,15 @@ function ArchivePageInit(){
     document.getElementById('ArchivePageContent').innerHTML="";
     if(sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber")==0 || !sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber"))
     {document.getElementById('ArchivePageContent').innerHTML="<div style='position:absolute;left:25%;right:25%;top:30%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>暂时没有作品，请设置正确的媒体库地址并点击右上角下拉菜单中的“全局扫描”按钮来更新媒体库</div>";}
+    var MediaBaseScanCounter = 1;
+    requestAnimationFrame(ArchivePageInitCore);
     // *扫描作品bgmID获取作品信息
-    for(let MediaBaseScanCounter=1;MediaBaseScanCounter<=MediaBaseNumberGet;MediaBaseScanCounter++){
-
-      if(store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".ExistCondition") == "Deleted") {continue;} //发现已删除作品，自动跳过
+    function ArchivePageInitCore(){
+    // for(let MediaBaseScanCounter=1;MediaBaseScanCounter<=MediaBaseNumberGet;MediaBaseScanCounter++){
+      if(MediaBaseScanCounter>MediaBaseNumberGet) {OKErrorStreamer("MessageOff","媒体库加载完成！",0);OKErrorStreamer("OK","媒体库加载完成！",0);return;}
+      OKErrorStreamer("MessageOn","正在加载媒体库"+parseInt(MediaBaseScanCounter*100/MediaBaseNumberGet)+"%",0); //加载提示
+      if(store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".ExistCondition") == "Deleted") {;} //发现已删除作品，自动跳过
+      else{
 
       // *计算作品进度信息
       var ArchiveCardWatchPercentSaver = 0;var ArchiveCardWatchPercentRightBorder='8px'
@@ -512,7 +518,8 @@ function ArchivePageInit(){
       "<div style='border-radius: 8px;transition: all 0.5s;left:0%;right:0%;top:0%;bottom:0%;position:absolute;' onclick='ArchiveMediaDetailsPage("+MediaBaseScanCounter+")'></div>"+ // 点击触发区域
       // "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:2%;left:45%;right:5%;text-align:right;color: rgba(255, 255, 255, 0.79);z-index:20;' onclick='ArchiveContentEditer("+MediaBaseScanCounter.toString()+");'>编辑</div>"+ //编辑按键
       "</div>" );
-    }
+    }MediaBaseScanCounter+=1;requestAnimationFrame(ArchivePageInitCore);
+    cancelAnimationFrame(ArchivePageInitCore);}
 }
 
 //! 媒体库-计算作品进度信息
@@ -1007,7 +1014,7 @@ function ArchiveMediaDetailsPage(MediaID){
   if(sysdata.get("Settings.checkboxB.LocalStorageMediaShowRelative")){ //判断是否显示相关作品
   $.getJSON("https://api.bgm.tv/v0/subjects/"+bgmID+"/subjects", function(data){
     for(let Tempj = 0;Tempj!=data.length;Tempj++){
-      if(data[Tempj].type==2){document.getElementById("ArchivePageContentDetailsRelavant").style.display='block';
+      if(data[Tempj].type==2&&!/衍生|角色|世界观|番外/i.test(data[Tempj].relation)){document.getElementById("ArchivePageContentDetailsRelavant").style.display='block';
       document.getElementById("ArchivePageContentDetailsRelavant").title=data[Tempj].name_cn;
       $("#ArchivePageContentDetailsRelavant").attr('onclick','window.open("https://bgm.tv/subject/'+data[Tempj].id+'")');
       document.getElementById("ArchivePageContentDetailsRelavantCover").style.background="url('"+data[Tempj].images.small+"') no-repeat center";
@@ -1016,7 +1023,7 @@ function ArchiveMediaDetailsPage(MediaID){
       for(let Temp = 1;Temp<=sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");Temp++){
         if(store.get("WorkSaveNo"+Temp+".ExistCondition")=='Exist'&&store.get("WorkSaveNo"+Temp+".bgmID")==data[Tempj].id)
         {$("#ArchivePageContentDetailsRelavant").attr('onclick','ArchiveMediaDetailsPage('+Temp+')');break;}
-      }
+      } break;
   }}})
   }
 
@@ -1381,7 +1388,8 @@ function LocalWorkEpsScanModule(MediaID){
 
 //! 媒体库-作品特典扫描模块
 function ArchiveMediaBonusScan(TargetMediaURL,MediaID){
-  if(fs.existsSync(TargetMediaURL)){       // *当目标媒体库目录存在
+  fs.access(TargetMediaURL, fs.constants.R_OK, (err) => { //判断是否有读取权限
+  if(!err){       // *当目标媒体库目录存在 fs.existsSync(TargetMediaURL)
     let TargetMediaDir = fs.readdirSync(TargetMediaURL); //扫描目标媒体目录
     let CardHover = store.get("WorkSaveNo"+MediaID+".Cover"); //获取封面
     let TargetMediaDirHasExtra = 0; //判断是否存在特典
@@ -1404,7 +1412,8 @@ function ArchiveMediaBonusScan(TargetMediaURL,MediaID){
         TargetMediaDirHasExtra = TargetMediaDirHasExtra+1;
       }
     } if(TargetMediaDirHasExtra==0) {$("#ArchivePageContentDetailsEpisodeExtraBlock").append('<div style="margin:auto;">未找到特典信息</div>')}
-  }
+  } else {$("#ArchivePageContentDetailsEpisodeExtraBlock").append('<div style="margin:auto;">未找到特典信息</div>')}
+  })
 }
 
 //! 恢复出厂设置

@@ -684,8 +684,8 @@ user-select: none;
     transition: all 0.5s;
     /* width:100%;
     height:100%; */
-    width: 100.5%;
-    left: -0.25%;
+    width: 101%;
+    left: -0.5%;
     height: 100.5%;
     position: absolute;
     background-position:center;
@@ -1255,12 +1255,12 @@ table, th, td { border: 1px solid black; }
     display:none;
     font-family: bgmUI;
     text-align: center;
-    position: absolute;
+    position: relative;
     padding: 2px;
     top:40px;
     height:auto;
-    left:38%;
-    right:38%;
+    margin-left:37%;
+    margin-right:37%;
     font-size: 15px;
     line-height: 33px;
     background-color: #20b965;
@@ -1268,6 +1268,7 @@ table, th, td { border: 1px solid black; }
     -webkit-app-region: no-drag;
     backdrop-filter: blur(30px);
     animation: Ascent-Streamer 4s ease;
+    margin-bottom: 5px;
 }
 
 /* TODO 空白Div盒体、高斯模糊输入框定义模板 */

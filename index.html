@@ -327,8 +327,8 @@
         </div>
 
         <!--  *成功、失败横幅提示  -->
-        <div id="OKStreamer" class="SystemStreamer"></div>
-        <div id="MessageStreamer" class="SystemStreamer" style="background-color:#ffffff9a;color:black"></div>
+        <div id="OKStreamer" class="SystemStreamer" style="width: auto;padding-left: 15px;padding-right: 15px;margin-left: auto;margin-right: auto;min-width: 180px;"></div>
+        <div id="MessageStreamer" class="SystemStreamer" style="background-color:#ffffff9a;color:black;min-width: 200px;"></div>
         <div id="ErrorStreamer" class="SystemStreamer" style="background-color:#a4414f;"></div>
         <!--  TODO 左下角底部快捷按钮  -->
         <div class="boxBlank" style="width: 12%;left: 3%;bottom:0%;height: 45px;border-radius: 15px 15px 0 0;background-color: rgba(0, 0, 0, 0.507);animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);backdrop-filter: blur(60px);">
@@ -413,7 +413,7 @@
         const webview =document.getElementById('qbitwebview')
         
         webview.addEventListener('did-stop-loading', () => { 
-            if(webview.getTitle().slice(0,11)!='qBittorrent') {document.getElementById('TorrnetPage').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbitdisconnect.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
+            if(!/qBittorrent/i.test(webview.getTitle())) {document.getElementById('TorrnetPage').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbitdisconnect.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
             "<div style='position:absolute;left: 10%;right: 10%;top: 55%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size: 4vmin;text-align: center;'>很抱歉，qBittorrnet Web UI暂时不可达</div>"+
             "<div style='position:absolute;left: 10%;right: 10%;top: 65%;bottom:20%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.3);font-size: 3vmin;text-align: center;'>请检查您的网络是否连接正常，或者是否填写了不正确的URL</div>"}
         })
