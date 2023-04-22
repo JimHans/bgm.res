@@ -7,6 +7,7 @@ var packageGet = require("./package.json");
 require('@electron/remote/main').initialize(); //初始化dialog renderer
 const Store = require('electron-store'); Store.initRenderer(); //初始化electron-store
 let userpage = null;/*用户页面全局对象*/
+let AddMediaPage = null;/*添加媒体页面全局对象*/
 
 function createWindow () {
     //获取屏幕分辨率
@@ -122,7 +123,7 @@ ipcMain.on("dev",(event,data) => {
 ipcMain.on('MediaSettings', (event, arg) => {
   // 创建子页面
   let setwidth = screenElectron.getPrimaryDisplay().workAreaSize.width;
-  var MediaSettings = new BrowserWindow({
+  let MediaSettings = new BrowserWindow({
     width: parseInt((setwidth/2)*(6/5)),
     height: parseInt((setwidth/2)*(3/4)),
     minWidth: 500,
@@ -145,7 +146,7 @@ ipcMain.on('MediaSettings', (event, arg) => {
       contextIsolation: false,
     }
   });
-  MediaSettings.loadFile('MediaSettings.html');// 并且为你的应用加载index.html
+  MediaSettings.loadFile('./pages/MediaSettings.html');// 并且为你的应用加载index.html
   require('@electron/remote/main').enable(MediaSettings.webContents) // 启用 electron/remote web组件
   // MediaSettings.webContents.openDevTools();
   MediaSettings.on('ready-to-show', function () {
@@ -155,6 +156,7 @@ ipcMain.on('MediaSettings', (event, arg) => {
   MediaSettings.on('closed', () => { MediaSettings = null });
 });
 
+//用户信息页初始化函数
 function userpageShow () {
   //窗口打开监听
   var setheight = screenElectron.getPrimaryDisplay().workAreaSize.height;
@@ -196,6 +198,53 @@ ipcMain.on("userpage",(event,data) => {
     else {userpage.show();}
   }
   if(data == 'Close') {event.preventDefault(); userpage.close();}
+});
+
+//添加媒体页初始化函数
+function AddMediaPageShow () {
+  // 创建子页面
+  let setwidth = screenElectron.getPrimaryDisplay().workAreaSize.width;
+  AddMediaPage = new BrowserWindow({
+    width: parseInt((setwidth/2)*(6/5)),
+    height: parseInt((setwidth/2)*(3/4)),
+    minWidth: 500,
+    minHeight: 360,
+    skipTaskbar: false,//显示在任务栏
+    alwaysOnTop: false,//置顶显示
+    transparent: false,//底部透明
+    frame: true,
+      titleBarStyle: "hidden",
+      titleBarOverlay: {
+        color: "#202020",
+        symbolColor: "white", },
+    resizable: true,
+    icon: path.join(__dirname, './assets/app.ico'),
+    show: true,
+    webPreferences: {
+      devTools: true,
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    }
+  });
+  AddMediaPage.loadFile('./pages/AddMediaPage.html');// 并且为你的应用加载index.html
+  require('@electron/remote/main').enable(AddMediaPage.webContents) // 启用 electron/remote web组件
+  //AddMediaPage.webContents.openDevTools();
+  AddMediaPage.on('ready-to-show', function () {
+    AddMediaPage.webContents.send('data','OK'); // 发送消息
+    AddMediaPage.show() // 初始化后再显示
+  });
+  AddMediaPage.on('closed', () => { AddMediaPage = null });
+}
+
+//监听添加作品页打开信号
+ipcMain.on("AddMediaPage",(event,data) => {
+  console.log(data);
+  if(data == 'Open') {
+    if(AddMediaPage==null||AddMediaPage.isDestroyed()){AddMediaPageShow ();}
+    else {AddMediaPage.show();}
+  }
+  if(data == 'Close') {event.preventDefault(); AddMediaPage.close();}
 });
 
 // // alternatively use these to

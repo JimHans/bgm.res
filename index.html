@@ -9,14 +9,14 @@
     <title>bgm.res</title>
     <style>
     </style>
-    <script> 
+    <script>  //重定向NodeRequire以引入JQuery
         window.nodeRequire = require;
         delete window.require;
         delete window.exports;
         delete window.module;
-    </script> <!--重定向NodeRequire以引入JQuery-->
-    <script src="./includes/jquery-min.js"></script>
-    <script src="./js/ping.js"></script>
+    </script> 
+    <script src="./includes/jquery-min.js"></script> <!--引入JQuery-->
+    <script src="./js/ping.js"></script> <!--Ping模块-->
 </head>
 
 
@@ -26,6 +26,7 @@
             <img src="./assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
             <img src="./assets/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
             <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;">bgm.res</a>
+            <div class="hider" onclick="ArchiveMediaDetailsPageShare()" title="分享" style="right:140px;position:absolute;background-image: unset;"><svg t="1682171029405" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2648" width="20" height="30"><path d="M742 658.3c-35.5 0-67.7 13.6-90.9 35.7L408.4 547.5c0.3-3.4 0.5-6.6 0.5-10.1 0-20-5.2-38.7-14.3-55.3l205.7-149.2c23.2 21.8 55.1 35.2 90.4 35.2 70.7 0 128.1-54.2 128.1-120.9 0-66.8-57.4-120.9-128.1-120.9-70.8 0-128.1 54.2-128.1 120.9 0 5.5 0.4 11.1 1.2 16.4L336.5 428.5c-16.8-7.7-35.8-12-55.8-12-70.8 0-128.2 54.2-128.2 120.9s57.4 120.9 128.2 120.9c35.5 0 67.7-13.6 90.9-35.7L614.3 769c-0.3 3.4-0.4 6.7-0.4 10.1 0 66.8 57.4 120.9 128.1 120.9 70.8 0 128.2-54.2 128.2-120.9S812.7 658.3 742 658.3z m0 0" fill="#ffffff" p-id="2649"></path></svg></div>
             <!-- <div class="cross" onclick="Closer()"></div>
             <div class="hider" onclick="Hider()"></div> 不需要的自定义container-->
         </div>
@@ -205,8 +206,8 @@
                     <div class="Winui3brickContainer">设定媒体库目录<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写你的媒体库目录" style="width:50%;right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",0,"LocalStorageMediaBaseURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                     <div class="Winui3brickContainer"><div>手动重新扫描<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">手动重新对媒体库进行全局扫描，将覆盖现有数据</a></div><button type="button" value="点击扫描" class="Winui3button" onclick="LocalWorkScan();">点击扫描</button></div>
                     <div class="Winui3brickContainer"><div>手动更新媒体库信息<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">手动重新对所有媒体信息进行匹配更新，将覆盖现有数据</a></div><button type="button" value="点击刷新" class="Winui3button" onclick="ArchiveMediaUpdate()">点击刷新</button></div>
-                    <div class="Winui3brickContainer">启动后自动更新媒体库(暂不可用)<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateArchive" onchange='SettingsPageSaveConfig("checkboxA",1,"LocalStorageAutoUpdateArchive","checkbox")'><div class="Winui3slider"></div></label></div>
-                    <div class="Winui3brickContainer">启动后媒体库自动增量扫描<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateArchiveInfo" onchange='SettingsPageSaveConfig("checkboxA",2,"LocalStorageAutoUpdateArchiveInfo","checkbox")'><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">启动后媒体库自动增量扫描<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateArchive" onchange='SettingsPageSaveConfig("checkboxA",1,"LocalStorageAutoUpdateArchive","checkbox")'><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer">启动后自动更新媒体库(实验)<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateArchiveInfo" onchange='SettingsPageSaveConfig("checkboxA",2,"LocalStorageAutoUpdateArchiveInfo","checkbox")'><div class="Winui3slider"></div></label></div>
                     <div class="Winui3brickContainer"><div>设定字幕文件夹(暂不可用)<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">设定后，系统将自动在媒体库显示该文件夹，方便调用字幕</a></div>
                     <input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写字幕文件夹名称" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",3,"LocalStorageMediaSubFolderName","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                     <!-- 网络探针 全按钮 -->
@@ -350,6 +351,8 @@
 <script src="./js/SettingsPage.js"></script>
 <!-- 登录请求&用户数据获取 -->
 <script src="./js/UserAuth.js"></script>
+<!--分享模块-->
+<script src="./js/Mainpage_Modules/MediaBannerShare.js"></script> 
 
 <!-- 作品详情章节点击展开/收起 -->
 <script> //作品详情卡片控件

@@ -242,6 +242,7 @@ function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
         if(data[MediaBaseElementsGet].relation=='导演') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Director",data[MediaBaseElementsGet].name);}
         if(data[MediaBaseElementsGet].relation=='动画制作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Corp",data[MediaBaseElementsGet].name);}
         if(data[MediaBaseElementsGet].relation=='原作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
+        else if(data[MediaBaseElementsGet].relation=='原案') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
         } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/OKErrorStreamer("MessageOff","作品信息更新进行中",0);
         MediaPageLoad(MediaID);}); // *错误回调
         } else{OKErrorStreamer("MessageOff","作品信息更新进行中",0);OKErrorStreamer("Error","bgmID无效",0);}

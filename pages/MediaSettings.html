@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <html>
 <head>
-    <link rel="stylesheet" href="./includes/style.css"> <!--主样式表-->
-    <link rel="stylesheet" href="./includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表-->
+    <link rel="stylesheet" href="../includes/style.css"> <!--主样式表-->
+    <link rel="stylesheet" href="../includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表-->
     <meta charset="UTF-8">
     <title>作品编辑</title>
     <style>
@@ -14,15 +14,15 @@
         delete window.exports;
         delete window.module;
     </script> <!--重定向NodeRequire以引入JQuery-->
-    <script src="./includes/jquery-min.js"></script>
-    <script src="./js/MediaSettings.js"></script>
+    <script src="../includes/jquery-min.js"></script>
+    <script src="../js/MediaSettings.js"></script>
 </head>
 
 
 <body style="overflow: hidden;">
     <div class="TitleBar"> <!--*标题栏-->
-        <img src="./assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
-        <img src="./assets/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
+        <img src="../assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+        <img src="../assets/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
         <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">BGM.res</a>
     </div>
     <div class="SettingsPage" style="width:100%;display:block;"> <!--*设置页 -->
