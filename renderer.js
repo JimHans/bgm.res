@@ -933,7 +933,7 @@ function ArchiveMediaDetailsPage(MediaID){
         if(data.data[tempi-1].type==2){
           store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+tempi+'.Condition',"Watched")
           document.getElementById('ArchivePageContentDetailsEpisodeNo'+tempi).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)';}
-        if(data.data[tempi-1].type==3&&sysdata.get("UserData.userpageProgressSyncOptions")=='Cloud'){
+        if(data.data[tempi-1].type==0&&sysdata.get("UserData.userpageProgressSyncOptions")=='Cloud'){
           store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+tempi+'.Condition',"Unwatched")}
       }
       if(sysdata.get("UserData.userpageProgressSyncOptions")=='Mix'){
