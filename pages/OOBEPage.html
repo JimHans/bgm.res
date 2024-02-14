@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <link rel="stylesheet" href="../includes/style.css"> <!--主样式表-->
+    <link rel="stylesheet" href="../includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表-->
+    <meta charset="UTF-8">
+    <title>欢迎</title>
+    <script> 
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    </script> <!--重定向NodeRequire以引入JQuery-->
+    <script src="../includes/jquery-min.js"></script>
+</head>
+
+
+<body style="overflow: hidden;">
+    <div class="TitleBar"> <!--*标题栏-->
+        <img src="../assets/icons/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+        <img src="../assets/icons/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
+        <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">欢迎</a>
+    </div>
+
+    <div class="SettingsPage" style="width:100%;display:block;"> 
+            <div  class="Winui3setpageINNER" style="background-color: #27272730;backdrop-filter: blur(200px);overflow: hidden;">
+                <div class="Winui3brickContainer" id="UserBackgroundCard" style="height:430px;margin-top: 20px;display:flex;justify-content: center;flex-direction: column;overflow: hidden;">
+                    <div id="OOBEContext" style="width:2244px;height:100%;position: absolute;overflow: hidden;left:0;transition:all 0.3s cubic-bezier(0,0,0.2,1)">
+                        <img src="../assets/OOBE.png" style="width:100%;height:100%;position: absolute;">
+                        <button type="button" value="开始使用" class="Winui3button" onclick="FreshStart()" style="position: absolute;right: 35px;
+                        bottom: 20px;width: 300px;height: 40px;font-size: 28px;font-family: bgmLogoFonts;padding-bottom: 6px;">Start bgm.res</button>
+                    </div>
+                </div>
+                
+                <div class="Winui3brickContainer" style="height:50px;display:flex;justify-content: space-around;margin-top:15px">
+                    <div id="MediaWantedBrick" class="BarBrick" style="margin: 5px;width:150px;justify-content:center;padding:0;height:90%;aspect-ratio:unset;flex-direction: column;"  title="上一页" onclick="PrevPage()">上一页</div>
+                    <div id="MediaWtchingBrick" class="BarBrick" style="margin: 5px;width:150px;justify-content:center;padding:0;height:90%;aspect-ratio:unset;flex-direction: column;"  title="下一页" onclick="NextPage()">下一页</div>
+                </div>
+        </div>
+    </div>
+</body>
+<script>
+    const {ipcRenderer} = nodeRequire('electron');
+    const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
+    let SysdataOption={
+    name:"sysdata",//文件名称,默认 config
+    fileExtension:"json",//文件后缀,默认json
+    }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
+    function NextPage(){
+        let page = document.getElementById("OOBEContext");
+        if(page.style.left!="-1870px")
+        page.style.left = parseInt(page.style.left)-374+"px";
+    }
+
+    function PrevPage(){
+        let page = document.getElementById("OOBEContext");
+        if(page.style.left!="0px")
+        page.style.left = parseInt(page.style.left)+374+"px";
+    }
+    function FreshStart(){
+        sysdata.set("Settings.checkboxC.OOBE",true);
+        ipcRenderer.send('OOBEPage', 'Close');
+    }
+</script>
+</html>

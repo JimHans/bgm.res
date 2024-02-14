@@ -4,7 +4,7 @@
 
 @font-face { /*winUIfont*/
     font-family: winUIfont;
-    src: url(../assets/SourceHanSans.otf)
+    src: url(../assets/Fonts/SourceHanSans.otf)
 }
 
 /* 标题栏 */
@@ -80,7 +80,7 @@
     right: 16px;
     bottom:15px;
     backdrop-filter: blur(200px);
-    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+    animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -122,7 +122,7 @@
     right:16px;
     z-index: 0;
     user-select: none;
-    animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);
+    animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);
 }
 /*选项卡按钮样式*/
 .Winui3setTabBrick {

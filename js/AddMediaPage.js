@@ -1,3 +1,8 @@
+/**
+ * @name AddMediaPage.js
+ * @param bgm.res_AddMediaPage
+ * @description bgm.res新增媒体编辑界面渲染js
+ */
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
 const store = new Store();                                            //?创建electron-store存储资源库对象
 const ipc = nodeRequire('electron').ipcRenderer;                      //?引入ipcRenderer进程通信api
@@ -52,7 +57,7 @@ function AddMediaPageSearch(Key){
             for(let ScanCounter=0;ScanCounter!=data.list.length;ScanCounter++){
                 SerachResultGetted = 1;
                 let coverimageurl = "../assets/banner.jpg')";
-                if(data.list[ScanCounter].images.medium) {coverimageurl = data.list[ScanCounter].images.medium}
+                if(data.list[ScanCounter].hasOwnProperty("images") && data.list[ScanCounter].images && data.list[ScanCounter].images.medium) {coverimageurl = data.list[ScanCounter].images.medium}
                 $("#AddMediaPageSearchSuggestion").append("<div class='Winui3brickContainer'>"+"<div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+coverimageurl+"\") no-repeat top;background-size:cover;border-radius:8px;'></div>"+
                 "<div style='position:relative;margin-left:10px;margin-right:45px;overflow:hidden'><div style='display: -webkit-box;text-overflow: ellipsis;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;'>"+data.list[ScanCounter].name
                 +"</div><div style='position:relative;font-size:15px;margin-top:5px;color: #aaa;text-overflow: ellipsis;white-space: nowrap;overflow:hidden'>"+data.list[ScanCounter].name_cn+"</div></div>"+
@@ -157,6 +162,7 @@ function submitA(){
     store.set("WorkSaveNo"+WorkTotalNumberNew+".Corp",'Corp'); //媒体默认制作公司
     store.set("WorkSaveNo"+WorkTotalNumberNew+".Cover",checkboxA[8].value); //媒体默认封面(后期联网更新为base64)
     store.set("WorkSaveNo"+WorkTotalNumberNew+".ExistCondition",'Exist'); //媒体默认状态(默认存在)
+    store.set("WorkSaveNo"+WorkTotalNumberNew+".EPAutoUpdate",checkboxA[9].checked);//媒体EP自动更新
     LocalWorkEpsScanModule(WorkTotalNumberNew); //扫描作品EP信息
 
     $.ajaxSettings.async = false; //关闭异步
@@ -175,7 +181,8 @@ function submitA(){
 
     OKErrorStreamer('MessageOff','新作品添加完成！',0);
     OKErrorStreamer('OK','新作品添加完成！',0);
-    ipc.send('MainWindow','Refresh');
+    ipc.send('MainWindow','RefreshArchivePage'+WorkTotalNumberNew);
+    ipc.send('AddMediaPage','Close');
     }
     else {OKErrorStreamer('Error','作品信息不完整！',0);}
 }

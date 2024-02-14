@@ -1,3 +1,8 @@
+/**
+ * @name userpage.js
+ * @param bgm.res_userpage
+ * @description bgm.res用户信息界面渲染js
+ */
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
 const store = new Store();                                            //?创建electron-store存储资源库对象
 const ipc = nodeRequire('electron').ipcRenderer;
@@ -9,6 +14,7 @@ let SysdataOption={
     fileExtension:"json",//文件后缀,默认json
 }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
 
+//?加载用户信息
 function UserpageOnload () {
     if(sysdata.get('UserData.UserToken')&&sysdata.get('UserData.UserToken')!=''){
         let UserID = 0;
@@ -27,7 +33,7 @@ function UserpageOnload () {
                 document.getElementById('UserCardID').innerText=data.nickname
                 document.getElementById('UserAuthID').innerText='@'+data.username
                 document.getElementById('UserSign').innerText=data.sign
-                $("#userpageTimeMachine").attr('onclick','window.open("https://bgm.tv/user/'+data.username+'")');
+                $("#userpageTimeMachine").attr('onclick','shell.openExternal("https://bgm.tv/user/'+data.username+'")');
                 UserID = data.username
                 var UserFavouriteAPI = "https://api.bgm.tv/v0/users/"+data.username+"/collections?subject_type=2&type="
 
@@ -40,8 +46,8 @@ function UserpageOnload () {
                     success: function (data) {
                         if(data.data[0].subject.name.length>15)document.getElementById('UserRecentView').innerHTML="<marquee>"+data.data[0].subject.name+" / "+data.data[0].subject.name_cn+"</marquee>"
                         else document.getElementById('UserRecentView').innerHTML=data.data[0].subject.name+" / "+data.data[0].subject.name_cn
-                        // $("#UserRecentView").attr('onclick','window.open("https://bgm.tv/user/'+data.username+'")');
-                    }, error: function () {;}
+                        $("#userpageRecentEP").attr('onclick','shell.openExternal("https://bgm.tv/subject/'+data.data[0].subject_id+'")');
+                    }, error: function () {document.getElementById('UserRecentView').innerHTML="获取失败"}
                 });
 
                 let MediaCondition = ['MediaWanted','MediaWatched','MediaWatching','MediaSuspended','MediaRejected']
@@ -56,9 +62,13 @@ function UserpageOnload () {
                         timeout : 2000,
                         success: function (data) {document.getElementById(MediaCondition[calc-1]).innerHTML=data.total
                             $("#"+MediaCondition[calc-1]+"Brick").attr('onclick','window.open("https://bgm.tv/anime/list/'+UserID+'/'+MediaConditionbgm[calc-1]+'")');}, 
-                        error: function () {;}
+                        error: function () {document.getElementById(MediaCondition[calc-1]).innerHTML='NULL'}
                     });
                 }
+
+                //?获取用户进度瓷砖
+                document.getElementById('UserProgressTile').style.background='url("https://bangumi-mosaic-tile.aho.im/users/'+UserID+'/timelines/progress.svg") center center  no-repeat';
+                document.getElementById('UserProgressTile').style.backgroundSize='contain';
 
                 $.getJSON("https://api.netaba.re/user/"+UserID, function(data2){
                     am5.ready(function() {
@@ -116,17 +126,28 @@ function UserpageOnload () {
             }, error: function () {
                 document.getElementById('UserCard').style.background='url("../assets/icon.png") no-repeat center'
                 document.getElementById('UserCard').style.backgroundSize='cover';
-                shell.openExternal("https://bgm.tv/oauth/authorize?response_type=code&client_id=bgm252963d4985ddef20&redirect_uri=bgmres://logincode");
+                //显示登录按钮与提示
+                setTimeout(function(){
+                document.getElementById('UserLoginBlock').style.display='flex';
+                document.getElementById('UserLoginBlockTips').style.display='block';},10);
+                // shell.openExternal("https://bgm.tv/oauth/authorize?response_type=code&client_id=bgm252963d4985ddef20&redirect_uri=bgmres://logincode");
             }
         });
     }
-    else {shell.openExternal("https://bgm.tv/oauth/authorize?response_type=code&client_id=bgm252963d4985ddef20&redirect_uri=bgmres://logincode");
-    document.getElementById('userpageProgressSyncOptions').value='Disabled';
-    document.getElementById('userpageProgressSyncOptions').disabled=true;
+    else {
+    //显示登录按钮与提示
+    setTimeout(function(){
+    document.getElementById('UserLoginBlock').style.display='flex';
+    document.getElementById('UserLoginBlockTips').style.display='block';},10);
+    // shell.openExternal("https://bgm.tv/oauth/authorize?response_type=code&client_id=bgm252963d4985ddef20&redirect_uri=bgmres://logincode");
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('userpageProgressSyncOptions').value='Disabled';
+        document.getElementById('userpageProgressSyncOptions').disabled=true;});
     }   
 }
 window.onload = UserpageOnload();
 
+//?用户登出执行
 function UserpageLogout(){
     var result = dialog.showMessageBoxSync({
         type:"info",
@@ -134,10 +155,33 @@ function UserpageLogout(){
         title:"提示",
         message:`您确定要退出登录吗？`
     });
-    if(result == 1){sysdata.set('UserData.UserToken','');ipc.send('MainWindow','Refresh');ipc.send('userpage','Close');}
+    if(result == 1){sysdata.set('UserData.UserToken','');sysdata.set('UserData.userpageProgressSyncOptions','Disabled');ipc.send('MainWindow','Refresh');ipc.send('userpage','Close');}
 }
 
+//?保存用户自定token
+function SaveUserToken(){
+    if(document.getElementById('UserTokenBox').value!=''){
+        sysdata.set('UserData.UserToken',document.getElementById('UserTokenBox').value);
+        ipc.send('MainWindow','Refresh');
+        ipc.send('userpage','Close');
+    }
+    else dialog.showMessageBoxSync({type:"error",buttons:["确认"],title:"错误",message:`请输入Token`});
+}
+
+
+//?显示/隐藏用户自定token
+function ShowHideUserToken(){
+    if(document.getElementById('UserTokenBox').type=='password'){document.getElementById('UserTokenBox').type='text';}
+    else if(document.getElementById('UserTokenBox').type=='text'){document.getElementById('UserTokenBox').type='password';}
+}
+
+
+//?初始化用户信息界面-进度同步设置与token信息
 window.onload = function () {
     if(sysdata.get('UserData.userpageProgressSyncOptions')&&sysdata.get('UserData.userpageProgressSyncOptions')!='')
     {document.getElementById('userpageProgressSyncOptions').value=sysdata.get('UserData.userpageProgressSyncOptions');}
+    //载入token信息
+    if(sysdata.get('UserData.UserToken')&&sysdata.get('UserData.UserToken')!=''){
+        document.getElementById('UserTokenBox').value=sysdata.get('UserData.UserToken');
+    }
 }

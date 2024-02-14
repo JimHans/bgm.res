@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <link rel="stylesheet" href="../includes/style.css"> <!--主样式表-->
+    <link rel="stylesheet" href="../includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表-->
+    <meta charset="UTF-8">
+    <title>分享</title>
+    <script> 
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    </script> <!--重定向NodeRequire以引入JQuery-->
+    <script src="../includes/jquery-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../includes/toastify.min.css"> <!--引入Toastify-->
+    <script type="text/javascript" src="../includes/toastify-js"></script> <!--引入Toastify-->
+    <script src="../js/MediaShare.js"></script> <!--引入本页脚本-->
+
+</head>
+
+<body style="overflow: hidden;">
+    <div class="TitleBar"> <!--*标题栏-->
+        <img src="../assets/icons/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+        <img src="../assets/icons/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
+        <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">分享</a>
+    </div>
+
+    <div class="SettingsPage" style="width:100%;display:block;"> <!--*页面 -->
+        <div class="Winui3setpageINNER" style="background-color: #27272730;backdrop-filter: blur(200px);border-radius: 0px;overflow-y:hidden">
+            <div id="ShareCanvasContainer" class="Winui3brickContainer" id="UserBackgroundCard" style="height:320px;margin-top: 20px;display:flex;justify-content: center;flex-direction: column;text-shadow: #27272730;">
+                <div style="border-radius: 15px;position: absolute;width: 1280px;height: 720px;transform: scale(0.47265625);overflow: hidden;font-family: bgmUI;color:#fff">
+                    <div id="ShareCanvas" style="left:0;top:0;width: 1280px;;height:720px;">
+                        <div id="ShareCanvasBackGround" style="left:0;top:0;width: 1280px;;height:720px;filter: blur(50px) brightness(60%);"></div>
+                        
+                        <div id="ShareCanvasCover" style="border-radius:30px;box-shadow: 0 0 8px rgb(0 0 0 / 66%);position:absolute;left:80px;top:60px;width:450px;height:600px"></div>
+                        
+                        <div style="position: absolute;left: 610px;top: 20px;width: 600px;height: 260px;background:url('../assets/ShareContent.png')">
+                            <div id="ShareCanvasContent" style="left: 30px;right: 30px;position: absolute;top: 70px;font-size: 25px;line-height: normal;overflow: hidden;color:#bbb;font-weight: 600;">在此填写分享简评</div>
+                        </div>
+                        
+                        <div style="position:absolute;left:610px;top:290px;width:600px;color:#f4ea2a;font-family: bgmUIHeavy;font-size:45px;display: flex;align-content: space-around;align-items: center;height: 60px;">
+                            <div style="height:100%;aspect-ratio:1;top: 0;background: url('../assets/stars/fullstar.png') no-repeat center;margin-bottom: 4px;"></div>
+                            <div id="ShareCanvasRank" style="line-height: 100%;margin-left: 15px;"></div>
+                        </div>
+                        
+                        <div style="position:absolute;left:610px;top:360px;width:600px;height:auto;font-family: bgmUIHeavy;font-size:60px;text-shadow: 0 0 10px black;line-height: initial"><div id="ShareCanvasTitle"></div></div>
+                        
+                        <div id="ShareCanvasStaff1" style="position:absolute;left:610px;top:485px;width:600px;font-size:30px;color:#ddd;
+                        overflow: hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 30px;"></div>
+                        
+                        <div id="ShareCanvasStaff2" style="position:absolute;left:610px;top:530px;width:600px;font-size:30px;color:#ddd;
+                        overflow: hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 30px;"></div>
+                        
+                        <div style="position:absolute;left:610px;top:600px;width:600px;height:90px;border-radius: 25px;background-color: rgb(0 0 0 / 30%)">
+                            <div id="ShareCanvasShareQR" style="height:100%;aspect-ratio:1;position: absolute;right: 0;top: 0;"></div>
+                            <div id="ShareCanvasShare" style="height:100%;position: absolute;left: 40px;font-size: 50px;font-family: bgmLogoFonts;color: #ddd;line-height: 75px;">bgm.res</div>
+                            <div id="ShareCanvasShare" style="height:100%;position: absolute;right: 100px;top: 0;font-size: 25px;padding:3px;
+                            line-height: 40px;color: #ddd;font-weight: 600;text-align: right;">扫描右侧二维码<br/>在bangumi了解更多</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="Winui3brickContainer" style="height:50px;display:flex;justify-content: center;">
+                <input class="Winui3inputText" type="text" name="ShareContextBox" placeholder="在此填写分享简评" style="left: 10px;height:40px;width:420px" required>
+                <div class="Winui3button" style="width:auto;margin: 5px;justify-content: center;padding: 0;height: 50%;flex-direction: column;right: 110px;position: absolute;aspect-ratio: 1;"  title="生成" onclick="SharePostGenerate()"><img src="../assets/generate.svg" alt="Generate" width="18" height="18"/></div>
+                <div class="Winui3button" style="width:auto;margin: 5px;justify-content: center;padding: 0;height: 50%;flex-direction: column;right: 60px;position: absolute;aspect-ratio: 1;"  title="保存" onclick="SharePostSave()">
+                    <svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg>
+                </div>
+                <div class="Winui3button" style="width:auto;margin: 5px;justify-content: center;padding: 0;height: 50%;flex-direction: column;right: 10px;position: absolute;aspect-ratio: 1;"  title="分享" onclick="SharePostShare()"><img src="../assets/share.svg" alt="Generate" width="20" height="20"/></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

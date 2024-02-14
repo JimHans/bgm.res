@@ -1,4 +1,10 @@
+/**
+ * @name UserAuth.js
+ * @module UserAuth
+ * @description bgm.res登录界面的登录鉴权与用户信息获取模块
+ */
 var qs = nodeRequire('qs');
+
 ipcRenderer.on('logincode', function(event, arg) {
 $.ajax({
     type: 'POST',

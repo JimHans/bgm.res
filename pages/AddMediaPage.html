@@ -21,8 +21,8 @@
 
 <body style="overflow: hidden;">
     <div class="TitleBar"> <!--*标题栏-->
-        <img src="../assets/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
-        <img src="../assets/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
+        <img src="../assets/icons/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+        <img src="../assets/icons/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
         <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">BGM.res-添加作品</a>
     </div>
     <div class="SettingsPage" style="width:100%;display:block;"> <!--*设置页 -->
@@ -50,6 +50,8 @@
                 <div class="Winui3brickContainer">作品封面URL<input class="Winui3inputText" type="text" name="checkboxA" style="width:50%;right: 60px;" placeholder="填写本作品封面URL链接，若为本地图片请使用右侧按钮选择" value="./assets/banner.jpg" required><button type='button' value='选择文件' class='Winui3button' style='width:30px' ><svg t='1673539124397' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3567' width='20' height='20'><path d="M853.333333 469.333333a42.666667 42.666667 0 0 0-42.666666 42.666667v256a42.666667 42.666667 0 0 1-42.666667 42.666667H256a42.666667 42.666667 0 0 1-42.666667-42.666667V256a42.666667 42.666667 0 0 1 42.666667-42.666667h256a42.666667 42.666667 0 0 0 0-85.333333H256a128 128 0 0 0-128 128v512a128 128 0 0 0 128 128h512a128 128 0 0 0 128-128v-256a42.666667 42.666667 0 0 0-42.666667-42.666667z" fill="#ffffff" p-id="2787"></path><path d="M682.666667 213.333333h67.413333l-268.373333 267.946667a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586666 0L810.666667 273.92V341.333333a42.666667 42.666667 0 0 0 42.666666 42.666667 42.666667 42.666667 0 0 0 42.666667-42.666667V170.666667a42.666667 42.666667 0 0 0-42.666667-42.666667h-170.666666a42.666667 42.666667 0 0 0 0 85.333333z" fill="#ffffff" p-id="2788"></path></svg>
                     <input type="file" id="MediaCoverSelect" class="Winui3inputFile" style='width:100%' accept="image/*" onchange="javascript:{document.getElementsByName('checkboxA')[8].value = document.getElementById('MediaCoverSelect').files[0].path.replaceAll('\\','/'); }">
                 </button></div>
+                <div class="Winui3brickContainer">自动更新剧集<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateMediaInfo" ><div class="Winui3slider"></div></label></div>
+
                 <div class="Winui3brickContainer" style="background-color:#4b5217"><svg t="1673433099656" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="18784" width="18" height="20" style="margin-right: 10px;margin-left:5px"><path d="M432 709.248l-166.624-166.624 45.248-45.248 121.376 121.376 281.376-281.376 45.248 45.248L432 709.248zM512 64C264.576 64 64 264.576 64 512s200.576 448 448 448 448-200.576 448-448S759.424 64 512 64z" fill="#6ccb5f" p-id="18785"></path></svg>保存更改<button type="button" value="保存并应用" onclick="submitA();" class="Winui3button">保存作品</button></div>
             
                 <!--搜索建议遮罩-->

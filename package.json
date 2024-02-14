@@ -1,9 +1,9 @@
 {
   "name": "bgm.res",
   "title": "bgm.res",
-  "version": "0.14.5",
+  "version": "0.15.0",
   "description": "bgm.res-A local bangumi manager",
-  "buildinf": "Build 2023-08-02 Beta",
+  "buildinf": "Build 2024-02-13 Beta",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -38,7 +38,7 @@
           "target": "nsis"
         }
       ],
-      "icon": "./assets/app.ico",
+      "icon": "./assets/icons/app.ico",
       "asarUnpack": [
         "src/**",
         "README.md"
@@ -50,21 +50,27 @@
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "./install.ico",
       "uninstallerIcon": "./install.ico",
-      "installerHeaderIcon": "./assets/app.ico",
+      "installerHeaderIcon": "./assets/icons/app.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "bgm.res"
     }
   },
   "devDependencies": {
-    "electron": "^20.3.8",
-    "electron-builder": "^23.5.1"
+    "electron": "^25.9.8",
+    "electron-builder": "^24.9.1"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
+    "@electron/remote": "^2.1.2",
+    "canvas-txt": "^4.0.5",
+    "cheerio": "^1.0.0-rc.12",
+    "electron": "^25.9.8",
     "electron-store": "^8.1.0",
     "html-to-image": "^1.11.11",
+    "mica-electron": "^1.4.8",
     "node-mpv": "^1.5.0",
-    "qs": "^6.11.0"
+    "qbittorrent-api-v2": "^1.2.2",
+    "qs": "^6.11.0",
+    "toastify-js": "^1.12.0"
   }
 }

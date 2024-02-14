@@ -1,14 +1,23 @@
-const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
-const store = new Store();                                            //?创建electron-store存储资源库对象
+/**
+ * @name MediaSettings.js
+ * @param bgm.res_MediaSettings
+ * @description bgm.res媒体信息编辑界面渲染js
+ */
+//Electron相关模块
 const ipc = nodeRequire('electron').ipcRenderer;
 const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
 const { dialog } = nodeRequire('@electron/remote')                    //?引入remote.dialog 对话框弹出api
+// 额外引入模块
+const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
+const store = new Store();                                            //?创建electron-store存储资源库对象
 let SysdataOption={
     name:"sysdata",//文件名称,默认 config
     fileExtension:"json",//文件后缀,默认json
 }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
 var MediaID = 0;var MediaSettingsSPNumber = 1;
 ipc.on('data', (e,arg) => {MediaID = arg;console.log(MediaID);MediaPageLoad(MediaID);});
+//引入各子页面初始化模组
+const { OKErrorStreamer } = nodeRequire('../js/Mainpage_Modules/MainpageToaster.js'); //?引入bgm.res主界面的通知toast函数封装
 
 function MediaPageLoad(MediaID){
 
@@ -30,6 +39,7 @@ function MediaPageLoad(MediaID){
 
     //?作品编辑初始化
     let WorkCover = store.get("WorkSaveNo"+MediaID+".Cover"); //初始化封面
+    if(WorkCover == "./assets/banner.jpg") {WorkCover = "../assets/banner.jpg";}
     document.getElementById("MediaSettingsCover").style.background="url('"+WorkCover+"') no-repeat center";
     document.getElementById("MediaSettingsCover").style.backgroundSize="cover";
     document.getElementsByName("checkboxA")[0].value=MediaName;
@@ -41,6 +51,7 @@ function MediaPageLoad(MediaID){
     document.getElementsByName("checkboxA")[6].value=store.get("WorkSaveNo"+MediaID+".Director");
     document.getElementsByName("checkboxA")[7].value=store.get("WorkSaveNo"+MediaID+".Corp");
     document.getElementsByName("checkboxA")[8].value=store.get("WorkSaveNo"+MediaID+".Cover");
+    if(store.get("WorkSaveNo"+MediaID+".EPAutoUpdate"))document.getElementsByName("checkboxA")[9].checked=store.get("WorkSaveNo"+MediaID+".EPAutoUpdate");
     $("#MediaSettingsMediaDelete").attr('onclick',"StoreDeleteWork("+MediaID+")");
     $("#MediaSettingsMediaAutoupdate").attr('onclick',"ArchiveMediaUpdateSingle("+MediaID+")");
 
@@ -73,29 +84,29 @@ function MediaPageLoad(MediaID){
 }//window.onload =MediaPageLoad(MediaIDGet);
 
 // !成功、失败、信息横幅提示调用函数
-function OKErrorStreamer(type,text,if_reload) {
-if(type=="OK") {
-    document.getElementById("OKStreamer").innerHTML="✅ "+text.toString();
-    document.getElementById("OKStreamer").style.display="block";
-    if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
-    else{setTimeout(function() { document.getElementById("OKStreamer").style.display="none"; }, 4000);}
-}
-else if(type=="MessageOn") {
-    document.getElementById("MessageStreamer").style.animation="Ascent-Streamer-Down 0.4s ease";
-    document.getElementById("MessageStreamer").innerHTML="<div style='position: absolute;margin-left: 5px;animation: Element-Rotation 1.5s linear infinite;aspect-ratio: 1;height: 70%;top: 15%;'><svg t='1674730870243' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2939' style='width: 100%;height: 100%;'><path d='M277.333333 759.466667C213.333333 695.466667 170.666667 610.133333 170.666667 512c0-187.733333 153.6-341.333333 341.333333-341.333333v85.333333c-140.8 0-256 115.2-256 256 0 72.533333 29.866667 140.8 81.066667 187.733333l-59.733334 59.733334z' fill='#111' p-id='2940'></path></svg></div>"+text.toString();
-    document.getElementById("MessageStreamer").style.display="block";
-}
-else if(type=="MessageOff") {
-    document.getElementById("MessageStreamer").style.display="none";
-}
-else {
-    document.getElementById("ErrorStreamer").innerHTML="⛔ "+text.toString();
-    document.getElementById("ErrorStreamer").style.display="block";
-    if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
-    else{setTimeout(function() { document.getElementById("ErrorStreamer").style.display="none"; }, 4000);}
-}
+// function OKErrorStreamer(type,text,if_reload) {
+// if(type=="OK") {
+//     document.getElementById("OKStreamer").innerHTML="✅ "+text.toString();
+//     document.getElementById("OKStreamer").style.display="block";
+//     if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
+//     else{setTimeout(function() { document.getElementById("OKStreamer").style.display="none"; }, 4000);}
+// }
+// else if(type=="MessageOn") {
+//     document.getElementById("MessageStreamer").style.animation="Ascent-Streamer-Down 0.4s ease";
+//     document.getElementById("MessageStreamer").innerHTML="<div style='position: absolute;margin-left: 5px;animation: Element-Rotation 1.5s linear infinite;aspect-ratio: 1;height: 70%;top: 15%;'><svg t='1674730870243' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='2939' style='width: 100%;height: 100%;'><path d='M277.333333 759.466667C213.333333 695.466667 170.666667 610.133333 170.666667 512c0-187.733333 153.6-341.333333 341.333333-341.333333v85.333333c-140.8 0-256 115.2-256 256 0 72.533333 29.866667 140.8 81.066667 187.733333l-59.733334 59.733334z' fill='#111' p-id='2940'></path></svg></div>"+text.toString();
+//     document.getElementById("MessageStreamer").style.display="block";
+// }
+// else if(type=="MessageOff") {
+//     document.getElementById("MessageStreamer").style.display="none";
+// }
+// else {
+//     document.getElementById("ErrorStreamer").innerHTML="⛔ "+text.toString();
+//     document.getElementById("ErrorStreamer").style.display="block";
+//     if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
+//     else{setTimeout(function() { document.getElementById("ErrorStreamer").style.display="none"; }, 4000);}
+// }
 
-}
+// }
 
 function MediaSettingsSetpageAShower() { //点击显示通用设置页面A
     document.getElementById("MediaSettingsSetpageA").style.display="block";
@@ -164,10 +175,12 @@ function MediaSettingsESPDeleter(Type,ID){
 function submitA(){
     let checkboxA = document.getElementsByName("checkboxA");
     //循环多选框数组
-    var checkboxA_Content = [".Name",".URL",".bgmID",".Type",".Year",".Protocol",".Director",".Corp",".Cover"]
+    var checkboxA_Content = [".Name",".URL",".bgmID",".Type",".Year",".Protocol",".Director",".Corp",".Cover",".EPAutoUpdate"]
     for (let Tempi = 0; Tempi < checkboxA.length; Tempi++) {
-        store.set("WorkSaveNo"+MediaID+checkboxA_Content[Tempi],checkboxA[Tempi].value.toString());
+        if(Tempi != 9) store.set("WorkSaveNo"+MediaID+checkboxA_Content[Tempi],checkboxA[Tempi].value.toString());
+        else store.set("WorkSaveNo"+MediaID+checkboxA_Content[Tempi],checkboxA[Tempi].checked);
     }
+    
     let WorkCover = store.get("WorkSaveNo"+MediaID+".Cover"); //初始化封面
     document.getElementById("MediaSettingsCover").style.background="url('"+WorkCover+"') no-repeat center";
     document.getElementById("MediaSettingsCover").style.backgroundSize="cover";
@@ -175,8 +188,9 @@ function submitA(){
     document.getElementsByTagName("title")[0].innerText=MediaName+'-作品编辑';
     document.getElementById("Title").innerText=MediaName+'-作品编辑';
     document.getElementById("PageTitle").innerText=MediaName+'-作品编辑';
-    OKErrorStreamer("OK","作品信息设置完成",0);
-    ipc.send('MainWindow','Refresh');
+    OKErrorStreamer("OK","作品信息设置完成",0,"..");
+    ipc.send('MainWindow','RefreshArchivePage'+MediaID);
+    // ipc.send('MainWindow','Refresh');
 }
 
 function submitB(){
@@ -192,9 +206,10 @@ function submitB(){
     for (let Tempi = 0; Tempi != checkboxSP.length; Tempi++) {
         store.set("WorkSaveNo"+MediaID+'.SPDetails.SP'+Number(Tempi+1)+'.URL',checkboxSP[Tempi].value.toString());
     }
-    OKErrorStreamer("OK","作品信息设置完成",0);
+    OKErrorStreamer("OK","作品信息设置完成",0,"..");
     MediaPageLoad(MediaID);
-    ipc.send('MainWindow','Refresh');
+    ipc.send('MainWindow','RefreshArchivePage'+MediaID);
+    // ipc.send('MainWindow','Refresh');
 }
 
 //! 作品设置-作品删除
@@ -214,14 +229,14 @@ if(result == 1){store.set("WorkSaveNo"+WorkID+".ExistCondition",'Deleted');
     localStorage.setItem('LocalStorageMediaBaseDeleteNumber',MediaBaseDeleteNumber+1);
     // ArchivePageInit();
     ipc.send('MainWindow','Refresh');
-    OKErrorStreamer("OK","作品已从数据库删除",0);
+    OKErrorStreamer("OK","作品已从数据库删除",0,"..");
 }
 }
 
 //! 作品数据信息链接BGM更新模块(指定作品)
 function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
     // *Archive Get <!--联网检索ArchivePage指定媒体内容-->
-    OKErrorStreamer("MessageOn","作品信息自动更新进行中",0);
+    OKErrorStreamer("MessageOn","作品信息自动更新进行中",0,"..");
     setTimeout(function() {
     var ModifiedbgmID = document.getElementsByName("checkboxA")[2].value.toString();
     // *扫描作品bgmID获取作品信息 
@@ -235,24 +250,24 @@ function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
         else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}
         store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Type",data.platform); 
         store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover",data.images.large); 
-        }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/MediaPageLoad(MediaID);OKErrorStreamer("MessageOff","作品信息更新进行中",0);
-        OKErrorStreamer("OK","媒体库数据爬取完成",0); }); // *错误回调
+        }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0,"..");}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/MediaPageLoad(MediaID);OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");
+        OKErrorStreamer("OK","媒体库数据爬取完成",0,".."); }); // *错误回调
         $.getJSON("https://api.bgm.tv/v0/subjects/"+ModifiedbgmID+'/persons', function(data){
         for(let MediaBaseElementsGet=0;MediaBaseElementsGet!=data.length;MediaBaseElementsGet++){
         if(data[MediaBaseElementsGet].relation=='导演') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Director",data[MediaBaseElementsGet].name);}
         if(data[MediaBaseElementsGet].relation=='动画制作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Corp",data[MediaBaseElementsGet].name);}
         if(data[MediaBaseElementsGet].relation=='原作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
         else if(data[MediaBaseElementsGet].relation=='原案') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
-        } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/OKErrorStreamer("MessageOff","作品信息更新进行中",0);
+        } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0,"..");}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");
         MediaPageLoad(MediaID);}); // *错误回调
-        } else{OKErrorStreamer("MessageOff","作品信息更新进行中",0);OKErrorStreamer("Error","bgmID无效",0);}
+        } else{OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");OKErrorStreamer("Error","bgmID无效",0,"..");}
     },2000);
 }
 
 //! 作品ep扫描模块
 function LocalWorkEpsScanModule(MediaID){
     if(fs.existsSync(store.get("WorkSaveNo"+MediaID+".URL"))){       // *当目标媒体库目录存在
-        // OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
+        // OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0,"..");
         var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")); //扫描目标媒体库目录下EP
         console.log(TargetWorkEP.length);
         var RealWorkEP = 0;
@@ -263,6 +278,58 @@ function LocalWorkEpsScanModule(MediaID){
         }
         store.set("WorkSaveNo"+MediaID+".EPTrueNum",RealWorkEP);
         MediaPageLoad(MediaID);
-      // OKErrorStreamer("MessageOff","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
+      // OKErrorStreamer("MessageOff","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0,"..");
     }
 }
+
+//! 作品设置-搜索作品信息模块
+function MediaSettingsPageSearch(Key){
+    if(Key != 13){return}
+    else {
+    let SearchKeyWord = document.getElementById('MediaSettingsPageSearch').value; if(SearchKeyWord==''){return} //?如果搜索框为空则不执行搜索
+    let inputBoxRect = document.getElementById('MediaSettingsPageSearch').getBoundingClientRect();
+    document.getElementById('MediaSettingsPageSearchSuggestion').style.top = `${inputBoxRect.top-83}px`;
+    document.getElementById('MediaSettingsPageSearchSuggestion').style.left = `${inputBoxRect.left-15}px`;
+    document.getElementById('MediaSettingsPageSearchSuggestion').style.width = `${inputBoxRect.width-3}px`;
+    document.getElementById('MediaSettingsPageSearchSuggestion').innerHTML="<div class='Winui3brickContainer'><div style='position:relative;margin:auto;overflow:hidden;text-align:center'>正在搜索中</div></div>";
+    document.getElementById('MediaSettingsPageSearchSuggestion').style.display='block';
+    document.getElementById('MediaSettingsPageSearchSuggestionBack').style.display='block';
+    let SerachResultGetted = 0;
+    $.ajax({ 
+        url: "https://api.bgm.tv/search/subject/"+SearchKeyWord+"?type=2&responseGroup=small",
+        type: 'GET',dataType: "json",timeout : 2000,
+        success: function(data){ //成功,存储accesstoken
+            document.getElementById('MediaSettingsPageSearchSuggestion').innerHTML="";
+            for(let ScanCounter=0;ScanCounter!=data.list.length;ScanCounter++){
+                SerachResultGetted = 1;
+                let coverimageurl = "../assets/banner.jpg')";
+                if(data.list[ScanCounter].hasOwnProperty("images") && data.list[ScanCounter].images && data.list[ScanCounter].images.medium) {coverimageurl = data.list[ScanCounter].images.medium}
+                $("#MediaSettingsPageSearchSuggestion").append("<div class='Winui3brickContainer'>"+"<div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+coverimageurl+"\") no-repeat top;background-size:cover;border-radius:8px;'></div>"+
+                "<div style='position:relative;margin-left:10px;margin-right:45px;overflow:hidden'><div style='display: -webkit-box;text-overflow: ellipsis;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;'>"+data.list[ScanCounter].name
+                +"</div><div style='position:relative;font-size:15px;margin-top:5px;color: #aaa;text-overflow: ellipsis;white-space: nowrap;overflow:hidden'>"+data.list[ScanCounter].name_cn+"</div></div>"+
+                `<button type='button' value='填入' class='Winui3button' style='width:30px;right:15px' onclick='MediaSettingsPageSearchFill(${data.list[ScanCounter].id})'><svg t='1673884147084' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='5739' width='15' height='15'><path d='M245.034251 895.239428l383.063419-383.063419L240.001631 124.07997l0.070608-0.033769c-12.709463-13.137205-20.530592-31.024597-20.530592-50.731428 0-40.376593 32.736589-73.111135 73.115228-73.111135 19.705807 0 37.591153 7.819083 50.730405 20.528546l0.034792-0.035816 438.686251 438.681134-0.035816 0.034792c13.779841 13.281491 22.3838 31.915897 22.3838 52.586682 0 0.071631 0 0.106424 0 0.178055 0 0.072655 0 0.10847 0 0.144286 0 20.669762-8.603959 39.341007-22.3838 52.623521l0.035816 0.033769L343.426165 1003.661789l-0.180102-0.179079c-13.140275 12.565177-30.950919 20.313651-50.588165 20.313651-40.378639 0-73.115228-32.736589-73.115228-73.114205C219.544717 928.512229 229.432924 908.664182 245.034251 895.239428z' p-id='5740' fill='#ffffff'></path></svg></button>`
+                +"</div>")
+            }
+        },
+        error: function(data){ //错误返回(没有搜索结果)
+            document.getElementById('MediaSettingsPageSearchSuggestion').innerHTML="";
+            $("#MediaSettingsPageSearchSuggestion").append("<div class='Winui3brickContainer'><div style='position:relative;margin:auto;overflow:hidden;text-align:center'>没有找到结果</div></div>") }
+    });
+}}
+
+//! 作品设置-搜索作品信息模块-填入
+function MediaSettingsPageSearchFill(ID){
+    document.getElementsByName("checkboxA")[2].value=ID;
+    ArchiveMediaUpdateSingle(MediaID)
+}
+
+//! 作品设置-搜索作品信息模块自动监听位置更新
+// !页面大小变化时更新元素状态函数(目前仅更新作品详情)
+window.onresize=function(){  
+    if($("#MediaSettingsPageSearchSuggestion").is(":visible")){
+        let inputBoxRect = document.getElementById('MediaSettingsPageSearch').getBoundingClientRect();
+        document.getElementById('MediaSettingsPageSearchSuggestion').style.top = `${inputBoxRect.top-83}px`;
+        document.getElementById('MediaSettingsPageSearchSuggestion').style.left = `${inputBoxRect.left-15}px`;
+        document.getElementById('MediaSettingsPageSearchSuggestion').style.width = `${inputBoxRect.width-3}px`;
+    }
+} 

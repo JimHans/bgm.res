@@ -4,6 +4,7 @@
 			"LocalStorageMediaBaseURL": null,
 			"LocalStorageAutoUpdateArchive": false,
 			"LocalStorageAutoUpdateArchiveInfo": false,
+			"LocalStorageAutoUpdateMediaInfo": false,
 			"LocalStorageMediaSubFolderName": "default",
 			"LocalStorageqBittorrnetURL": null
 		},
@@ -20,11 +21,13 @@
 			"LocalStorageSystemBackgroundImage": null,
 			"LocalStorageSystemCustomColor": null,
 			"LocalStorageSystemShowModifiedCover": false,
-			"LocalStorageSystemOpenLightMode": false
+			"LocalStorageSystemOpenLightMode": false,
+			"LocalStorageSystemOpenMicaMode": false
 		},
 		"checkboxC": {
 			"LocalStorageMediaShowOldSettingPage": false,
 			"LocalStorageMediaScanExpression": "default",
+			"LocalStorageMediaScanExpressionSub": "default",
 			"LocalStorageRecentViewID": null,
 			"LocalStorageRecentViewEpisode": null,
 			"LocalStorageRecentViewEpisodeType": "EP",
@@ -32,7 +35,8 @@
 			"LocalStorageRecentViewNextURL": null,
 			"LocalStorageRecentViewLocalID": null,
 			"LocalStorageMediaBaseNumber": null,
-			"LocalStorageMediaBaseDeleteNumber": null
+			"LocalStorageMediaBaseDeleteNumber": null,
+			"OOBE": false
 		}
 	},
 	"UserData": {

@@ -96,6 +96,7 @@ function SettingsPageConfigInit() { //数据初始化
     var KeyStoreA=['LocalStorageMediaBaseURL',
             "LocalStorageAutoUpdateArchive",
 			"LocalStorageAutoUpdateArchiveInfo",
+            "LocalStorageAutoUpdateMediaInfo",
             "LocalStorageMediaSubFolderName",
 			"LocalStorageqBittorrnetURL"
 			]
@@ -111,7 +112,7 @@ function SettingsPageConfigInit() { //数据初始化
     var KeyStoreB=['LocalStorageMediaShowSciMark',
                     'LocalStorageMediaShowStd',"LocalStorageMediaShowProgress","LocalStorageMediaShowRelative","LocalStorageMediaShowCharacter",
                     "LocalStorageMediaShowCharacterCN","LocalStorageMediaShowCharacterCV","LocalStorageMediaShowTranslation","LocalStorageMediaShowStaff",
-                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode"]
+                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode","LocalStorageSystemOpenMicaMode"]
     //初始化PageB
     for(let Temp = 0;Temp!=KeyStoreB.length;Temp++){ //Object.keys(sysdata.get("Settings.checkboxB"))
         if(sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])!=''){
@@ -123,6 +124,7 @@ function SettingsPageConfigInit() { //数据初始化
     
     var KeyStoreC=["LocalStorageMediaShowOldSettingPage",
                 "LocalStorageMediaScanExpression",
+                "LocalStorageMediaScanExpressionSub",
                 "LocalStorageRecentViewID",
                 "LocalStorageRecentViewEpisode",
                 "LocalStorageRecentViewEpisodeType",
