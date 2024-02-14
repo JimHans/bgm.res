@@ -1,5 +1,5 @@
 <p align="center">
-<img src="./assets/bgm.res.png" width="279" height="60"></p>
+<img src="./assets/icons/bgm.res.png" width="279" height="60"></p>
 <h1 align="center"> bgm.Res </h1>
 <h3 align="center"> Light, Functional and Modern Local Anime Manager Based on bgm.tv</h3>
 <br/>

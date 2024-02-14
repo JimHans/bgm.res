@@ -64,7 +64,6 @@
     "@electron/remote": "^2.1.2",
     "canvas-txt": "^4.0.5",
     "cheerio": "^1.0.0-rc.12",
-    "electron": "^25.9.8",
     "electron-store": "^8.1.0",
     "html-to-image": "^1.11.11",
     "mica-electron": "^1.4.8",
