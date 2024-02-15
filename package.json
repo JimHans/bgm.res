@@ -1,9 +1,9 @@
 {
   "name": "bgm.res",
   "title": "bgm.res",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "bgm.res-A local bangumi manager",
-  "buildinf": "Build 2024-02-13 Beta",
+  "buildinf": "Build 2024-02-15 Beta",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -68,6 +68,7 @@
     "html-to-image": "^1.11.11",
     "mica-electron": "^1.4.8",
     "node-mpv": "^1.5.0",
+    "node-mpv-2": "^2.0.0-beta.3",
     "qbittorrent-api-v2": "^1.2.2",
     "qs": "^6.11.0",
     "toastify-js": "^1.12.0"

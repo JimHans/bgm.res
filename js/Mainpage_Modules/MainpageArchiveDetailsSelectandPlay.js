@@ -103,7 +103,11 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
             if(Type!='SP'){store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition','Watched')}
             if(Type=='SP'){store.set("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition','Watched')}
             let mpvPlayer = new mpv({"binary": packUrl,},["--fps=60"]);
-            mpvPlayer.load(EPOpenURL);}
+            mpvPlayer.start()
+            .then(() => {
+              mpvPlayer.load(EPOpenURL);// player is running
+            })
+            }
         });
       } 
       else {  //打包后播放核心 
@@ -115,7 +119,12 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
             if(Type!='SP'){store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition','Watched')}
             if(Type=='SP'){store.set("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition','Watched')}
             let mpvPlayer = new mpv({"binary": runtimeUrl,},["--fps=60"]);
-            mpvPlayer.load(EPOpenURL);}
+            mpvPlayer.start()
+            .then(() => {
+              mpvPlayer.load(EPOpenURL);// player is running
+            })
+            // mpvPlayer.load(EPOpenURL);
+            }
         });
       }
     })

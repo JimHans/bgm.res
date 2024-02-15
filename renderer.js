@@ -11,7 +11,7 @@ const fs = nodeRequire('fs');                                         //?使用n
 const runtimeUrl = path.join(__dirname, './mpv/mpv.exe');             //?mpv播放核心地址-调试
 const packUrl = path.join(process.cwd(), './resources/mpv/mpv.exe');  //?mpv播放核心地址-打包后
 let exec = nodeRequire('child_process').exec;                         //?引用exec用于CMD指令执行
-let mpv = nodeRequire('node-mpv');                                    //?引入node-mpv接口
+let mpv = nodeRequire('node-mpv-2');                                  //?引入node-mpv-2接口
 let cheerio = nodeRequire('cheerio');                                 //?引入cheerio用于解析html
 //初始化存储资源库
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
@@ -239,7 +239,7 @@ function FloatBarAction(PageID) { //点击切换页面
     document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
     document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
     // 滚动到上次位置
-    $('#ArchivePageContent').animate({scrollTop: ArchivePageContent_scrollTopFreeze},20)  
+    $('#ArchivePageContent').animate({scrollTop: ArchivePageContent_scrollTopFreeze},70)  
     // document.getElementById('ArchivePageContent').scrollTop = ArchivePageContent_scrollTopFreeze;
   }
   else if(PageID == "Torrnet"){
@@ -310,7 +310,12 @@ function RecentViewPlayAction(Type) {
             localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(Number(RecentEP)+1)+".URL"));}
             SysOnload();
             let mpvPlayer = new mpv({"binary": packUrl,},["--fps=60"]);
-            mpvPlayer.load(RecentViewURL);}
+            mpvPlayer.start()
+            .then(() => {
+              mpvPlayer.load(RecentViewURL);// player is running
+            })
+            // mpvPlayer.load(RecentViewURL);
+            }
         });
       } 
       else {  //打包后播放核心 
@@ -333,7 +338,12 @@ function RecentViewPlayAction(Type) {
             localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(Number(RecentEP)+1)+".URL"));}  
             SysOnload();
             let mpvPlayer = new mpv({"binary": runtimeUrl,},["--fps=60"]);
-            mpvPlayer.load(RecentViewURL);}
+            mpvPlayer.start()
+            .then(() => {
+              mpvPlayer.load(RecentViewURL);// player is running
+            })
+            // mpvPlayer.load(RecentViewURL);
+            }
         });
       }
     })
