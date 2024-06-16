@@ -206,6 +206,23 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
         }).done(function() { OKErrorStreamer("OK","加载SP信息完成",0); }).fail(function() {document.getElementById("RecentViewProgress").innerText="上次看到: "+"SP"+bgmEP; OKErrorStreamer("Error","无法连接Bangumi",0); }); // *错误回调
       }
       $('#RecentViewProgress').attr('onclick',"console.log('OK');RecentViewPlayAction('Last');");
+
+      // *计算作品进度信息
+      let RecentViewWatchPercentSaver = 0;
+      for(let Tempi=1;Tempi<=parseInt(store.get("WorkSaveNo"+MediaID.toString()+".EPTrueNum"));Tempi++){
+        if(store.get("WorkSaveNo"+MediaID.toString()+".EPDetails.EP"+Tempi+'.Condition')=='Watched') RecentViewWatchPercentSaver++;
+      } RecentViewWatchPercentSaver = (RecentViewWatchPercentSaver/parseInt(store.get("WorkSaveNo"+MediaID.toString()+".EPTrueNum")))*100
+      document.getElementById("RecentViewFullProgressNum").innerText=RecentViewWatchPercentSaver.toFixed(1)+" %";
+      document.getElementById("RecentViewFullProgressLine").style.width=RecentViewWatchPercentSaver.toString()+"%";
+      if(sysdata.get("Settings.checkboxC.LocalStorageRecentViewEpisodeType")=="EP"&&bgmEP/store.get("WorkSaveNo"+MediaID.toString()+".EPTrueNum")==1) {
+        $("#RecentViewPlay").attr('onclick',"ipcRenderer.send('MediaShare',sysdata.get('Settings.checkboxC.LocalStorageRecentViewLocalID'));");
+        // document.getElementById("RecentViewPlayClick").onclick=function(){ipcRenderer.send('MediaShare',sysdata.get('Settings.checkboxC.LocalStorageRecentViewLocalID'))};
+        document.getElementById("RecentViewPlayText").innerText="分享";
+        document.getElementById("RecentViewPlayIcon").innerText="";
+        document.getElementById("RecentViewPlayIcon").style.background="url(./assets/sharemedia.svg)";
+        document.getElementById("RecentViewPlayIcon").style.width="20px";
+        document.getElementById("RecentViewPlayIcon").style.height="30px";
+      }
       console.log("Success");
     }
   }

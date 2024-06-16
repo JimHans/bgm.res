@@ -22,7 +22,8 @@
 			"LocalStorageSystemCustomColor": null,
 			"LocalStorageSystemShowModifiedCover": false,
 			"LocalStorageSystemOpenLightMode": false,
-			"LocalStorageSystemOpenMicaMode": false
+			"LocalStorageSystemOpenMicaMode": false,
+			"LocalStorageSystemOpenLiveBackground": false
 		},
 		"checkboxC": {
 			"LocalStorageMediaShowOldSettingPage": false,

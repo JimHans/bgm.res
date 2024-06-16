@@ -27,7 +27,7 @@ exports.LocalWorkEpsScanModule = function(MediaID){
           if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter2+".URL")==TargetWorkEP[TempCounter]) IfEPHas = true;
         }
 
-        if(!IfEPHas){ //如果不存在该EP则增量存储在其他ep后面
+        if(!IfEPHas){ //如果不存在该EP则增量存储在其他EP后面
           RealWorkEP += 1;
           store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+RealWorkEP+".URL",TargetWorkEP[TempCounter]);
           if(!store.has("WorkSaveNo"+MediaID+".EPDetails.EP"+RealWorkEP+".Condition"))

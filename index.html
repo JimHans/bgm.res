@@ -65,6 +65,7 @@
             </div>
         </div>
         <div id="HomePage" class="HomePage"> <!-- TODO 主页 -->
+            <div id="HomePageLiveBackground" class="Cover" style="opacity:0;transition: opacity .5s ease-out;"></div>
             <div class="Cover"></div>
             <div id="RecentViewTitle"class="HomepageTitle">继续观看:Loading Data...</div>
             <div id="RecentViewName" class="RecentViewName">Loading Data...</div> <!--TODO首页最近观看-标题部分-->
@@ -77,13 +78,26 @@
                 <p style="margin-top: -10px;margin-bottom: 0px;font-family: bgmLogoFonts;font-size:min(3vw,50px)">bangumi<br/>ANIME RANK</p>
                 <!-- <p style="margin-bottom: -5px;font-family: bgmLogoFonts;"></p> -->
                 <div id="RecentViewRatingScorePrevious" style="position:absolute;right:0%;width:100%;font-size: min(7vw,120px);font-family:bgmUIHeavy;text-align: right;">
-                    <div id="RecentViewRatingRank" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: min(1.5vw,26px);font-family:bgmUI;height: 28%;width:33%;right:min(12vw,230px);backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;    max-width: 140px;">NO.Null</div>
-                    <div id="RecentViewRatingPos" class="boxBlank" style="border: 1px dashed rgb(155, 155, 155);background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: min(1.5vw,26px);font-family:bgmUI;height: 28%;width:33%;right:min(12vw,230px);backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;    max-width: 140px;">NoRank</div>
+                    <div id="RecentViewRatingRank" class="boxBlank" style="/*border: 1px dashed rgb(155, 155, 155);*/background-color: rgba(0, 0, 0, 0.292);top:15%;font-size: min(1.5vw,26px);font-family:bgmUI;height: 28%;width:33%;right:min(12vw,230px);backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;    max-width: 140px;">NO.Null</div>
+                    <div id="RecentViewRatingPos" class="boxBlank" style="/*border: 1px dashed rgb(155, 155, 155);*/background-color: rgba(0, 0, 0, 0.292);bottom:15%;font-size: min(1.5vw,26px);font-family:bgmUI;height: 28%;width:33%;right:min(12vw,230px);backdrop-filter: blur(10px);box-shadow:none;line-height: 200%;    max-width: 140px;">NoRank</div>
                     <div id="RecentViewRatingScore">0.0</div>
                 </div>
             </div>
-            <div id="RecentViewPlay" class="RecentViewPlay" onclick="RecentViewPlayAction('Next');" title="观看下一话"> <!--TODO首页最近观看-播放键-->
-                <div style="width: 105%;height: 100%;position: absolute;background:url('./assets/play.svg') no-repeat center;background-size: contain;" onclick="RecentViewPlayAction();"></div>
+            <div id="RecentViewFullProgress" class="RecentViewPlay" onclick="" title="观看进度" style="bottom: 23%;"> <!--TODO首页最近观看-进度总览-->
+                <div style="width: 105%;height: 60%;position: absolute;display: flex;justify-content: space-around;align-items: center;">
+                    <p style="margin-right: 10%;transform: scale(0.8);">观看进度</p>
+                    <p id="RecentViewFullProgressNum" style="margin-right: 10%;transform: scale(0.8);">0 %</p>
+                </div>
+                <div style="width: 80%;height: 15%;bottom: 20%;position: absolute;margin: 10%;margin-bottom: 0;background-color: #00000063;border-radius: 5px;overflow: hidden;">
+                    <div id="RecentViewFullProgressLine" style="background-color: #cbcbcba6;width: 0%;position: absolute;left: 0;height: 100%;border-radius: 5px;"></div>
+                    <div class="rolled"></div>
+                </div>
+            </div>
+            <div id="RecentViewPlay" class="RecentViewPlay" onclick="RecentViewPlayAction('Next');" title="观看下一话" style="bottom: 13%;"> <!--TODO首页最近观看-播放键-->
+                <div id="RecentViewPlayClick" style="width: 105%;height: 100%;position: absolute;display: flex;justify-content: center;align-items: center;" onclick="RecentViewPlayAction('Next');">
+                    <p id="RecentViewPlayIcon" style="margin-right: 10%;transform: scale(1.4);">▶</p>
+                    <p id="RecentViewPlayText">继续下一话</p>
+                </div>
                 <div class="rolled"></div>
             </div>
         </div>
@@ -134,7 +148,7 @@
                 </div>
             </div> <!-- *作品详情页 -->
             <div id="ArchivePageContentDetails" class="ArchivePageContentDetails">
-                <div id="ArchivePageContentDetailsBlur" style="position:absolute;width: 120%;height:200%;top:-10%;left:-10%;backface-visibility: hidden;transform-style: preserve-3d;transition: all 0.7s;z-index: 0;padding:50px;"></div> <!--高斯模糊蒙版-->
+                <div id="ArchivePageContentDetailsBlur" style="position:absolute;width: 120%;height:200%;top:-10%;left:-10%;backface-visibility: hidden;transform-style: preserve-3d;transition: all 0.7s;z-index: 0;padding:50px;padding-bottom: 0;"></div> <!--高斯模糊蒙版-->
                 <div id="ArchivePageContentDetailsTitleBlock" style="position:relative;width: 100%;height:45%;top:0;"></div> <!--作品表头-->
 
                 <!--作品已开启自动更新EP提示横幅-->
@@ -158,6 +172,26 @@
                         <option value="wish">想看</option><option value="do">在看</option><option value="collect">看过</option>
                         <option value="on_hold">搁置</option><option value="dropped">抛弃</option><option value="uncollect">未收藏</option>
                     </select>
+                </div>
+                <!--作品好友评价-->
+                <div id='ArchivePageContentDetailsFriendRankBlock' class="RecentViewDetail" style="position:relative;width: 76%;height:8%;margin-top:2%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);align-items: center;display: flex;flex-direction: row;justify-content: space-between;overflow: hidden;"> 
+                    <div id="ArchivePageContentDetailsShare" style="display: flex;flex-direction: row;justify-content: space-between;height: 100%;align-items: center;">
+                        <div class="ArchiveCardCharacterHover" onclick="" title="分享" style="height: 80%; position: relative;width: auto;aspect-ratio: 1;right: unset;bottom: unset;">
+                            <div style="width: 100%;height: 100%;position: absolute;background: url('./assets/sharemedia.svg') center no-repeat;transform: scale(1.5);"></div>
+                        </div>
+                        <div style="display: flex;flex-direction: column;justify-content: space-between;">
+                            <div id="ArchivePageContentDetailsFriendNum" style="position: relative;width: auto;margin-left: 10px;font-size: 2.5vmin;text-overflow: ellipsis;white-space: nowrap;">还没有好友看过</div>
+                            <div id="ArchivePageContentDetailsFriendStd" style="position: relative;width: auto;margin-left: 10px;font-size: 2.5vmin;text-overflow: ellipsis;white-space: nowrap;">暂无标准差</div>
+                        </div>
+                    </div>
+                    <div id="ArchivePageContentDetailsFriendsInfo" class="ArchivePageContentDetailsFriends"></div>
+                    <div style="display: flex;flex-direction: row;">
+                        <div style="display: flex;flex-direction: column;margin-top:5%;margin-bottom:5%;justify-content: space-between;align-items: center;margin-right: 10px;">
+                            <div style="position: relative;width: auto;margin-right: 10%;font-size: 2.3vmin;text-overflow: ellipsis;white-space: nowrap;margin-bottom: 10%;">好友评分</div>
+                            <div id="ArchivePageContentDetailsFriendRank" class="boxBlank" style="background-color: rgba(0, 0, 0, 0.292);font-size: 2vmin;font-family:bgmUI;width: 100%;margin-right: 10%;backdrop-filter: blur(10px);box-shadow:none;display: flex;justify-content: center;align-items: center;position: relative;padding: 4%;">暂无评价</div>
+                        </div>
+                        <div id="ArchivePageContentDetailsFriendScore" style="position: relative;margin-right: 20px;font-size: 6vmin;text-overflow: ellipsis;white-space: nowrap;font-style: italic;font-family: bgmUIHeavy;display: flex;align-items: center;">-.-</div>
+                    </div>
                 </div>
                 <!--作品简介-->
                 <div class="RecentViewDetail" style="position:relative;width: 76%;height:auto;margin-top:2%;left:18%;right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);"> <!--top:45%;-->
@@ -213,6 +247,9 @@
                 <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 78%;height:0px;margin-top:0%;left:18%;right:4%;bottom:0px;margin-bottom:0%;padding: 0%;"></div>
                 <!--作品播放卡片-->
                 <div class="RecentViewEpisodePlayCard" id="RecentViewEpisodePlayCard"></div><div class="RecentViewEpisodePlayCardBack" id="RecentViewEpisodePlayCardBack" onclick="document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';"></div>
+                <!--好友评分详情卡片-->
+                <div class="RecentViewEpisodePlayCard" id="RecentViewFriendRankCard" style="top: 50%; left: 56%; position: fixed; /*transform: translate(-25%, -50%);*/height: 250px; width: 350px;margin-left:-175px">
+                </div><div class="RecentViewEpisodePlayCardBack" style='background-color:#00000080' id="RecentViewFriendRankCardBack" onclick="//document.getElementById('RecentViewFriendRankCard').style.display='none';document.getElementById('RecentViewFriendRankCardBack').style.display='none';"></div>
             </div><!-- *作品详情页 -->
         </div>
         <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
@@ -238,7 +275,11 @@
                 <div class="Winui3setpageINNER">
                     <div class="Winui3brickContainer" style="background-color:#2b4f6c;margin-top:15px"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#5fb5fc" p-id="1392" style="--darkreader-inline-fill: #5fb5fc;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">你可以在这里设置一些通用设置项</p></div>
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;"> 媒体库设置</h2>
-                    <div class="Winui3brickContainer">设定媒体库目录<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写你的媒体库目录" style="width:50%;right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",0,"LocalStorageMediaBaseURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
+                    <div class="Winui3brickContainer">设定媒体库目录<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写你的媒体库目录" style="width:50%;right: 100px;" required>
+                        <button type='button' value='选择路径' class='Winui3button' style='width:30px;right: 60px;' ><svg t='1673539124397' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3567' width='20' height='20'><path d="M853.333333 469.333333a42.666667 42.666667 0 0 0-42.666666 42.666667v256a42.666667 42.666667 0 0 1-42.666667 42.666667H256a42.666667 42.666667 0 0 1-42.666667-42.666667V256a42.666667 42.666667 0 0 1 42.666667-42.666667h256a42.666667 42.666667 0 0 0 0-85.333333H256a128 128 0 0 0-128 128v512a128 128 0 0 0 128 128h512a128 128 0 0 0 128-128v-256a42.666667 42.666667 0 0 0-42.666667-42.666667z" fill="#ffffff" p-id="2787"></path><path d="M682.666667 213.333333h67.413333l-268.373333 267.946667a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586666 0L810.666667 273.92V341.333333a42.666667 42.666667 0 0 0 42.666666 42.666667 42.666667 42.666667 0 0 0 42.666667-42.666667V170.666667a42.666667 42.666667 0 0 0-42.666667-42.666667h-170.666666a42.666667 42.666667 0 0 0 0 85.333333z" fill="#ffffff" p-id="2788"></path></svg>
+                            <input type="file" class="Winui3inputFile" id="SettingsPageFolderSelectIcon" style='width:100%' onchange="SettingsPageFolderURL(event)" webkitdirectory/>
+                        </button>
+                        <button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",0,"LocalStorageMediaBaseURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                     <div class="Winui3brickContainer"><div>手动重新扫描<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">手动重新对媒体库进行全局扫描，将覆盖现有数据</a></div><button type="button" value="点击扫描" class="Winui3button" onclick="LocalWorkScan();">点击扫描</button></div>
                     <div class="Winui3brickContainer"><div>手动更新媒体库信息<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">手动重新对所有媒体信息进行匹配更新，将覆盖现有数据</a></div><button type="button" value="点击刷新" class="Winui3button" onclick="ArchiveMediaUpdate()">点击刷新</button></div>
                     <div class="Winui3brickContainer">启动后媒体库自动增量扫描<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateArchive" onchange='SettingsPageSaveConfig("checkboxA",1,"LocalStorageAutoUpdateArchive","checkbox")'><div class="Winui3slider"></div></label></div>
@@ -285,6 +326,7 @@
                     <div class="Winui3brickContainer">首页背景跟随自定义作品封面<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showModifiedCover" onchange='SettingsPageSaveConfig("checkboxB",10,"LocalStorageSystemShowModifiedCover","checkbox")'/><div class="Winui3slider"></div></label></div>
                     <div class="Winui3brickContainer">亮色主题<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="openLightMode" onchange='SettingsPageSaveConfig("checkboxB",11,"LocalStorageSystemOpenLightMode","checkbox")'/><div class="Winui3slider"></div></label></div><!-- disabled="disabled"-->
                     <div class="Winui3brickContainer"><div>透明效果<br><a class="Winui3brickSubtitle" style="font-size: 13px;">主程序窗口启用Mica效果(Windows11)或Acrylic材质(Windows10)</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="MicaEffect" onchange='SettingsPageSaveConfig("checkboxB",12,"LocalStorageSystemOpenMicaMode","checkbox")'/><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer"><div>启用首页背景动态进度（Beta版，请注意此功能尚未完善）<br><a class="Winui3brickSubtitle" style="font-size: 13px;">启用此功能后，首页背景将不再显示作品封面，而是截取您上一次观看进度的截图为背景，动态跟随您的观看进度。</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="LiveBackground" onchange='SettingsPageSaveConfig("checkboxB",13,"LocalStorageSystemOpenLiveBackground","checkbox")'/><div class="Winui3slider"></div></label></div>
                     
                 </div>
             </div>
@@ -372,7 +414,7 @@
         bottom: 20px;margin: auto;right: 30px;top: auto;text-overflow: ellipsis;max-width: 300px;white-space: nowrap;"></div>
         <div id="ErrorStreamer" class="SystemStreamer" style="background-color:#a4414f;"></div>
         <!--  TODO 左下角底部快捷按钮  -->
-        <div class="boxBlank" style="width: 12%;max-width: 150px;min-width: 150px;left: 3%;bottom:0%;height: 45px;border-radius: 15px 15px 0 0;background-color: rgba(0, 0, 0, 0.507);animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);backdrop-filter: blur(60px);">
+        <div class="boxBlank" style="width: 12%;max-width: 150px;min-width: 150px;left: 3%;bottom:0%;height: 45px;border-radius: 15px 15px 0 0;background-color: rgba(0, 0, 0, 0.507);animation: Ascent-Fonts 1.3s cubic-bezier(0,0,0.2,1);backdrop-filter: blur(60px);box-shadow:0px 0px 7px -1px rgb(25 25 25 / 55%)">
             <a id="RefreshPage" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;left:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 15px 0 0 0;"title="刷新页面" onclick="OKErrorStreamer('OK','页面刷新中',1); "><svg t="1664862294245" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="9130" width="24" height="45"><path d="M896 198.4 896 198.4l0 179.2 0 0c0 19.2-6.4 32-19.2 44.8-12.8 12.8-32 19.2-44.8 19.2l0 0-179.2 0 0 0c-19.2 0-32-6.4-44.8-19.2-25.6-25.6-25.6-64 0-89.6C620.8 320 633.6 313.6 652.8 313.6l0 0 25.6 0C627.2 275.2 576 256 518.4 256 441.6 256 377.6 281.6 332.8 332.8l0 0c-25.6 25.6-64 25.6-89.6 0-25.6-25.6-25.6-64 0-89.6l0 0C313.6 172.8 409.6 128 518.4 128c96 0 185.6 38.4 249.6 96L768 198.4l0 0c0-19.2 6.4-32 19.2-44.8 25.6-25.6 64-25.6 89.6 0C889.6 160 896 179.2 896 198.4zM416 691.2c-12.8 12.8-32 19.2-44.8 19.2l0 0L352 710.4C396.8 748.8 448 768 505.6 768c70.4 0 134.4-25.6 179.2-76.8l0 0c25.6-25.6 64-25.6 89.6 0 25.6 25.6 25.6 64 0 89.6l0 0C710.4 851.2 614.4 896 505.6 896c-96 0-185.6-38.4-249.6-96l0 32 0 0c0 19.2-6.4 32-19.2 44.8-25.6 25.6-64 25.6-89.6 0C134.4 864 128 844.8 128 825.6l0 0 0-179.2 0 0c0-19.2 6.4-32 19.2-44.8C160 588.8 172.8 582.4 192 582.4l0 0 179.2 0 0 0c19.2 0 32 6.4 44.8 19.2C441.6 627.2 441.6 665.6 416 691.2z" p-id="9131" fill="#ffffff"></path></svg></a>
             <a id="WebDev" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;right:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 0 15px 0 0;" title="开发人员选项" onclick="ipcRenderer.send('dev','Open');"><svg t="1664862154551" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7369" width="24" height="45"><path d="M911.7 385.3l-0.3-1.5c-0.2-1-0.3-1.9-0.6-2.9-0.2-0.6-0.4-1.1-0.5-1.7-0.3-0.8-0.5-1.7-0.9-2.5-0.2-0.6-0.5-1.1-0.8-1.7-0.4-0.8-0.8-1.5-1.2-2.3-0.3-0.5-0.6-1.1-1-1.6-0.8-1.2-1.7-2.4-2.6-3.6-0.5-0.6-1.1-1.3-1.7-1.9-0.4-0.5-0.9-0.9-1.4-1.3-0.6-0.6-1.3-1.1-1.9-1.6-0.5-0.4-1-0.8-1.6-1.2-0.2-0.1-0.4-0.3-0.6-0.4L531.1 117.8c-11.5-7.7-26.6-7.7-38.1 0L127.3 361.3c-0.2 0.1-0.4 0.3-0.6 0.4-0.5 0.4-1 0.8-1.6 1.2-0.7 0.5-1.3 1.1-1.9 1.6-0.5 0.4-0.9 0.9-1.4 1.3-0.6 0.6-1.2 1.2-1.7 1.9-1 1.1-1.8 2.3-2.6 3.6-0.3 0.5-0.7 1-1 1.6-0.4 0.7-0.8 1.5-1.2 2.3-0.3 0.5-0.5 1.1-0.8 1.7-0.3 0.8-0.6 1.7-0.9 2.5-0.2 0.6-0.4 1.1-0.5 1.7-0.2 0.9-0.4 1.9-0.6 2.9l-0.3 1.5c-0.2 1.5-0.3 3-0.3 4.5v243.5c0 1.5 0.1 3 0.3 4.5l0.3 1.5c0.2 1 0.4 1.9 0.6 2.9 0.2 0.6 0.3 1.1 0.5 1.7 0.3 0.9 0.6 1.7 0.9 2.5 0.2 0.6 0.5 1.1 0.8 1.7 0.4 0.8 0.7 1.5 1.2 2.3 0.3 0.5 0.6 1.1 1 1.6 0.5 0.7 0.9 1.4 1.5 2.1l1.2 1.5c0.5 0.6 1.1 1.3 1.7 1.9 0.4 0.5 0.9 0.9 1.4 1.3 0.6 0.6 1.3 1.1 1.9 1.6 0.5 0.4 1 0.8 1.6 1.2 0.2 0.1 0.4 0.3 0.6 0.4L493 905.7c5.6 3.8 12.3 5.8 19.1 5.8 6.6 0 13.3-1.9 19.1-5.8l365.6-243.5c0.2-0.1 0.4-0.3 0.6-0.4 0.5-0.4 1-0.8 1.6-1.2 0.7-0.5 1.3-1.1 1.9-1.6 0.5-0.4 0.9-0.9 1.4-1.3 0.6-0.6 1.2-1.2 1.7-1.9l1.2-1.5 1.5-2.1c0.3-0.5 0.7-1 1-1.6 0.4-0.8 0.8-1.5 1.2-2.3 0.3-0.5 0.5-1.1 0.8-1.7 0.3-0.8 0.6-1.7 0.9-2.5 0.2-0.5 0.4-1.1 0.5-1.7 0.3-0.9 0.4-1.9 0.6-2.9l0.3-1.5c0.2-1.5 0.3-3 0.3-4.5V389.8c-0.3-1.5-0.4-3-0.6-4.5zM546.4 210.5l269.4 179.4-120.3 80.4-149-99.6V210.5z m-68.8 0v160.2l-149 99.6-120.3-80.4 269.3-179.4zM180.7 454.1l86 57.5-86 57.5v-115z m296.9 358.5L208.3 633.2l120.3-80.4 149 99.6v160.2zM512 592.8l-121.6-81.2L512 430.3l121.6 81.2L512 592.8z m34.4 219.8V652.4l149-99.6 120.3 80.4-269.3 179.4zM843.3 569l-86-57.5 86-57.5v115z" p-id="7370" fill="#ffffff"></path></svg></a>
         </div>
@@ -405,14 +447,14 @@
         document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='5%';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(180deg)';
         document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000000)';
-        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 300);    }
+        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 300);    }
         else {
             document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.height='40%';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockContainer').style.paddingBottom='1.1%';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfolder').style.transform='rotateX(0deg)';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000098)';
             document.getElementById('ArchivePageContentDetailsEpisodeBlockUnfoldContainer').style.height='20%';
-            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 300);    }
+            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 300);    }
         ArchivePageContentDetailsEpisodeBlockUnfoldCounter+=1;
     }
     var ArchivePageContentDetailsStaffBlockUnfoldCounter = 0;
@@ -423,13 +465,13 @@
         document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='5%';
         document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(180deg)';
         document.getElementById('ArchivePageContentDetailsStaffBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000000)';
-        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 500);    }
+        setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 500);    }
         else {
             document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.height='40%';
             document.getElementById('ArchivePageContentDetailsStaffBlockContainer').style.paddingBottom='1.1%';
             document.getElementById('ArchivePageContentDetailsStaffBlockUnfolder').style.transform='rotateX(0deg)';
             document.getElementById('ArchivePageContentDetailsStaffBlockUnfoldContainer').style.background='linear-gradient(180deg, transparent, #00000098)';
-            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=((document.getElementById('ArchivePageContentLastCard').offsetTop/$(window).height())*100+15).toString()+'%';}, 500);    }
+            setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 500);    }
         ArchivePageContentDetailsStaffBlockUnfoldCounter+=1;
     }
 </script>

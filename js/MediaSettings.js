@@ -229,7 +229,8 @@ if(result == 1){store.set("WorkSaveNo"+WorkID+".ExistCondition",'Deleted');
     localStorage.setItem('LocalStorageMediaBaseDeleteNumber',MediaBaseDeleteNumber+1);
     // ArchivePageInit();
     ipc.send('MainWindow','Refresh');
-    OKErrorStreamer("OK","作品已从数据库删除",0,"..");
+    OKErrorStreamer("OK","作品已从数据库删除，窗口将于1s后关闭",0,"..");
+    setTimeout(function() {window.close();}, 1000);
 }
 }
 
@@ -239,6 +240,7 @@ function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
     OKErrorStreamer("MessageOn","作品信息自动更新进行中",0,"..");
     setTimeout(function() {
     var ModifiedbgmID = document.getElementsByName("checkboxA")[2].value.toString();
+    var IfRefreshedArchive = 0;
     // *扫描作品bgmID获取作品信息 
     if(ModifiedbgmID != '0' && ModifiedbgmID != ''){
         $.getJSON("https://api.bgm.tv/v0/subjects/"+ModifiedbgmID, function(data){
@@ -250,17 +252,21 @@ function ArchiveMediaUpdateSingle(MediaBaseScanCounter){
         else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}
         store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Type",data.platform); 
         store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover",data.images.large); 
-        }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0,"..");}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/MediaPageLoad(MediaID);OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");
+        }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0,"..");}).done(function(){if(IfRefreshedArchive==0){ipc.send('MainWindow','RefreshArchivePage'+MediaID);IfRefreshedArchive=1;}
+        /*ipc.send('MainWindow','Refresh'); 更新媒体库页面*/MediaPageLoad(MediaID);OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");
         OKErrorStreamer("OK","媒体库数据爬取完成",0,".."); }); // *错误回调
+
         $.getJSON("https://api.bgm.tv/v0/subjects/"+ModifiedbgmID+'/persons', function(data){
         for(let MediaBaseElementsGet=0;MediaBaseElementsGet!=data.length;MediaBaseElementsGet++){
         if(data[MediaBaseElementsGet].relation=='导演') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Director",data[MediaBaseElementsGet].name);}
         if(data[MediaBaseElementsGet].relation=='动画制作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Corp",data[MediaBaseElementsGet].name);}
         if(data[MediaBaseElementsGet].relation=='原作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
         else if(data[MediaBaseElementsGet].relation=='原案') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
-        } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0,"..");}).done(function(){ipc.send('MainWindow','Refresh'); /*更新媒体库页面*/OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");
+        } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0,"..");}).done(function(){if(IfRefreshedArchive==0){ipc.send('MainWindow','RefreshArchivePage'+MediaID);IfRefreshedArchive=1;}
+        /*ipc.send('MainWindow','Refresh'); 更新媒体库页面*/OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");
         MediaPageLoad(MediaID);}); // *错误回调
-        } else{OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");OKErrorStreamer("Error","bgmID无效",0,"..");}
+        } 
+        else{OKErrorStreamer("MessageOff","作品信息更新进行中",0,"..");OKErrorStreamer("Error","bgmID无效",0,"..");}
     },2000);
 }
 
@@ -321,6 +327,14 @@ function MediaSettingsPageSearch(Key){
 function MediaSettingsPageSearchFill(ID){
     document.getElementsByName("checkboxA")[2].value=ID;
     ArchiveMediaUpdateSingle(MediaID)
+}
+
+// !获取媒体文件夹路径
+function MediaSettingsFolderURL(event) {
+    console.log(document.getElementById('MediaSettingsFolderSelectIcon').files);
+    let SubFolderPath = document.getElementById('MediaSettingsFolderSelectIcon').files[0].name;
+    let FolderPath = document.getElementById('MediaSettingsFolderSelectIcon').files[0].path.replaceAll('\\','/')
+    document.getElementsByName('checkboxA')[1].value = FolderPath.substr(0,FolderPath.length-SubFolderPath.length-1);
 }
 
 //! 作品设置-搜索作品信息模块自动监听位置更新

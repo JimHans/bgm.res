@@ -79,6 +79,13 @@ function SettingsPageSaveConfig(checkboxName,checkboxID,key,type) { //数据保�
     }
 }
 
+function SettingsPageFolderURL(event) { //获取媒体文件夹路径
+    console.log(document.getElementById('SettingsPageFolderSelectIcon').files);
+    let SubFolderPath = document.getElementById('SettingsPageFolderSelectIcon').files[0].name;
+    let FolderPath = document.getElementById('SettingsPageFolderSelectIcon').files[0].path.replaceAll('\\','/')
+    document.getElementsByName('checkboxA')[0].value = FolderPath.substr(0,FolderPath.length-SubFolderPath.length-1);
+}
+
 function SettingsPageConfigInit() { //数据初始化
 
     if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")){ //初始化自定义颜色
@@ -112,7 +119,7 @@ function SettingsPageConfigInit() { //数据初始化
     var KeyStoreB=['LocalStorageMediaShowSciMark',
                     'LocalStorageMediaShowStd',"LocalStorageMediaShowProgress","LocalStorageMediaShowRelative","LocalStorageMediaShowCharacter",
                     "LocalStorageMediaShowCharacterCN","LocalStorageMediaShowCharacterCV","LocalStorageMediaShowTranslation","LocalStorageMediaShowStaff",
-                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode","LocalStorageSystemOpenMicaMode"]
+                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode","LocalStorageSystemOpenMicaMode","LocalStorageSystemOpenLiveBackground"]
     //初始化PageB
     for(let Temp = 0;Temp!=KeyStoreB.length;Temp++){ //Object.keys(sysdata.get("Settings.checkboxB"))
         if(sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])!=''){
