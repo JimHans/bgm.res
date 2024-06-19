@@ -137,8 +137,18 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
     localStorage.setItem("LocalStorageRecentViewURL",EPOpenURL);
     sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisode",TempCounter);
     localStorage.setItem("LocalStorageRecentViewEpisode",TempCounter);
-    if(Type == 'EP') {sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'EP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'EP')}
-    if(Type == 'SP') {sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'SP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'SP')}
+    if(Type == 'EP') {
+      sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
+      localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
+      sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'EP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'EP');
+      document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px rgb(240 145 153)";
+    }
+    if(Type == 'SP') {
+      sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));
+      localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));
+      sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'SP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'SP');
+      document.getElementById("ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px rgb(240 145 153)";
+    }
 
     // *Recent View Get <!--格式化HomePage主页继续观看内容-->
     var bgmID = sysdata.get("Settings.checkboxC.LocalStorageRecentViewID");//localStorage.getItem("LocalStorageRecentViewID");
@@ -208,6 +218,7 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
       $('#RecentViewProgress').attr('onclick',"console.log('OK');RecentViewPlayAction('Last');");
 
       // *计算作品进度信息
+      ArchivePageMediaProgressCalc(MediaID);
       let RecentViewWatchPercentSaver = 0;
       for(let Tempi=1;Tempi<=parseInt(store.get("WorkSaveNo"+MediaID.toString()+".EPTrueNum"));Tempi++){
         if(store.get("WorkSaveNo"+MediaID.toString()+".EPDetails.EP"+Tempi+'.Condition')=='Watched') RecentViewWatchPercentSaver++;
