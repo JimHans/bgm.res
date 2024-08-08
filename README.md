@@ -98,6 +98,7 @@
 测试版：[PreRelease Download](https://github.com/JimHans/bgm.res/releases)
 
 ## 💻软件截图：
+
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
     <img src="./screenshots/screenshot1.png" alt="Screenshot 1" style="width: 100%;">
     <img src="./screenshots/screenshot2.png" alt="Screenshot 2" style="width: 100%;">
