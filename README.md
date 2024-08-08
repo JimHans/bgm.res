@@ -98,15 +98,20 @@
 测试版：[PreRelease Download](https://github.com/JimHans/bgm.res/releases)
 
 ## 💻软件截图：
-
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-    <img src="./screenshots/screenshot1.png" alt="Screenshot 1" style="width: 100%;">
-    <img src="./screenshots/screenshot2.png" alt="Screenshot 2" style="width: 100%;">
-    <img src="./screenshots/screenshot3.png" alt="Screenshot 3" style="width: 100%;">
-    <img src="./screenshots/screenshot4.png" alt="Screenshot 4" style="width: 100%;">
-    <img src="./screenshots/screenshot5.png" alt="Screenshot 5" style="width: 100%;">
-    <img src="./screenshots/screenshot6.png" alt="Screenshot 6" style="width: 100%;">
-</div>
+<table>
+  <tr>
+    <td><img src="./screenshots/screenshot1.png" alt="Screenshot 1" style="width: 100%;"></td>
+    <td><img src="./screenshots/screenshot2.png" alt="Screenshot 2" style="width: 100%;"></td>
+  </tr>
+  <tr>
+    <td><img src="./screenshots/screenshot3.png" alt="Screenshot 3" style="width: 100%;"></td>
+    <td><img src="./screenshots/screenshot4.png" alt="Screenshot 4" style="width: 100%;"></td>
+  </tr>
+  <tr>
+    <td><img src="./screenshots/screenshot5.png" alt="Screenshot 5" style="width: 100%;"></td>
+    <td><img src="./screenshots/screenshot6.png" alt="Screenshot 6" style="width: 100%;"></td>
+  </tr>
+</table>
 
 
 ## 📝附录：
