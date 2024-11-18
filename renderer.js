@@ -715,6 +715,8 @@ function ArchivePageSwitch(PageID){
         //获取今天星期
         var WeekToday = new Date().getDay();
         setTimeout(function(){ //延迟加载，等待动画完成
+        let AnimateTargetTimelineContent = document.getElementById('ArchivePageTimelineContent'+Weekdays[WeekToday-1]).offsetTop-130;
+        $('#ArchivePageTimelineContent').animate({scrollTop: AnimateTargetTimelineContent},600) //滚动到当前星期
         $('#ArchivePageTimelineContent'+Weekdays[WeekToday-1]).css({'transform':'scale(1.06) translateX(3%)',
           'color': SettingsColorPicker(1),
           'background': SettingsColorPicker(0.1) });
