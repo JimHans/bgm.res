@@ -7,7 +7,7 @@
 <img src="https://img.shields.io/badge/build-passing-green.svg?style=flat-square">
 <img src="https://img.shields.io/github/package-json/v/JimHans/bgm.res?color=pink&style=flat-square">
 <img src="https://img.shields.io/github/downloads/JimHans/bgm.res/total?color=orange&style=flat-square">
-<img src="https://img.shields.io/badge/Electron-20.3.8-blue.svg?style=flat-square">
+<img src="https://img.shields.io/badge/Electron-25.9.8-blue.svg?style=flat-square">
 <img src="https://img.shields.io/badge/License-GPL v3.0-purple.svg?style=flat-square">
 </p>
 
@@ -68,6 +68,7 @@
 - [x] 支持继续播放本话或播放下一话
 - [x] 支持离线存储部分最近观看数据
 - [x] 支持云端同步最近观看数据
+- [x] 当季新番时间线
 
 **做种管理集合**
 - [x] 合入qBittorrnet Web UI展示位，支持链接qBittorrnet管理做种
@@ -78,7 +79,7 @@
 **本地番剧观看**
 - [x] 内置mpv播放引擎，支持单独更新播放器，mpv默认内置Anime4K。
 - [x] 支持自定义mpv配置文件
-- [ ] *支持调用外部播放器播放*
+- [x] 支持调用外部播放器播放
 
 **界面**
 - [x] WinUI 3风格设置界面
