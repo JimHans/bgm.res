@@ -24,15 +24,22 @@ let SysdataOption={
 var IfArchivePageIsInit = 0;                                          //?是否已经初始化过Archive页面
 var ArchivePageContent_scrollTop = 0;                                 //?Archive页面滚动位置
 var ArchivePageContent_scrollTopFreeze = 0;                           //?Archive页面滚动位置-临时变量
+var ArchivePageTimelineContentOpened = 0;                             //?Archive页面时间线内容是否打开
 
 ipcRenderer.on('data', (e,arg) => {                                   //?接收主进程传来的数据 
   console.log(arg);
   if(arg.slice(0,18)=='RefreshArchivePage'){
     // ArchivePageInit();
+    let archivePageContent = document.getElementById("ArchivePageContent");
+    if (archivePageContent) {
+      let MediaDetailsBlock = document.getElementById('ArchiveWorkNo'+arg.slice(18));
+      archivePageContent.scrollTop = MediaDetailsBlock.offsetTop-20;//archivePageContent.scrollHeight;
+    } //将媒体库滚到最底以显示最新添加的作品
     ArchiveMediaDetailsPage(arg.slice(18));
     let RefreshArchivePageTempDataSaver = store.get("WorkSaveNo"+arg.slice(18));
     // *计算作品进度信息
-    var RefreshArchiveCardWatchPercent = 0;var RefreshArchiveCardWatchPercentBorder='8px'
+    var RefreshArchiveCardWatchPercent = 0;
+    var RefreshArchiveCardWatchPercentBorder='8px';
     for(let Tempi=1;Tempi<=parseInt(RefreshArchivePageTempDataSaver["EPTrueNum"]);Tempi++){
       if(RefreshArchivePageTempDataSaver.EPDetails["EP"+Tempi].Condition=='Watched') RefreshArchiveCardWatchPercent++;
     } RefreshArchiveCardWatchPercent = (RefreshArchiveCardWatchPercent/parseInt(RefreshArchivePageTempDataSaver["EPTrueNum"]))*100
@@ -41,7 +48,7 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
     if(document.getElementById("ArchiveWorkNo"+arg.slice(18)) !== null){
       $("#ArchiveWorkNo"+arg.slice(18)).html(
         "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
-        "<div id='ArchiveCardProgressShowerNo"+arg.slice(18)+"' class='ArchiveCardProgressShower' style='width:"+RefreshArchiveCardWatchPercent+"%;border-bottom-right-radius: "+RefreshArchiveCardWatchPercentBorder+";'></div>"+ //进度指示
+        "<div id='ArchiveCardProgressShowerNo"+arg.slice(18)+"' class='ArchiveCardProgressShower' style='width:"+RefreshArchiveCardWatchPercent+"%;border-bottom-right-radius: "+RefreshArchiveCardWatchPercentBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
         "<div class='ArchiveCardTitle'>"+RefreshArchivePageTempDataSaver["Name"]+"</div>"+ //名称
         "<div class='ArchiveCardRateStar'>⭐&nbsp;"+RefreshArchivePageTempDataSaver["Score"]+"</div>"+ //评分
         "<div class='ArchiveCardDirectorYearCorp' style='bottom:22%;left:5%;right:5%;text-align:center;font-style:italic;'>"+
@@ -57,7 +64,7 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
     else {
       $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+arg.slice(18)+"' class='ArchiveCardHover' style='background:url(\""+RefreshArchivePageTempDataSaver["Cover"]+"\") no-repeat top;background-size:cover;'>"+
       "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
-      "<div id='ArchiveCardProgressShowerNo"+arg.slice(18)+"' class='ArchiveCardProgressShower' style='width:"+RefreshArchiveCardWatchPercent+"%;border-bottom-right-radius: "+RefreshArchiveCardWatchPercentBorder+";'></div>"+ //进度指示
+      "<div id='ArchiveCardProgressShowerNo"+arg.slice(18)+"' class='ArchiveCardProgressShower' style='width:"+RefreshArchiveCardWatchPercent+"%;border-bottom-right-radius: "+RefreshArchiveCardWatchPercentBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
       "<div class='ArchiveCardTitle'>"+RefreshArchivePageTempDataSaver["Name"]+"</div>"+ //名称
       "<div class='ArchiveCardRateStar'>⭐&nbsp;"+RefreshArchivePageTempDataSaver["Score"]+"</div>"+ //评分
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:22%;left:5%;right:5%;text-align:center;font-style:italic;'>"+
@@ -69,6 +76,17 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
       "</div>" );
       OKErrorStreamer("OK","媒体数据添加完成！",0);
     }
+}else if(arg.slice(0,15)=='InitArchivePage'){
+  console.log("Init without update database");
+  document.getElementById('ArchivePageContentDetails').style.marginLeft = '100%';
+  document.getElementById('GoBackPage').style.height = '0px';
+  setTimeout(function() {document.getElementById('ArchivePageContentDetails').style.display = 'none';document.getElementById('GoBackPage').style.display = 'none';},700);
+  document.getElementById('RecentViewEpisodePlayCard').style.display='none';
+  document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';
+  ArchivePageContent_scrollTopFreeze = ArchivePageContent_scrollTop;
+  ArchivePageInit();
+  // 滚动到上次位置
+  $('#ArchivePageContent').animate({scrollTop: ArchivePageContent_scrollTopFreeze},70)
 }});      
 
 //Version Get
@@ -220,8 +238,22 @@ function SysOnload() {
     document.getElementById('HomePage').style.background="#00000000";
     document.getElementById('ArchivePage').style.background="#00000000";
     document.getElementById('SettingsPage').style.background="#00000000";}
+  
+  // *自定义主题色导航栏
+  let HomeIconColor = 'rgb(240 145 153)'; // 这是默认的设置图标颜色
   if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //判断是否启用自定义主题色
-  {document.getElementById("Home").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");}
+  { HomeIconColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
+    // document.getElementById("Home").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+  }
+  document.getElementById("Home").style.color=SettingsColorPicker(1);
+  document.getElementById("Home").style.backgroundColor=SettingsColorPicker(0.1);
+  // 动态加载 SVG 文件
+  $.get('./assets/Home-fill.svg', function(data) { // 将 SVG 内容插入到页面中
+    var svg = $(data).find('svg');  $('#HomeIcon').replaceWith(svg);
+    $(svg).find('path').attr('fill', HomeIconColor); // 将所有 path 的颜色改为指定颜色
+  }, 'xml');
+  // *自定义主题色导航栏OVER
+
   if(sysdata.get("Settings.checkboxA.LocalStorageAutoUpdateArchiveInfo")) //判断是否启用自动更新作品信息
   {ArchiveMediaUpdate();}
 
@@ -341,12 +373,31 @@ function FloatBarAction(PageID) { //点击切换页面
       });
     }
 
-    document.getElementById("Home").style.border="3px solid rgb(240 145 153)";
+    $('#Archive').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Archive.svg', function(data) { $('#ArchiveIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Archive原始图标
+    $('#Torrnet').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/qbittorrent.svg', function(data) { $('#TorrentIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复torrent原始图标
+    $('#Settings').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Settings.svg', function(data) { $('#SettingsIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Settings原始图标
+
+    // document.getElementById("Home").style.border="3px solid rgb(240 145 153)";
+    let HomeIconColor = 'rgb(240 145 153)'; // 这是默认的设置图标颜色
     if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"))
-    {document.getElementById("Home").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");}
-    document.getElementById("Archive").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
+    { HomeIconColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
+      //document.getElementById("Home").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    }
+    // document.getElementById("Archive").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
+
+    document.getElementById("Home").style.color=SettingsColorPicker(1);
+    document.getElementById("Home").style.backgroundColor=SettingsColorPicker(0.1);
+    // 动态加载 SVG 文件
+    $.get('./assets/Home-fill.svg', function(data) { // 将 SVG 内容插入到页面中
+      var svg = $(data).find('svg');  $('#HomeIcon').replaceWith(svg);
+      $(svg).find('path').attr('fill', HomeIconColor); // 将所有 path 的颜色改为指定颜色
+    }, 'xml');
+
   }
   else if(PageID == "Archive"){
     document.getElementById("HomePage").style.display="none";
@@ -355,14 +406,40 @@ function FloatBarAction(PageID) { //点击切换页面
     document.getElementById("SettingsPage").style.display="none";
     if(!IfArchivePageIsInit){ArchivePageInit();IfArchivePageIsInit = true;
       if(sysdata.get("Settings.checkboxA.LocalStorageAutoUpdateArchive")){setTimeout(function(){LocalWorkScanModify()},2000)} //判断是否启用自动更新本地作品信息
+      // 滚动到所有作品页
+      $("#ArchivePageSwitchTab3").css('background', SettingsColorPicker(0.1));
+      $("#ArchivePageSwitchTab3").css('color', SettingsColorPicker(1));
+      $("#ArchivePageMainContent").css('transition', '');
+      $("#ArchivePageMainContent").css('transform', 'translateX(-50%)');
+      setTimeout(function() {$("#ArchivePageMainContent").css('transition', 'transform 0.5s cubic-bezier(0, 1.08, 0.58, 1)');}, 100);
       }//初始化ArchivePage同时记录打开状态
 
-    document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Archive").style.border="3px solid rgb(240 145 153)";
+    // document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Archive").style.border="3px solid rgb(240 145 153)";
+
+    $('#Home').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Home.svg', function(data) { $('#HomeIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Home原始图标
+    $('#Torrnet').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/qbittorrent.svg', function(data) { $('#TorrentIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复torrent原始图标
+    $('#Settings').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Settings.svg', function(data) { $('#SettingsIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Settings原始图标
+
+    let ArchiveIconColor = 'rgb(240 145 153)'; // 这是默认的设置图标颜色
     if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"))
-    {document.getElementById("Archive").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");}
-    document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
+    { ArchiveIconColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
+      //document.getElementById("Archive").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    }
+    // document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
+
+    document.getElementById("Archive").style.color=SettingsColorPicker(1);
+    document.getElementById("Archive").style.backgroundColor=SettingsColorPicker(0.1);
+    // 动态加载 SVG 文件
+    $.get('./assets/Archive-fill.svg', function(data) { // 将 SVG 内容插入到页面中
+      var svg = $(data).find('svg');  $('#ArchiveIcon').replaceWith(svg);
+      $(svg).find('path').attr('fill', ArchiveIconColor); // 将所有 path 的颜色改为指定颜色
+    }, 'xml');
+
     // 滚动到上次位置
     $('#ArchivePageContent').animate({scrollTop: ArchivePageContent_scrollTopFreeze},70)  
     // document.getElementById('ArchivePageContent').scrollTop = ArchivePageContent_scrollTopFreeze;
@@ -374,12 +451,32 @@ function FloatBarAction(PageID) { //点击切换页面
     document.getElementById("TorrnetPage").style.display="block";
     document.getElementById("SettingsPage").style.display="none";
 
-    document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Archive").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Torrnet").style.border="3px solid rgb(240 145 153)";
+    // document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Archive").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Torrnet").style.border="3px solid rgb(240 145 153)";
+
+    $('#Home').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Home.svg', function(data) { $('#HomeIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Home原始图标
+    $('#Archive').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Archive.svg', function(data) { $('#ArchiveIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Archive原始图标
+    $('#Settings').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Settings.svg', function(data) { $('#SettingsIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Settings原始图标
+
+
+    let qBitIconColor = 'rgb(240 145 153)'; // 这是默认的设置图标颜色
     if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"))
-    {document.getElementById("Torrnet").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");}
-    document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
+    { qBitIconColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
+      //document.getElementById("Torrnet").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    }
+    //document.getElementById("Settings").style.border="3px solid rgb(66, 66, 66,0)";
+
+    document.getElementById("Torrnet").style.color=SettingsColorPicker(1);
+    document.getElementById("Torrnet").style.backgroundColor=SettingsColorPicker(0.1);
+    // 动态加载 SVG 文件
+    $.get('./assets/qbittorrent-fill.svg', function(data) { // 将 SVG 内容插入到页面中
+      var svg = $(data).find('svg');  $('#TorrentIcon').replaceWith(svg);
+      $(svg).find('path').attr('fill', qBitIconColor); // 将所有 path 的颜色改为指定颜色
+    }, 'xml');
   }
   else if(PageID == "Settings"){
     ArchivePageContent_scrollTopFreeze = ArchivePageContent_scrollTop; //记录Archive页面滚动位置
@@ -388,12 +485,32 @@ function FloatBarAction(PageID) { //点击切换页面
     document.getElementById("TorrnetPage").style.display="none";
     document.getElementById("SettingsPage").style.display="block";
 
-    document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Archive").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
-    document.getElementById("Settings").style.border="3px solid rgb(240 145 153)";
+    // document.getElementById("Home").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Archive").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Torrnet").style.border="3px solid rgb(66, 66, 66,0)";
+    // document.getElementById("Settings").style.border="3px solid rgb(240 145 153)";
+    
+    $('#Home').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Home.svg', function(data) { $('#HomeIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Home原始图标
+    $('#Archive').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/Archive.svg', function(data) { $('#ArchiveIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复Archive原始图标
+    $('#Torrnet').css({'color':'#fff',"background-color": ""});
+    $.get('./assets/qbittorrent.svg', function(data) { $('#TorrentIcon').replaceWith($(data).find('svg'));}, 'xml'); // 恢复torrent原始图标
+
+    let SettingsIconColor = 'rgb(240 145 153)'; // 这是默认的设置图标颜色
     if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"))
-    {document.getElementById("Settings").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");}
+    { SettingsIconColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
+      //document.getElementById("Settings").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    }
+
+    document.getElementById("Settings").style.color=SettingsColorPicker(1);
+    document.getElementById("Settings").style.backgroundColor=SettingsColorPicker(0.1);
+    // 动态加载 SVG 文件
+    $.get('./assets/Settings.svg', function(data) { // 将 SVG 内容插入到页面中
+      var svg = $(data).find('svg');  $('#SettingsIcon').replaceWith(svg);
+      $(svg).find('path').attr('fill', SettingsIconColor); // 将所有 path 的颜色改为指定颜色
+    }, 'xml');
+
     SettingsPageConfigInit()
   }
 }
@@ -413,6 +530,35 @@ function RecentViewPlayAction(Type) {
   
   if(sysdata.get("Settings.checkboxC."+RecentTempURL)){
     var RecentViewURL = sysdata.get("Settings.checkboxC."+RecentTempURL);//localStorage.getItem(RecentTempURL);
+    if(sysdata.get("Settings.checkboxA.LocalStorageUseSystemPlayer")){ //使用系统默认播放器
+      // 规范化路径，确保兼容性
+      DirectvideoPath = path.normalize(RecentViewURL);
+      // 构建命令，使用系统默认程序打开文件
+      let command = `start "" "${DirectvideoPath}"`;
+      // 执行命令，拉起系统应用选择器
+      exec(command, (error) => {
+          if (error) {
+            OKErrorStreamer("Error","无法打开视频文件",0);
+          } else {
+            var MediaID = sysdata.get("Settings.checkboxC.LocalStorageRecentViewLocalID");//localStorage.getItem("LocalStorageRecentViewLocalID"); //更新最近播放ep集数与链接信息
+            sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisode",RecentEP);
+            localStorage.setItem("LocalStorageRecentViewEpisode",RecentEP);
+            if(RecentViewEpisodeType!='SP'){ //根据类型保存播放url
+            sysdata.set("Settings.checkboxC.LocalStorageRecentViewURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(RecentEP)+".URL"));
+            localStorage.setItem("LocalStorageRecentViewURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(RecentEP)+".URL"));
+            sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(Number(RecentEP)+1)+".URL"));
+            localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(Number(RecentEP)+1)+".URL"));}
+            if(RecentViewEpisodeType=='SP'){
+            sysdata.set("Settings.checkboxC.LocalStorageRecentViewURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(RecentEP)+".URL"));
+            localStorage.setItem("LocalStorageRecentViewURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(RecentEP)+".URL"));
+            sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(Number(RecentEP)+1)+".URL"));
+            localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(Number(RecentEP)+1)+".URL"));}  
+            SysOnload();
+            OKErrorStreamer("OK","开始使用系统播放器播放，已记录进度",0);
+          }
+      });
+    }
+    else {
     process.noAsar = true; //临时禁用fs对ASAR读取
     fs.access(runtimeUrl, fs.constants.F_OK,function (err) {
       if (err) {  //调试播放核心 
@@ -473,6 +619,7 @@ function RecentViewPlayAction(Type) {
       }
     })
     process.noAsar = false; //恢复fs对ASAR读取
+    }
   }
 }
 
@@ -490,7 +637,7 @@ function ArchivePageInit(){
     var MediaBaseNumberGet = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");//localStorage.getItem("LocalStorageMediaBaseNumber");
     document.getElementById('ArchivePageContent').innerHTML="";
     if(sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber")==0 || !sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber"))
-    {document.getElementById('ArchivePageContent').innerHTML="<div style='position:absolute;left:25%;right:25%;top:30%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>暂时没有作品，请设置正确的媒体库地址并点击右上角下拉菜单中的“全局扫描”按钮来更新媒体库</div>";OKErrorStreamer("MessageOff","正在加载媒体库",0);OKErrorStreamer("Error","暂无媒体！",0);return}
+    {document.getElementById('ArchivePageContent').innerHTML="<div style='position:absolute;left:25%;right:25%;top:30%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>暂时没有作品，请前往「设置」选项卡设置正确的媒体库地址后点击右上角菜单中的「全局扫描」按钮来更新媒体库</div>";OKErrorStreamer("MessageOff","正在加载媒体库",0);OKErrorStreamer("Error","暂无媒体！",0);return}
     var MediaBaseScanCounter = 1;
     // requestAnimationFrame(ArchivePageInitCore);
     OKErrorStreamer("MessageOn","正在加载媒体库 0%",0);
@@ -514,7 +661,7 @@ function ArchivePageInit(){
 
       $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardHover' style='background:url(\""+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Cover"]+"\") no-repeat top;background-size:cover;'>"+
       "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
-      "<div id='ArchiveCardProgressShowerNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardProgressShower' style='width:"+ArchiveCardWatchPercentSaver+"%;border-bottom-right-radius: "+ArchiveCardWatchPercentRightBorder+";'></div>"+ //进度指示
+      "<div id='ArchiveCardProgressShowerNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardProgressShower' style='width:"+ArchiveCardWatchPercentSaver+"%;border-bottom-right-radius: "+ArchiveCardWatchPercentRightBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
       "<div class='ArchiveCardTitle'>"+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Name"]+"</div>"+ //名称
       "<div class='ArchiveCardRateStar'>⭐&nbsp;"+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Score"]+"</div>"+ //评分
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:22%;left:5%;right:5%;text-align:center;font-style:italic;'>"+
@@ -528,6 +675,60 @@ function ArchivePageInit(){
     }MediaBaseScanCounter+=1;ArchivePageInitCore();//requestAnimationFrame(ArchivePageInitCore);
     // cancelAnimationFrame(ArchivePageInitCore);
   }
+}
+
+//! 媒体库-页面切换模块
+function ArchivePageSwitch(PageID){
+
+  for(let temp1 = 1;temp1!=5;temp1++) 
+    {
+      if (temp1==PageID) {$("#ArchivePageSwitchTab"+String(temp1)).css('background', SettingsColorPicker(0.1));
+      $("#ArchivePageSwitchTab"+String(temp1)).css('color', SettingsColorPicker(1)) 
+    } 
+      else {$("#ArchivePageSwitchTab"+String(temp1)).css('background', '');$("#ArchivePageSwitchTab"+String(temp1)).css('color','aliceblue')}
+    }
+  switch(PageID){
+    case 1:$("#ArchivePageMainContent").css('transform', 'translateX(0%)');break;
+    case 2:$("#ArchivePageMainContent").css('transform', 'translateX(-25%)');break;
+    case 3:$("#ArchivePageMainContent").css('transform', 'translateX(-50%)');break;
+    case 4:$("#ArchivePageMainContent").css('transform', 'translateX(-75%)');break;
+  }
+  if(PageID==4&&ArchivePageTimelineContentOpened==0) {
+    $.ajax({ //获取用户信息
+      url: "https://api.bgm.tv/calendar",type: 'GET',timeout : 2000,
+      success: function (data) {
+        var Weekdays = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+        for (let temp1 = 0; temp1 < 7; temp1++) {
+          for (let temp2 = 0; temp2 < data[temp1]["items"].length; temp2++) {
+            if(temp1==0 || temp1==6){ //周末周一的2号占位卡片填充，使用户永远可以看到任意日期前后的时间线
+              $('#ArchivePageTimelineContent'+Weekdays[temp1]+'2Ani').append( "<div class='ArchiveCardCharacterHover'style='height: 100%;margin: 0;margin-right: 20px;flex:unset'"+
+                "onclick=\"\""+"><div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+data[temp1]["items"][temp2]["images"]["large"]+"\") no-repeat top;background-size:cover;border-radius:8px;border-top-right-radius:0;border-bottom-right-radius:0;'></div>"+
+                "<div style='position:relative;margin-right:0%;margin-left:1%;margin-top:8px;height:100%;border-radius:8px;width: 100%;text-align: left;width:fit-content;padding:10px;padding-right:20px;white-space:nowrap;font-size:14.5px;'>"+
+                "<b>"+data[temp1]["items"][temp2]["name"]+"<br>"+data[temp1]["items"][temp2]["name_cn"]+"</b><br>On Air: "+data[temp1]["items"][temp2]["air_date"]+"</div></div>")
+            }
+            $('#ArchivePageTimelineContent'+Weekdays[temp1]+'Ani').append( "<div class='ArchiveCardCharacterHover'style='height: 100%;margin: 0;margin-right: 20px;flex:unset'"+
+              "onclick=\"shell.openExternal('"+data[temp1]["items"][temp2]["url"]+"');\""+"><div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+data[temp1]["items"][temp2]["images"]["large"]+"\") no-repeat top;background-size:cover;border-radius:8px;border-top-right-radius:0;border-bottom-right-radius:0;'></div>"+
+              "<div style='position:relative;margin-right:0%;margin-left:1%;margin-top:8px;height:100%;border-radius:8px;width: 100%;text-align: left;width:fit-content;padding:10px;padding-right:20px;white-space:nowrap;font-size:14.5px;'>"+
+              "<b>"+data[temp1]["items"][temp2]["name"]+"<br>"+data[temp1]["items"][temp2]["name_cn"]+"</b><br>On Air: "+data[temp1]["items"][temp2]["air_date"]+"</div></div>")
+          }
+        }
+        //获取今天星期
+        var WeekToday = new Date().getDay();
+        setTimeout(function(){ //延迟加载，等待动画完成
+        $('#ArchivePageTimelineContent'+Weekdays[WeekToday-1]).css({'transform':'scale(1.06) translateX(3%)',
+          'color': SettingsColorPicker(1),
+          'background': SettingsColorPicker(0.1) });
+        // 动态加载 SVG 文件
+        $.get('./assets/calendar.svg', function(data) { // 将 SVG 内容插入到页面中
+          var svg = $(data).find('svg');  $('#ArchivePageTimelineContentIcon'+Weekdays[WeekToday-1]).replaceWith(svg);
+          $(svg).find('path').attr('fill', SettingsColorPicker(1)); // 将所有 path 的颜色改为指定颜色
+        }, 'xml');
+        }, 1000);
+        ArchivePageTimelineContentOpened = 1;
+      }
+
+    });
+  };
 }
 
 //! 媒体库-计算作品进度信息
@@ -676,7 +877,7 @@ function ArchiveMediaDetailsPage(MediaID){
         "style='width:100%;height:100%;padding:0px;font-size:3vmin;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:rgb(0,0,0,0.05);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
         //width:12.1%;height:4vw;padding:2px;
         //检测是否已播放过
-        if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}
+        if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
       } 
       ArchivePageMediaProgressCalc(MediaID);OKErrorStreamer("MessageOff","<div class='LoadingCircle'></div>",0);OKErrorStreamer("OK","已更新EP信息",0);//刷新外部进度条
     },5);//更新EP信息
@@ -687,7 +888,7 @@ function ArchiveMediaDetailsPage(MediaID){
       "style='width:100%;height:100%;padding:0px;font-size:3vmin;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:rgb(0,0,0,0.05);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
       //width:12.1%;height:4vw;padding:2px;
       //检测是否已播放过
-      if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}
+      if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
     } 
   }
   //?填充SP选集列表
@@ -697,7 +898,7 @@ function ArchiveMediaDetailsPage(MediaID){
     $("#ArchivePageContentDetailsSpecialEpisodeBlock").append( "<div id='ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:100%;height:100%;padding:0px;font-size:3vmin;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:#ffffff0a;backdrop-filter: blur(30px)' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"SP\");'>"+"SP "+TempCounter+"</div>" );
     //width:12.1%;height:4vw;padding:2px;
     //检测是否已播放过
-    if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsSpecialEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}
+    if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsSpecialEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
   } 
 
   //?填充个人评分信息
@@ -759,7 +960,7 @@ function ArchiveMediaDetailsPage(MediaID){
             for(let tempi = 1;tempi<=SyncEPNum;tempi++){
               if(data.data[tempi-1].type==2){
                 store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+tempi+'.Condition',"Watched")
-                document.getElementById('ArchivePageContentDetailsEpisodeNo'+tempi).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)';}
+                document.getElementById('ArchivePageContentDetailsEpisodeNo'+tempi).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
               if(data.data[tempi-1].type==0&&sysdata.get("UserData.userpageProgressSyncOptions")=='Cloud'){
                 store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+tempi+'.Condition',"Unwatched")}
             }
@@ -778,7 +979,7 @@ function ArchiveMediaDetailsPage(MediaID){
             }
             //再次检测是否已播放过
             for(let TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
-              if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px rgb(240 145 153)'}
+              if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
             } 
             ArchivePageMediaProgressCalc(MediaID);OKErrorStreamer("OK","加载作品信息完成,与云端同步成功",0);
             }
@@ -856,6 +1057,7 @@ function ArchiveMediaDetailsPage(MediaID){
       document.getElementById("ArchivePageContentDetailsRelavant").title=data[Tempj].name_cn;
       $("#ArchivePageContentDetailsRelavant").attr('onclick','window.open("https://bgm.tv/subject/'+data[Tempj].id+'")');
       document.getElementById("ArchivePageContentDetailsRelavantCover").style.background="url('"+data[Tempj].images.small+"') no-repeat center";
+      if(data[Tempj].images.small==null) document.getElementById("ArchivePageContentDetailsRelavantCover").style.background="url('./assets/no_img.gif') no-repeat center"; //如果没有图片就用默认图片
       document.getElementById("ArchivePageContentDetailsRelavantCover").style.backgroundSize="cover";
       document.getElementById("ArchivePageContentDetailsRelavantName").innerHTML=data[Tempj].relation+"<br/>"+data[Tempj].name_cn;
       for(let Temp = 1;Temp<=sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");Temp++){
@@ -894,7 +1096,8 @@ function ArchiveMediaDetailsPage(MediaID){
       var Chara_Data = data; function ArchiveMediaDetailsPageRelativeFiller(Tempj){
         $.getJSON("https://api.bgm.tv/v0/subjects/"+data[Tempj].id, function(data2){
           if(data2.name_cn!='') var Chara_Data_NameCN = data2.name_cn;else var Chara_Data_NameCN = Chara_Data[Tempj].name;
-          document.getElementsByName('ArchivePageContentDetailsRelativeBlockCard')[Tempj].innerHTML=( "<div id='ArchivePageContentDetailsRelativeBlockImg"+Tempj+"' style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+Chara_Data[Tempj].images.medium+"\") no-repeat top;background-size:cover;border-radius:8px;border-top-right-radius:0;border-bottom-right-radius:0;'></div>"+
+          let ArchiveMediaDetailsRelativeImage = Chara_Data[Tempj].images.medium; if(!ArchiveMediaDetailsRelativeImage) ArchiveMediaDetailsRelativeImage="./assets/no_img.gif"; //如果没有图片就用默认图片
+          document.getElementsByName('ArchivePageContentDetailsRelativeBlockCard')[Tempj].innerHTML=( "<div id='ArchivePageContentDetailsRelativeBlockImg"+Tempj+"' style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+ArchiveMediaDetailsRelativeImage+"\") no-repeat top;background-size:cover;border-radius:8px;border-top-right-radius:0;border-bottom-right-radius:0;'></div>"+
           "<div style='position:relative;margin-right:0%;margin-left:1%;margin-top:8px;height:100%;border-radius:8px;width: 100%;text-align: left;width:fit-content;padding:10px;padding-right:20px;white-space:nowrap;font-size:1.5vw;font-size:min(1.5vw, 21px);'><b>"+Chara_Data[Tempj].name+"<br/>("+Chara_Data_NameCN+")</b><br/>"+Chara_Data[Tempj].relation+"</div>")
           $(document.getElementsByName('ArchivePageContentDetailsRelativeBlockCard')[Tempj]).attr('onclick','window.open(\"https://bgm.tv/subject/'+Chara_Data[Tempj].id+'\");');
           switch(Chara_Data[Tempj].relation){
@@ -1185,6 +1388,18 @@ function SettingsClear(){
     sysdata.clear();/*localStorage.clear();*/SysdataDefaultInit();ArchivePageInit();OKErrorStreamer("OK","设置删除完成",0);}
 }
 
+//! 自定颜色获取
+function SettingsColorPicker(opacity){
+  //自定颜色获取
+  let CustomColor = 'rgb(240 145 153)'; // 这是默认的颜色
+  if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) 
+    CustomColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
+  let rgbValues = CustomColor.match(/\d+/g);
+  if (rgbValues.length !== 3) throw new Error('Invalid RGB format'); // 如果不是 RGB 格式，抛出错误
+  let [r, g, b] = rgbValues; // 构建 rgba 字符串\
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
 //! 接受托盘菜单指令运行指定程序
 ipcRenderer.on('MainWindow', (event, arg) => {
   switch(arg){
@@ -1193,3 +1408,10 @@ ipcRenderer.on('MainWindow', (event, arg) => {
     case 'OpenTorrnetPage': FloatBarAction("Torrnet");break;
   }
 });
+
+window.onerror = function(message, source, lineno, colno, error) {
+  OKErrorStreamer("MessageOff", "");
+  OKErrorStreamer("ErrorHandler", "发生致命错误："+message+"，请打开开发人员工具查看详情 ");
+  // 在这里处理异常，例如记录日志或显示用户友好的错误消息
+  return false; // 返回 true 表示阻止默认的错误处理（例如在控制台中输出错误）
+};

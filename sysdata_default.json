@@ -6,6 +6,7 @@
 			"LocalStorageAutoUpdateArchiveInfo": false,
 			"LocalStorageAutoUpdateMediaInfo": false,
 			"LocalStorageMediaSubFolderName": "default",
+			"LocalStorageUseSystemPlayer": false,
 			"LocalStorageqBittorrnetURL": null
 		},
 		"checkboxB": {
@@ -19,7 +20,7 @@
 			"LocalStorageMediaShowTranslation": true,
 			"LocalStorageMediaShowStaff": true,
 			"LocalStorageSystemBackgroundImage": null,
-			"LocalStorageSystemCustomColor": null,
+			"LocalStorageSystemCustomColor": "rgb(240, 145, 153)",
 			"LocalStorageSystemShowModifiedCover": false,
 			"LocalStorageSystemOpenLightMode": false,
 			"LocalStorageSystemOpenMicaMode": false,
@@ -27,8 +28,8 @@
 		},
 		"checkboxC": {
 			"LocalStorageMediaShowOldSettingPage": false,
-			"LocalStorageMediaScanExpression": "default",
-			"LocalStorageMediaScanExpressionSub": "default",
+			"LocalStorageMediaScanExpression": "/(?<=\\])(.+?)(?=\\[)/g",
+			"LocalStorageMediaScanExpressionSub": "未启用",
 			"LocalStorageRecentViewID": null,
 			"LocalStorageRecentViewEpisode": null,
 			"LocalStorageRecentViewEpisodeType": "EP",

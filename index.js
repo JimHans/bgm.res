@@ -13,6 +13,8 @@ let SysdataOption={
 }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
 let userpage = null;/*用户页面全局对象*/
 let AddMediaPage = null;/*添加媒体页面全局对象*/
+let RecycleBinPage = null;/*添加已屏蔽作品页面全局对象*/
+let MediaDirSetPage = null;/*添加媒体目录设置页面全局对象*/
 let OOBEPage = null;/*OOBE页面全局对象*/
 
 function createWindow () {
@@ -215,6 +217,7 @@ ipcMain.on("MainWindow",(event,data) => {
   if(data == 'Hide') {event.preventDefault();win.hide();}
   if(data == 'Refresh') {win.reload();}
   if(data.slice(0,18) == 'RefreshArchivePage') {win.webContents.send('data',data);}
+  if(data.slice(0,15) == 'InitArchivePage') {win.webContents.send('data',data);}
 });//监听主程序标题栏操作最小化与关闭、刷新
 
 //开发人员工具打开监听
@@ -367,7 +370,7 @@ function AddMediaPageShow () {
   });
   AddMediaPage.loadFile('./pages/AddMediaPage.html');// 并且为你的应用加载index.html
   require('@electron/remote/main').enable(AddMediaPage.webContents) // 启用 electron/remote web组件
-  //AddMediaPage.webContents.openDevTools();
+  // AddMediaPage.webContents.openDevTools();
   AddMediaPage.on('ready-to-show', function () {
     AddMediaPage.webContents.send('data','OK'); // 发送消息
     AddMediaPage.show() // 初始化后再显示
@@ -383,6 +386,98 @@ ipcMain.on("AddMediaPage",(event,data) => {
     else {AddMediaPage.show();}
   }
   if(data == 'Close') {event.preventDefault(); AddMediaPage.close();}
+});
+
+//!已屏蔽媒体页初始化函数
+function RecycleBinPageShow () {
+  // 创建子页面
+  let setwidth = screenElectron.getPrimaryDisplay().workAreaSize.width;
+  RecycleBinPage = new BrowserWindow({
+    height: parseInt((setwidth/2)*(3/4)),
+    width: parseInt((setwidth/2)*(3/4)),
+    minWidth: 500,
+    minHeight: 360,
+    skipTaskbar: false,//显示在任务栏
+    alwaysOnTop: false,//置顶显示
+    transparent: false,//底部透明
+    frame: true,
+      titleBarStyle: "hidden",
+      titleBarOverlay: {
+        color: "#202020",
+        symbolColor: "white", },
+    resizable: true,
+    icon: path.join(__dirname, './assets/icons/app.ico'),
+    show: true,
+    webPreferences: {
+      devTools: true,
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    }
+  });
+  RecycleBinPage.loadFile('./pages/RecycleBinPage.html');// 并且为你的应用加载index.html
+  require('@electron/remote/main').enable(RecycleBinPage.webContents) // 启用 electron/remote web组件
+  RecycleBinPage.on('ready-to-show', function () {
+    RecycleBinPage.webContents.send('data','OK'); // 发送消息
+    RecycleBinPage.show() // 初始化后再显示
+  });
+  RecycleBinPage.on('closed', () => { RecycleBinPage = null });
+}
+
+//监听已屏蔽作品页打开信号
+ipcMain.on("RecycleBin",(event,data) => {
+  console.log(data);
+  if(data == 'Open') {
+    if(RecycleBinPage==null||RecycleBinPage.isDestroyed()){RecycleBinPageShow ();}
+    else {RecycleBinPage.show();}
+  }
+  if(data == 'Close') {event.preventDefault(); RecycleBinPage.close();}
+});
+
+//!媒体库路径设置页初始化函数
+function MediaDirSetPageShow () {
+  // 创建子页面
+  let setwidth = screenElectron.getPrimaryDisplay().workAreaSize.width;
+  MediaDirSetPage = new BrowserWindow({
+    height: parseInt((setwidth/2)*(3/4)),
+    width: parseInt((setwidth/2)*(3/4)),
+    minWidth: 500,
+    minHeight: 360,
+    skipTaskbar: false,//显示在任务栏
+    alwaysOnTop: false,//置顶显示
+    transparent: false,//底部透明
+    frame: true,
+      titleBarStyle: "hidden",
+      titleBarOverlay: {
+        color: "#202020",
+        symbolColor: "white", },
+    resizable: true,
+    icon: path.join(__dirname, './assets/icons/app.ico'),
+    show: true,
+    webPreferences: {
+      devTools: true,
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    }
+  });
+  MediaDirSetPage.loadFile('./pages/MediaDirSetPage.html');// 并且为你的应用加载index.html
+  require('@electron/remote/main').enable(MediaDirSetPage.webContents) // 启用 electron/remote web组件
+  MediaDirSetPage.on('ready-to-show', function () {
+    MediaDirSetPage.webContents.send('data','OK'); // 发送消息
+    MediaDirSetPage.show() // 初始化后再显示
+  });
+  MediaDirSetPage.on('closed', () => { MediaDirSetPage = null });
+}
+
+//监听媒体库路径设置页打开信号
+ipcMain.on("MediaDirSet",(event,data) => {
+  console.log(data);
+  if(data == 'Open') {
+    if(MediaDirSetPage==null||MediaDirSetPage.isDestroyed()){MediaDirSetPageShow ();}
+    else {MediaDirSetPage.show();}
+  }
+  if(data == 'Close') {event.preventDefault(); MediaDirSetPage.close();}
 });
 
 //!OOBE页面初始化函数

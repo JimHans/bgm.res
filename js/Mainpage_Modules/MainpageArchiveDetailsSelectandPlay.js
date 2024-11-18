@@ -93,6 +93,24 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
   if(((store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL"))&&Type=='EP')||((store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".URL"))&&Type=='SP')){
     if(Type == 'EP') var EPOpenURL = store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL");
     if(Type == 'SP') var EPOpenURL = store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".URL");
+
+    if(sysdata.get("Settings.checkboxA.LocalStorageUseSystemPlayer")){ //使用系统默认播放器
+      // 规范化路径，确保兼容性
+      DirectvideoPath = path.normalize(EPOpenURL);
+      // 构建命令，使用系统默认程序打开文件
+      let command = `start "" "${DirectvideoPath}"`;
+      // 执行命令，拉起系统应用选择器
+      exec(command, (error) => {
+          if (error) {
+            OKErrorStreamer("Error","无法打开视频文件",0);
+          } else {
+            if(Type!='SP'){store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition','Watched')}
+            if(Type=='SP'){store.set("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition','Watched')}
+            OKErrorStreamer("OK","开始使用系统播放器播放，已记录进度",0);
+          }
+      });
+    }
+    else{ //使用自带MPV播放器
     process.noAsar = true; //临时禁用fs对ASAR读取
     fs.access(runtimeUrl, fs.constants.F_OK,function (err) {
       if (err) {  //调试播放核心 
@@ -129,6 +147,7 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
       }
     })
     process.noAsar = false; //恢复fs对ASAR读取
+    }
     sysdata.set("Settings.checkboxC.LocalStorageRecentViewID",store.get("WorkSaveNo"+MediaID+".bgmID"));
     localStorage.setItem("LocalStorageRecentViewID",store.get("WorkSaveNo"+MediaID+".bgmID"));
     sysdata.set("Settings.checkboxC.LocalStorageRecentViewLocalID",MediaID);

@@ -19,6 +19,21 @@
     <script src="./js/ping.js"></script> <!--Ping模块-->
     <link rel="stylesheet" type="text/css" href="./includes/toastify.min.css"> <!--引入Toastify-->
     <script type="text/javascript" src="./includes/toastify-js"></script> <!--引入Toastify-->
+    <link rel="stylesheet" href="./includes/coloris/coloris.min.css"/> <!--引入Coloris-->
+    <script src="./includes/coloris/coloris.min.js"></script> <!--引入Coloris-->
+    <style> /*Coloris样式表*/
+        .clr-field button {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            background: #00000000;
+        }
+        .clr-field{
+            position: absolute;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
     <!--<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"> 引入Toastify-->
     <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script> 引入Toastify-->
 </head>
@@ -38,23 +53,13 @@
             <div class="hider" onclick="Hider()"></div> 不需要的自定义container-->
         </div>
         <div class="FloatBar"> <!--TODO 胶囊菜单-->
-            <div id="Home" class="BarBrick" style="/*top:8%;*/border: 3px solid rgb(240 145 153)/*rgb(66, 66, 66)*/;margin-top: 15%;margin-bottom: 10px;" onclick="FloatBarAction('Home')" title="主页"><svg t="1662924075230" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5173" style="/*position:absolute;left:30%;right:30%;margin: auto;*/height: 25px;margin-right:5%;">
-                <path d="M672 85.333333a96 96 0 0 1 95.786667 89.429334L768 181.333333v31.957334L842.666667 213.333333a96 96 0 0 1 95.786666 89.429334L938.666667 309.333333v405.333334a96 96 0 0 1-89.429334 95.786666L842.666667 810.666667H768v32a96 96 0 0 1-89.429333 95.786666L672 938.666667h-320a96 96 0 0 1-95.786667-89.429334L256 842.666667V810.666667H181.333333a96 96 0 0 1-95.786666-89.429334L85.333333 714.666667v-405.333334a96 96 0 0 1 89.429334-95.786666L181.333333 213.333333 256 213.290667V181.333333a96 96 0 0 1 89.429333-95.786666L352 85.333333h320z m0 64h-320a32 32 0 0 0-31.701333 27.648L320 181.333333v661.333334c0 16.213333 12.032 29.610667 27.648 31.701333l4.352 0.298667h320a32 32 0 0 0 31.701333-27.648l0.298667-4.352V181.333333a32 32 0 0 0-27.648-31.701333L672 149.333333zM256 277.290667L181.333333 277.333333a32 32 0 0 0-31.701333 27.648L149.333333 309.333333v405.333334c0 16.213333 12.032 29.610667 27.648 31.701333l4.352 0.298667H256V277.290667z m586.666667 0.042666L768 277.290667V746.666667h74.666667a32 32 0 0 0 31.701333-27.648l0.298667-4.352v-405.333334a32 32 0 0 0-32-32z" p-id="5174" fill="#ffffff"></path>
-                </svg>&nbsp;首页
+            <div id="Home" class="BarBrick" style="/*top:8%; border: 3px solid rgb(240 145 153) rgb(66, 66, 66);*/margin-top: 15%;margin-bottom: 10px;" onclick="FloatBarAction('Home')" title="主页"><img id="HomeIcon" style="height: 25px;margin-right:5%;" src="./assets/Home.svg">&nbsp;首页
             </div>
-            <div id="Archive" class="BarBrick" style="/*top:31%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;" onclick="FloatBarAction('Archive')" title="媒体库"><svg t="1662924184790" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10165" style="/*position:absolute;left:30%;right:30%;margin: auto;height: 50%;*/height: 25px;margin-right:5%;">
-                <path d="M714.965333 85.333333a128 128 0 0 1 90.538667 37.504l108.074667 108.074667c16.085333 16.085333 25.088 37.845333 25.088 60.586667l-0.170667 3.2L938.666667 298.666667v512a128 128 0 0 1-128 128H213.333333a128 128 0 0 1-128-128V298.666667c0-1.322667 0.042667-2.645333 0.170667-3.968L85.333333 291.456c0-22.698667 9.002667-44.458667 25.088-60.544L218.453333 122.88A128 128 0 0 1 309.034667 85.333333h405.930666zM874.666667 320h-725.333334V810.666667A64 64 0 0 0 213.333333 874.666667h597.333334a64 64 0 0 0 64-64V320z m-362.581334 117.333333a32 32 0 0 1 31.701334 27.648l0.298666 4.352v200.106667l51.968-51.968a32 32 0 0 1 48.341334 41.642667l-3.114667 3.584-76.373333 76.416a74.666667 74.666667 0 0 1-100.266667 4.864l-5.376-4.864-76.544-76.586667a32 32 0 0 1 41.642667-48.341333l3.584 3.114666 52.138666 52.096V469.333333a32 32 0 0 1 32-32z m202.88-288H309.034667a64 64 0 0 0-40.576 14.506667l-4.693334 4.266667L175.872 256h672.298667l-87.936-87.893333a64 64 0 0 0-45.226667-18.773334z" fill="#ffffff" p-id="10166">
-                </path></svg>&nbsp;媒体
+            <div id="Archive" class="BarBrick" style="/*top:31%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;" onclick="FloatBarAction('Archive')" title="媒体库"><img id="ArchiveIcon" style="height: 25px;margin-right:5%;" src="./assets/Archive.svg">&nbsp;媒体
             </div>
-            <div id="Torrnet" class="BarBrick" style="/*top:54%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;" onclick="FloatBarAction('Torrnet')" title="做种管理"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 256 256" style="/*position:absolute;left:30%;right:30%;margin: auto;height: 50%;*/height: 25px;margin-right:5%;">
-                <g id="surface205006769">
-                <path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 128 24 C 70.65625 24 24 70.65625 24 128 C 24 185.34375 70.65625 232 128 232 C 185.34375 232 232 185.34375 232 128 C 232 70.65625 185.34375 24 128 24 Z M 128 40 C 176.695312 40 216 79.304688 216 128 C 216 176.695312 176.695312 216 128 216 C 79.304688 216 40 176.695312 40 128 C 40 79.304688 79.304688 40 128 40 Z M 136 64 L 136 168 L 144 168 L 147.734375 160.515625 C 153.28125 165.117188 160.289062 168 168 168 C 185.578125 168 200 153.578125 200 136 L 200 120 C 200 102.421875 185.578125 88 168 88 C 162.15625 88 156.734375 89.710938 152 92.484375 L 152 64 Z M 88 88 C 70.421875 88 56 102.421875 56 120 L 56 136 C 56 153.578125 70.421875 168 88 168 C 93.84375 168 99.265625 166.289062 104 163.515625 L 104 192 L 120 192 L 120 88 L 112 88 L 108.265625 95.484375 C 102.71875 90.882812 95.710938 88 88 88 Z M 88 104 C 96.933594 104 104 111.066406 104 120 L 104 136 C 104 144.933594 96.933594 152 88 152 C 79.066406 152 72 144.933594 72 136 L 72 120 C 72 111.066406 79.066406 104 88 104 Z M 168 104 C 176.933594 104 184 111.066406 184 120 L 184 136 C 184 144.933594 176.933594 152 168 152 C 159.066406 152 152 144.933594 152 136 L 152 120 C 152 111.066406 159.066406 104 168 104 Z M 168 104 "/></g>
-                </svg>&nbsp;做种
+            <div id="Torrnet" class="BarBrick" style="/*top:54%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;" onclick="FloatBarAction('Torrnet')" title="做种管理"><img id="TorrentIcon" style="height: 25px;margin-right:5%;" src="./assets/qbittorrent.svg">&nbsp;做种
             </div>
-            <div id="Settings" class="BarBrick" style="/*top:77%;margin-bottom: 25%;*/margin-top: 5px;" onclick="FloatBarAction('Settings')" title="设置"><svg t="1662924234642" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12747" style="/*position:absolute;left:30%;right:30%;margin: auto;height: 50%;*/height: 25px;margin-right:5%;">
-                <path d="M298.666667 128h426.666666a170.666667 170.666667 0 1 1 0 341.333333H298.666667a170.666667 170.666667 0 1 1 0-341.333333z m0 256a85.333333 85.333333 0 1 0 0-170.666667 85.333333 85.333333 0 0 0 0 170.666667z" fill="#ffffff" p-id="12748"></path>
-                <path d="M298.666667 554.666667h426.666666a170.666667 170.666667 0 1 1 0 341.333333H298.666667a170.666667 170.666667 0 1 1 0-341.333333z m426.666666 256a85.333333 85.333333 0 1 0 0-170.666667 85.333333 85.333333 0 0 0 0 170.666667z" fill="#ffffff" opacity=".5" p-id="12749"></path>
-                </svg>&nbsp;设置
+            <div id="Settings" class="BarBrick" style="/*top:77%;margin-bottom: 25%;*/margin-top: 5px;" onclick="FloatBarAction('Settings')" title="设置"><img id="SettingsIcon" style="height: 25px;margin-right:5%;" src="./assets/Settings.svg">&nbsp;设置
             </div>
             <div class="BarBrick" style="margin-left: 0px;margin-right: 0px;border: 0px solid rgb(66, 66, 66);height:80px;margin-top: auto;box-shadow: 0 0 0 0;margin-bottom:0px;padding: unset;justify-content: center;padding-left: 8px;padding-right: 8px;border-radius:15px" title="我" onclick="ipcRenderer.send('userpage','Open');">
                 <div class="avatar" id="UserCard"></div>
@@ -106,6 +111,7 @@
             <div id="ArchivePageSearchSuggestion" class="ArchivePageSearchSuggestion"></div>
             <div class="ArchivePageHeader">
                 <div class="RecentViewName" style="height:auto;/*left:2%;*/left:15px;top:4%;right:auto;font-size: 23px;/*font-size: 5vmin;*/animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);animation:none">媒体库</div>
+                <div id="ArchivePageMediaBanList" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:70%;width: 40px;height: 64%;top: 18%;margin-right:20px" title="已屏蔽作品" onclick="ipcRenderer.send('RecycleBin','Open');"><img src="./assets/trashcan.svg" alt="SyncMediaInfo" style="width:50%"/></div>
                 <div class="ArchivePageSearchButton" onclick="ArchivePageMediaSearch(1);"><img src="./assets/search-right.svg" alt="ScanMediaChange" style="width:55%"/></div>
                 <input class="Winui3inputText" type="text" autocomplete="off" id="ArchivePageSearch" placeholder="&nbsp;&nbsp;请输入搜索内容" style="width: 40%;right: 30%;top: 10px;height: 34px;background-color: #2a2a2a;z-index:50;" onkeydown="ArchivePageMediaSearch(event.keyCode);" required>
                  <!-- *搜索作品 -->
@@ -119,7 +125,7 @@
                 <div id="ArchivePageAdd" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:130px;width: 40px;height: 64%;top: 18%;" onclick="LocalWorkManualAddAndSave('Add');" title="手动添加作品"><img src="./assets/add.svg" alt="ManualAddMedia" style="width:45%"/></div>
                 <div id="ArchivePageScan" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:75px;width: 40px;height: 64%;top: 18%;" onclick="LocalWorkScanModify();" title="扫描改动"><img src="./assets/scan.svg" alt="ScanMediaChange" style="width:50%"/></div>
                 <div id="ArchivePageFullScan" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:20px;width: 40px;height: 64%;top: 18%;" onclick="LocalWorkScan();" title="全局扫描"><img src="./assets/full-sync.svg" alt="ScanMediaFull" style="width:50%"/></div>
-                <div id="ArchivePageSum" class="ArchivePageSum" style="animation:none">共 -- 部作品</div>
+                <div id="ArchivePageSum" class="ArchivePageSum" style="animation:none;width: 20%;">共 -- 部作品</div>
                 <!-- <div id="ArchivePageMediaUpdate" class="ArchivePageButton" style="left: 19%;width:6%;height:50%;top:25%;" onclick="ArchiveMediaUpdate();" title="更新作品信息"><img src="./assets/update.svg" style="position:absolute;height:60%"/></div> *刷新作品信息 -->
                 <!-- <div id="ArchivePageAdd" class="ArchivePageButton" style="right: 20%;width:15%;height:auto" onclick="LocalWorkManualAddAndSave('Add');">手动添加作品</div> -->
                 <!-- <div id="ArchivePageScan" class="ArchivePageButton" style="right: 5%;border-top-right-radius: 0;border-bottom-right-radius: 0;" onclick="LocalWorkScanModify();">扫描改动</div> -->
@@ -134,7 +140,105 @@
             onclick="document.getElementById('ArchivePageSearchSuggestion').style.display='none';document.getElementById('ArchivePageSearchSuggestionBack').style.display='none';
             document.getElementById('ArchivePageSearch').style.borderBottomLeftRadius='7px';document.getElementById('ArchivePageSearch').style.borderBottomRightRadius='7px';"></div>
 
-            <div id="ArchivePageContent" class="ArchivePageContent" style="display: grid;grid-gap: 35px;grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));grid-auto-rows: 290px;grid-auto-flow: dense;row-gap: 40px;padding: 30px;"></div> <!-- *作品列表 -->
+            <!--媒体库功能切换-->
+            <div style="height: 35px;position: fixed;left: max(18%, 220px);right: 2%;top: 125px;z-index: 13;border-radius: 7px;display: grid;justify-items: center;animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);">
+                <div style="width: 400px;height: 35px;border-radius: 7px;background: #3d3d3d50;margin-right: 5px;display: flex;align-items: center;justify-content: space-evenly;backdrop-filter: blur(10px);">
+                    <div id="ArchivePageSwitchTab1" class="ArchivePageSwitchTab" onclick="ArchivePageSwitch(1)"><img src="./assets/ArchivePageTab/recent.svg" style="height:18px;aspect-ratio:1" />最近播放</div>
+                    <div id="ArchivePageSwitchTab2" class="ArchivePageSwitchTab" onclick="ArchivePageSwitch(2)"><img src="./assets/ArchivePageTab/合集.svg" style="height:16px;aspect-ratio:1" />作品合集</div>
+                    <div id="ArchivePageSwitchTab3" class="ArchivePageSwitchTab" onclick="ArchivePageSwitch(3)"><img src="./assets/ArchivePageTab/all-fill.svg" style="height:18px;aspect-ratio:1" />全部媒体</div>
+                    <div id="ArchivePageSwitchTab4" class="ArchivePageSwitchTab" onclick="ArchivePageSwitch(4)"><img src="./assets/ArchivePageTab/timeline.svg" style="height:22px;aspect-ratio:1" />时间表</div>
+                </div>
+            </div>
+
+            <div id="ArchivePageMainContent" style="width: 400%;position: absolute;top: 85px;bottom: 2%;left: 0;transform: translateX(0);transition: transform 0.5s cubic-bezier(0, 1.08, 0.58, 1)">
+            <div id="ArchivePageRecentPlayContent" class="ArchivePageContent" style="top: 0;bottom: 0;left: max(4.5%,220px);right: 75.5%;display: flex;justify-content: center;align-items: center;flex-direction: column;"> 
+                <img src="./assets/construction.svg" style="width: 150px;"/>
+                <p style="font-family: 'bgmUIHeavy';font-size: 30px;">施工中</p> 
+            </div> <!-- *最近播放 --> 
+            <div id="ArchivePageCollectionContent" class="ArchivePageContent" style="top: 0;bottom: 0;left: max(29.5%, calc(25% + 220px));right: 50.5%;display: flex;justify-content: center;align-items: center;flex-direction: column;">
+                <img src="./assets/construction2.svg" style="width: 150px;"/>
+                <p style="font-family: 'bgmUIHeavy';font-size: 30px;">施工中</p> 
+            </div> <!-- *作品合集 --> 
+            <div id="ArchivePageContent" class="ArchivePageContent" style="display: grid;grid-gap: 35px;grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));grid-auto-rows: 290px;grid-auto-flow: dense;row-gap: 40px;padding: 30px;padding-top:70px;
+            top: 0;bottom: 0;left: max(54.5%, calc(50% + 220px));right: 25.5%;"></div> <!-- *作品列表 -->
+
+            <div id="ArchivePageTimelineContent" class="ArchivePageContent" style="top: 0;bottom: 0;left: max(79.5%, calc(75% + 220px));right: 0.5%;display: grid;
+            grid-gap: 35px;grid-auto-flow: dense;row-gap: 25px;justify-items: left;padding: 30px;padding-top: 70px;">
+                <div id="ArchivePageTimelineContentSun2" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">日曜日</div>
+                        <img src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Sun</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentSun2Ani" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentMon" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">月曜日</div>
+                        <img id="ArchivePageTimelineContentIconMon" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Mon</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentMonAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentTue" class="ArchivePageTimelineContentWeekCard">  
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">火曜日</div>
+                        <img id="ArchivePageTimelineContentIconTue" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Tue</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentTueAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentWed" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">水曜日</div>
+                        <img id="ArchivePageTimelineContentIconWed" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Wed</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentWedAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentThu" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">木曜日</div>
+                        <img id="ArchivePageTimelineContentIconThu" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Thu</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentThuAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentFri" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">金曜日</div>
+                        <img id="ArchivePageTimelineContentIconFri" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Fri</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentFriAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentSat" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">土曜日</div>
+                        <img id="ArchivePageTimelineContentIconSat" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Sat</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentSatAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentSun" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">日曜日</div>
+                        <img id="ArchivePageTimelineContentIconSun" src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Sun</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentSunAni" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+                <div id="ArchivePageTimelineContentMon2" class="ArchivePageTimelineContentWeekCard">
+                    <div style="position:absolute;left: 10px;top: 10px;bottom: 10px;width: 80px;display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 16px;">月曜日</div>
+                        <img src="./assets/calendar.svg" style="height: 70px;aspect-ratio:1">
+                        <div style="font-family: 'bgmUIHeavy';font-size: 15px;position: absolute;top: 60px;">Mon</div>
+                    </div>
+                    <div id="ArchivePageTimelineContentMon2Ani" class="ArchivePageContentDetailsFriends" style="position: absolute;left: 100px;top: 15px;height: unset;width: unset;bottom: 15px;right: 0;padding:8px"></div>
+                </div>
+
+            </div> <!-- *时间表 -->
+            </div>
             <div id="ArchivePageContentSettings" class="ArchivePageContentSettings">
                 <div class="ArchivePageContentSettingsContent">
                 <div class="ArchivePageContentSettingsHeader"><span class="ArchivePageContentSettingsClose" onclick="document.getElementById('ArchivePageContentSettings').style.display='none'">&times;</span> 作品详情设置</div>
@@ -275,11 +379,13 @@
                 <div class="Winui3setpageINNER">
                     <div class="Winui3brickContainer" style="background-color:#2b4f6c;margin-top:15px"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#5fb5fc" p-id="1392" style="--darkreader-inline-fill: #5fb5fc;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">你可以在这里设置一些通用设置项</p></div>
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;"> 媒体库设置</h2>
-                    <div class="Winui3brickContainer">设定媒体库目录<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写你的媒体库目录" style="width:50%;right: 100px;" required>
-                        <button type='button' value='选择路径' class='Winui3button' style='width:30px;right: 60px;' ><svg t='1673539124397' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3567' width='20' height='20'><path d="M853.333333 469.333333a42.666667 42.666667 0 0 0-42.666666 42.666667v256a42.666667 42.666667 0 0 1-42.666667 42.666667H256a42.666667 42.666667 0 0 1-42.666667-42.666667V256a42.666667 42.666667 0 0 1 42.666667-42.666667h256a42.666667 42.666667 0 0 0 0-85.333333H256a128 128 0 0 0-128 128v512a128 128 0 0 0 128 128h512a128 128 0 0 0 128-128v-256a42.666667 42.666667 0 0 0-42.666667-42.666667z" fill="#ffffff" p-id="2787"></path><path d="M682.666667 213.333333h67.413333l-268.373333 267.946667a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586666 0L810.666667 273.92V341.333333a42.666667 42.666667 0 0 0 42.666666 42.666667 42.666667 42.666667 0 0 0 42.666667-42.666667V170.666667a42.666667 42.666667 0 0 0-42.666667-42.666667h-170.666666a42.666667 42.666667 0 0 0 0 85.333333z" fill="#ffffff" p-id="2788"></path></svg>
+                    <div class="Winui3brickContainer"><div>设定媒体库目录<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">设定待扫描的媒体文件夹路径</a></div><input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写你的媒体库目录" style="width:50%;right: 100px;display:none" required>
+                        <button type='button' value='选择路径' class='Winui3button' style='width:30px;right: 60px;display:none' ><svg t='1673539124397' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='3567' width='20' height='20'><path d="M853.333333 469.333333a42.666667 42.666667 0 0 0-42.666666 42.666667v256a42.666667 42.666667 0 0 1-42.666667 42.666667H256a42.666667 42.666667 0 0 1-42.666667-42.666667V256a42.666667 42.666667 0 0 1 42.666667-42.666667h256a42.666667 42.666667 0 0 0 0-85.333333H256a128 128 0 0 0-128 128v512a128 128 0 0 0 128 128h512a128 128 0 0 0 128-128v-256a42.666667 42.666667 0 0 0-42.666667-42.666667z" fill="#ffffff" p-id="2787"></path><path d="M682.666667 213.333333h67.413333l-268.373333 267.946667a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586666 0L810.666667 273.92V341.333333a42.666667 42.666667 0 0 0 42.666666 42.666667 42.666667 42.666667 0 0 0 42.666667-42.666667V170.666667a42.666667 42.666667 0 0 0-42.666667-42.666667h-170.666666a42.666667 42.666667 0 0 0 0 85.333333z" fill="#ffffff" p-id="2788"></path></svg>
                             <input type="file" class="Winui3inputFile" id="SettingsPageFolderSelectIcon" style='width:100%' onchange="SettingsPageFolderURL(event)" webkitdirectory/>
                         </button>
-                        <button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",0,"LocalStorageMediaBaseURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
+                        <button type='button' value='保存' class='Winui3button' style='width:30px;display:none' onclick='SettingsPageSaveConfig("checkboxA",0,"LocalStorageMediaBaseURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button>
+                        <button type="button" value="点击设置" class="Winui3button" onclick="ipcRenderer.send('MediaDirSet','Open');">点击设置</button>
+                    </div>
                     <div class="Winui3brickContainer"><div>手动重新扫描<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">手动重新对媒体库进行全局扫描，将覆盖现有数据</a></div><button type="button" value="点击扫描" class="Winui3button" onclick="LocalWorkScan();">点击扫描</button></div>
                     <div class="Winui3brickContainer"><div>手动更新媒体库信息<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">手动重新对所有媒体信息进行匹配更新，将覆盖现有数据</a></div><button type="button" value="点击刷新" class="Winui3button" onclick="ArchiveMediaUpdate()">点击刷新</button></div>
                     <div class="Winui3brickContainer">启动后媒体库自动增量扫描<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateArchive" onchange='SettingsPageSaveConfig("checkboxA",1,"LocalStorageAutoUpdateArchive","checkbox")'><div class="Winui3slider"></div></label></div>
@@ -287,6 +393,9 @@
                     <div class="Winui3brickContainer"><div>进入作品详情后自动更新剧集(全局，实验性)<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">全局性启动作品EP自动更新（不建议，可能导致性能损失及部分作品EP错误，建议仅为新番单独打开）</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="AutoUpdateMediaInfo" onchange='SettingsPageSaveConfig("checkboxA",3,"LocalStorageAutoUpdateMediaInfo","checkbox")'><div class="Winui3slider"></div></label></div>
                     <div class="Winui3brickContainer"><div>设定字幕文件夹(暂不可用)<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">设定后，系统将自动在媒体库显示该文件夹，方便调用字幕</a></div>
                     <input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写字幕文件夹名称" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",4,"LocalStorageMediaSubFolderName","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
+                    <!-- 播放设置 -->
+                    <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;"> 播放设置</h2>
+                    <div class="Winui3brickContainer"><div>使用系统播放器播放<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;" name="SettingsPageSystemPlayer">不使用自带MPV播放器播放，该模式下无法使用首页动态背景</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxA" value="UseSystemPlayer" onchange='SettingsPageSaveConfig("checkboxA",5,"LocalStorageUseSystemPlayer","checkbox")'><div class="Winui3slider"></div></label></div>
                     <!-- 网络探针 全按钮 -->
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;"> 网络探针</h2>
                     <div class="Winui3brickContainer"><div>API通路检测<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;" name="SettingsPageAPIPingCard">检测作品信息api源站https://api.bgm.tv/是否联通</a></div><button type="button" value="点击检测" class="Winui3button" onclick='SettingsPageAPIPing(0)' >点击检测</button></div>
@@ -294,7 +403,7 @@
                     <div class="Winui3brickContainer"><div style='margin-right:120px;overflow: hidden;text-overflow: ellipsis; white-space:nowrap;'>软件更新通路检测<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;" name="SettingsPageAPIPingCard">检测软件更新api源https://api.github.com/repos/jimhans/bgm.res/releases/latest是否联通</a></div><button type="button" value="点击检测" class="Winui3button" onclick='SettingsPageAPIPing(2)'>点击检测</button></div>
                     <!-- qbit web ui 文本 -->
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;"> qBittorrnet Web UI</h2>
-                    <div class="Winui3brickContainer">设定qBittorrnet Web UI地址<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写qBittorrnet Web UI URL" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",5,"LocalStorageqBittorrnetURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
+                    <div class="Winui3brickContainer">设定qBittorrnet Web UI地址<input class="Winui3inputText" type="text" name="checkboxA" placeholder="填写qBittorrnet Web UI URL" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxA",6,"LocalStorageqBittorrnetURL","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                     <!-- 杂项 全按钮 -->
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;"> 杂项</h2>
                     <div class="Winui3brickContainer" style="height: 60px;color: #ff4848;"><div>清除数据<br><a class="Winui3brickSubtitle" style="font-size: 13px;color: #ff4848;"> 清除所有用户数据（谨慎操作！）</a></div>
@@ -322,11 +431,13 @@
                         <div class="Winui3button">选择文件<input type="file" id="Winui3localBubbleSelect" class="Winui3inputFile" accept="image/*" onchange="javascript:{document.getElementById('Winui3fileInfoBubble').innerHTML = '当前选定背景图片为：'+document.getElementById('Winui3localBubbleSelect').files[0].path.replaceAll('\\','/'); sysdata.set('Settings.checkboxB.LocalStorageSystemBackgroundImage',document.getElementById('Winui3localBubbleSelect').files[0].path.replaceAll('\\','/'));
                         OKErrorStreamer('OK','设置完成，刷新或重启客户端生效',0);}"></div>
                     </div>
-                    <div class="Winui3brickContainer">软件控件主题色<input class="Winui3inputText" type="text" name="checkboxB" placeholder="填写HEX或RGB/RGBA颜色" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxB",9,"LocalStorageSystemCustomColor","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
+                    <div class="Winui3brickContainer">软件控件主题色<input class="Winui3inputText" type="text" name="checkboxB" placeholder="填写HEX或RGB/RGBA颜色" style="right: 100px;" required>
+                        <div class="Winui3button" style='width:30px;right:60px'><input id="SettingsPageColorPickerInput" type="text" style="left: 0;right: 0;top: 0;bottom: 0;position: absolute;border-radius: 5px;opacity:0" required></div>
+                        <button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxB",9,"LocalStorageSystemCustomColor","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                     <div class="Winui3brickContainer">首页背景跟随自定义作品封面<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="showModifiedCover" onchange='SettingsPageSaveConfig("checkboxB",10,"LocalStorageSystemShowModifiedCover","checkbox")'/><div class="Winui3slider"></div></label></div>
                     <div class="Winui3brickContainer">亮色主题<label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="openLightMode" onchange='SettingsPageSaveConfig("checkboxB",11,"LocalStorageSystemOpenLightMode","checkbox")'/><div class="Winui3slider"></div></label></div><!-- disabled="disabled"-->
                     <div class="Winui3brickContainer"><div>透明效果<br><a class="Winui3brickSubtitle" style="font-size: 13px;">主程序窗口启用Mica效果(Windows11)或Acrylic材质(Windows10)</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="MicaEffect" onchange='SettingsPageSaveConfig("checkboxB",12,"LocalStorageSystemOpenMicaMode","checkbox")'/><div class="Winui3slider"></div></label></div>
-                    <div class="Winui3brickContainer"><div>启用首页背景动态进度（Beta版，请注意此功能尚未完善）<br><a class="Winui3brickSubtitle" style="font-size: 13px;">启用此功能后，首页背景将不再显示作品封面，而是截取您上一次观看进度的截图为背景，动态跟随您的观看进度。</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="LiveBackground" onchange='SettingsPageSaveConfig("checkboxB",13,"LocalStorageSystemOpenLiveBackground","checkbox")'/><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer"><div>启用首页背景动态进度（Beta版）<br><a class="Winui3brickSubtitle" style="font-size: 13px;">启用此功能后，首页背景将不再显示作品封面，而是截取您上一次观看进度的截图为背景，动态跟随您的观看进度。</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxB" value="LiveBackground" onchange='SettingsPageSaveConfig("checkboxB",13,"LocalStorageSystemOpenLiveBackground","checkbox")'/><div class="Winui3slider"></div></label></div>
                     
                 </div>
             </div>
@@ -338,8 +449,9 @@
                     <div class="Winui3brickContainer"><!--开发人员选项--><svg t="1674187129738" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6119" width="22" height="22" style="margin-right: 10px;margin-left:5px"><path d="M896 806.08a32 32 0 0 1 64 0v73.92a48 48 0 0 1-48 48h-800A48 48 0 0 1 64 880v-736A48 48 0 0 1 112 96h800A48 48 0 0 1 960 144v166.144H128V864h768v-57.92z m0-559.936V160H128v86.144h768z" fill="#e6e6e6" p-id="6636"></path><path d="M641.92 405.056a32 32 0 0 1 60.16 21.888l-128 352a32 32 0 0 1-60.16-21.888l128-352zM776.192 469.408a32 32 0 0 1 47.616-42.816l126.432 140.64a32 32 0 0 1 0 42.784l-126.432 140.64a32 32 0 1 1-47.616-42.784l107.232-119.232-107.2-119.232zM438.24 469.408a32 32 0 1 0-47.584-42.816l-126.464 140.64a32 32 0 0 0 0 42.784l126.464 140.64a32 32 0 1 0 47.584-42.784l-107.2-119.232 107.2-119.232z" fill="#e6e6e6" p-id="6637"></path></svg>开发人员选项<label class="Winui3switch"><input class="input" type="checkbox" value="developerMode" id="checkboxSwitchDevMode" onchange="if(document.getElementById('checkboxSwitchDevMode').checked)ipcRenderer.send('dev','Open');"><div class="Winui3slider"></div></label></div>
                     <div class="Winui3brickContainer"><div>恢复旧版设置<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式设置界面</a></div><button type="button" value="点击临时切换" class="Winui3button" onclick="document.getElementById('SettingsPageSetTab').style.display='none';document.getElementById('SettingsPageSetpageC').style.display='none';document.getElementById('SettingsPageOld').style.display='block';">点击临时切换</button></div>
                     <div class="Winui3brickContainer"><div>恢复旧版媒体编辑页面<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式媒体信息编辑界面</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxC" value="showOldSettingPage" onchange='SettingsPageSaveConfig("checkboxC",0,"LocalStorageMediaShowOldSettingPage","checkbox")'/><div class="Winui3slider"></div></label></div>
+                    <div class="Winui3brickContainer" style="background-color:#2b4f6c"><div style="width:80%">若你的媒体库扫描匹配出现问题，你可以在此尝试自定义正则表达式，来更好地贴近你的媒体库命名格式。</div><button type="button" value="点击打开" class="Winui3button" onclick="shell.openExternal('https://regex-vis.com/');" style="width:120px">了解正则表达式</button></div>
                     <div class="Winui3brickContainer">自定义媒体库匹配正则表达式(主匹配式)<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写适合你媒体库命名规范的匹配表达式1" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxC",1,"LocalStorageMediaScanExpression","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
-                    <div class="Winui3brickContainer">自定义媒体库匹配正则表达式(副匹配式)<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写适合你媒体库命名规范的匹配表达式2" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxC",2,"LocalStorageMediaScanExpressionSub","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
+                    <div class="Winui3brickContainer">自定义媒体库匹配正则表达式(副匹配式) *暂不生效<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写适合你媒体库命名规范的匹配表达式2" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxC",2,"LocalStorageMediaScanExpressionSub","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                 
                     <div class="Winui3brickContainer">打开设置配置文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer %APPDATA%\\bgm.res\\sysdata.json')">点击打开</button></div>
                     <div class="Winui3brickContainer">打开媒体库数据文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer %APPDATA%\\bgm.res\\config.json')">点击打开</button></div>
@@ -419,7 +531,7 @@
             <a id="WebDev" class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;right:0%;width:50%;text-align: center;transition: 0.15s linear;border-radius: 0 15px 0 0;" title="开发人员选项" onclick="ipcRenderer.send('dev','Open');"><svg t="1664862154551" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7369" width="24" height="45"><path d="M911.7 385.3l-0.3-1.5c-0.2-1-0.3-1.9-0.6-2.9-0.2-0.6-0.4-1.1-0.5-1.7-0.3-0.8-0.5-1.7-0.9-2.5-0.2-0.6-0.5-1.1-0.8-1.7-0.4-0.8-0.8-1.5-1.2-2.3-0.3-0.5-0.6-1.1-1-1.6-0.8-1.2-1.7-2.4-2.6-3.6-0.5-0.6-1.1-1.3-1.7-1.9-0.4-0.5-0.9-0.9-1.4-1.3-0.6-0.6-1.3-1.1-1.9-1.6-0.5-0.4-1-0.8-1.6-1.2-0.2-0.1-0.4-0.3-0.6-0.4L531.1 117.8c-11.5-7.7-26.6-7.7-38.1 0L127.3 361.3c-0.2 0.1-0.4 0.3-0.6 0.4-0.5 0.4-1 0.8-1.6 1.2-0.7 0.5-1.3 1.1-1.9 1.6-0.5 0.4-0.9 0.9-1.4 1.3-0.6 0.6-1.2 1.2-1.7 1.9-1 1.1-1.8 2.3-2.6 3.6-0.3 0.5-0.7 1-1 1.6-0.4 0.7-0.8 1.5-1.2 2.3-0.3 0.5-0.5 1.1-0.8 1.7-0.3 0.8-0.6 1.7-0.9 2.5-0.2 0.6-0.4 1.1-0.5 1.7-0.2 0.9-0.4 1.9-0.6 2.9l-0.3 1.5c-0.2 1.5-0.3 3-0.3 4.5v243.5c0 1.5 0.1 3 0.3 4.5l0.3 1.5c0.2 1 0.4 1.9 0.6 2.9 0.2 0.6 0.3 1.1 0.5 1.7 0.3 0.9 0.6 1.7 0.9 2.5 0.2 0.6 0.5 1.1 0.8 1.7 0.4 0.8 0.7 1.5 1.2 2.3 0.3 0.5 0.6 1.1 1 1.6 0.5 0.7 0.9 1.4 1.5 2.1l1.2 1.5c0.5 0.6 1.1 1.3 1.7 1.9 0.4 0.5 0.9 0.9 1.4 1.3 0.6 0.6 1.3 1.1 1.9 1.6 0.5 0.4 1 0.8 1.6 1.2 0.2 0.1 0.4 0.3 0.6 0.4L493 905.7c5.6 3.8 12.3 5.8 19.1 5.8 6.6 0 13.3-1.9 19.1-5.8l365.6-243.5c0.2-0.1 0.4-0.3 0.6-0.4 0.5-0.4 1-0.8 1.6-1.2 0.7-0.5 1.3-1.1 1.9-1.6 0.5-0.4 0.9-0.9 1.4-1.3 0.6-0.6 1.2-1.2 1.7-1.9l1.2-1.5 1.5-2.1c0.3-0.5 0.7-1 1-1.6 0.4-0.8 0.8-1.5 1.2-2.3 0.3-0.5 0.5-1.1 0.8-1.7 0.3-0.8 0.6-1.7 0.9-2.5 0.2-0.5 0.4-1.1 0.5-1.7 0.3-0.9 0.4-1.9 0.6-2.9l0.3-1.5c0.2-1.5 0.3-3 0.3-4.5V389.8c-0.3-1.5-0.4-3-0.6-4.5zM546.4 210.5l269.4 179.4-120.3 80.4-149-99.6V210.5z m-68.8 0v160.2l-149 99.6-120.3-80.4 269.3-179.4zM180.7 454.1l86 57.5-86 57.5v-115z m296.9 358.5L208.3 633.2l120.3-80.4 149 99.6v160.2zM512 592.8l-121.6-81.2L512 430.3l121.6 81.2L512 592.8z m34.4 219.8V652.4l149-99.6 120.3 80.4-269.3 179.4zM843.3 569l-86-57.5 86-57.5v115z" p-id="7370" fill="#ffffff"></path></svg></a>
         </div>
         <!--  TODO 左上角关闭次级页面按钮  -->
-        <div id="GoBackPage" class="boxBlank" style="width: 12%;max-width: 150px;min-width: 150px;left: 3%;top:30px;height: 0px;border-radius: 0 0 15px 15px;background-color: rgba(0, 0, 0, 0.507);display:none;transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);backdrop-filter: blur(60px);">
+        <div id="GoBackPage" class="boxBlank" style="width: 12%;max-width: 150px;min-width: 150px;left: 3%;top:30px;height: 0px;border-radius: 0 0 15px 15px;background-color: rgba(0, 0, 0, 0.507);display:none;transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);backdrop-filter: blur(60px);box-shadow: 0px 0px 7px -1px rgb(25 25 25 / 55%);">
             <a  class="TitleBarControls" style="height: 100%;line-height: 30px;position:absolute;left:0%;width:100%;text-align: center;transition: 0.15s linear;border-radius: 0 0 15px 15px;"title="后退" 
             onclick=" document.getElementById('ArchivePageContentDetails').style.marginLeft = '100%';document.getElementById('GoBackPage').style.height = '0px';setTimeout(function() {document.getElementById('ArchivePageContentDetails').style.display = 'none';document.getElementById('GoBackPage').style.display = 'none';},700);document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none';">
             <svg t="1664978372617" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6697" width="50%" height="100%"><path d="M143 462h800c27.6 0 50 22.4 50 50s-22.4 50-50 50H143c-27.6 0-50-22.4-50-50s22.4-50 50-50z" p-id="6698" fill="#ffffff"></path><path d="M116.4 483.3l212.1 212.1c19.5 19.5 19.5 51.2 0 70.7s-51.2 19.5-70.7 0L45.6 554c-19.5-19.5-19.5-51.2 0-70.7 19.6-19.6 51.2-19.6 70.8 0z" p-id="6699" fill="#ffffff"></path><path d="M328.5 328.6L116.4 540.7c-19.5 19.5-51.2 19.5-70.7 0s-19.5-51.2 0-70.7l212.1-212.1c19.5-19.5 51.2-19.5 70.7 0s19.5 51.2 0 70.7z" p-id="6700" fill="#ffffff"></path></svg></a>
@@ -474,6 +586,45 @@
             setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 500);    }
         ArchivePageContentDetailsStaffBlockUnfoldCounter+=1;
     }
+</script>
+
+<script> //横向平滑滚动监听
+
+    // 获取所有具有指定类名的元素ArchivePageContentDetailsPersonBlock
+    const personBlocks = document.getElementsByClassName('ArchivePageContentDetailsPersonBlock');
+
+    // 获取所有ArchivePageContentDetailsFriends样式元素 //指定的元素
+    const friendsInfo = document.getElementsByClassName('ArchivePageContentDetailsFriends')//document.getElementById('ArchivePageContentDetailsFriendsInfo');
+
+    // 将元素合并到一个数组中
+    const containers = [...personBlocks, ...friendsInfo].filter(Boolean);
+
+    // 遍历每个元素并添加事件监听器
+    Array.from(containers).forEach((container) => {
+    let scrollAmount = 0;
+    let isScrolling = false;
+
+    container.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        scrollAmount += event.deltaY * 0.5;
+
+        if (!isScrolling) {
+        isScrolling = true;
+        smoothScroll(container);
+        }
+    });
+
+    function smoothScroll(element) {
+        if (Math.abs(scrollAmount) > 0.5) {
+        element.scrollLeft += scrollAmount * 0.1;
+        scrollAmount *= 0.9; // 逐渐减小滚动量
+        requestAnimationFrame(() => smoothScroll(element));
+        } else {
+        scrollAmount = 0;
+        isScrolling = false;
+        }
+    }
+    });
 </script>
 
 <!-- <script> //媒体库操作下拉菜单控件

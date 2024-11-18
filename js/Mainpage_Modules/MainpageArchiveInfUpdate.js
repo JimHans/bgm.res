@@ -20,7 +20,8 @@ exports.ArchiveMediaUpdate=function(){
     setTimeout(function() {
       var MediaBaseNumberGet = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");//localStorage.getItem("LocalStorageMediaBaseNumber");
       // *扫描作品bgmID获取作品信息 
-      $.ajaxSettings.async = false; //关闭同步
+      var UpdateCounter = 0; //线程完成计数器清零
+      //$.ajaxSettings.async = false; //关闭同步
       function ArchiveMediaUpdateOperator(MediaBaseScanCounter) {
         // *扫描作品bgmID获取作品信息
         // document.getElementById('MessageStreamer').innerText='作品信息更新进行中'+MediaBaseScanCounter+'/'+MediaBaseNumberGet;
@@ -33,14 +34,16 @@ exports.ArchiveMediaUpdate=function(){
             else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}
             store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Type",data.platform); 
             store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Cover",data.images.large); 
-          }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}); // *错误回调
+            UpdateCounter+=0.5;if(UpdateCounter>=MediaBaseNumberGet)UpdateEnding();
+          }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);UpdateCounter+=0.5;if(UpdateCounter>=MediaBaseNumberGet)UpdateEnding();}); // *错误回调
           $.getJSON("https://api.bgm.tv/v0/subjects/"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".bgmID").toString()+'/persons', function(data){
           for(let MediaBaseElementsGet=0;MediaBaseElementsGet!=data.length;MediaBaseElementsGet++){
             if(data[MediaBaseElementsGet].relation=='导演') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Director",data[MediaBaseElementsGet].name);}
             if(data[MediaBaseElementsGet].relation=='动画制作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Corp",data[MediaBaseElementsGet].name);}
             if(data[MediaBaseElementsGet].relation=='原作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
-          } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}); // *错误回调
-        } 
+          } UpdateCounter+=0.5;if(UpdateCounter>=MediaBaseNumberGet)UpdateEnding();}).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);
+            UpdateCounter+=0.5;if(UpdateCounter>=MediaBaseNumberGet)UpdateEnding();}); // *错误回调
+        } else {UpdateCounter+=1;if(UpdateCounter>=MediaBaseNumberGet)UpdateEnding();}
       }
       for(let MediaBaseScanCounter=1;MediaBaseScanCounter<=MediaBaseNumberGet;MediaBaseScanCounter++){
         // *扫描作品bgmID获取作品信息
@@ -61,10 +64,12 @@ exports.ArchiveMediaUpdate=function(){
         //     if(data[MediaBaseElementsGet].relation=='原作') {store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Protocol",data[MediaBaseElementsGet].name);}
         //   } }).fail(function(){OKErrorStreamer("Error","无法连接Bangumi",0);}); // *错误回调
         // } 
-      } $.ajaxSettings.async = true; //重新打开同步
+      } //$.ajaxSettings.async = true; //重新打开同步
+      function UpdateEnding(){
       ArchivePageInit(); //更新媒体库页面
       OKErrorStreamer("MessageOff","作品信息更新进行中",0);
       OKErrorStreamer("OK","媒体库数据爬取完成",0); 
+      }
       },2000);
     }
 }

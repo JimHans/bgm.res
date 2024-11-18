@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <link rel="stylesheet" href="../includes/style.css"> <!--主样式表-->
+    <link rel="stylesheet" href="../includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表-->
+    <meta charset="UTF-8">
+    <title>已屏蔽作品</title>
+    <style>
+    </style>
+    <script> 
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    </script> <!--重定向NodeRequire以引入JQuery-->
+    <script src="../includes/jquery-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../includes/toastify.min.css"> <!--引入Toastify-->
+    <script type="text/javascript" src="../includes/toastify-js"></script> <!--引入Toastify-->
+</head>
+
+
+<body style="overflow: hidden;">
+    <div class="TitleBar"> <!--*标题栏-->
+        <img src="../assets/icons/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+        <img src="../assets/icons/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
+        <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">BGM.res</a>
+    </div>
+    <div class="SettingsPage" style="width:100%;display:block;"> <!--*设置页 -->
+        <div class="Winui3setTab" style="left:16px"> <!--设置tab-->
+            <h3 style="position:absolute;margin-left:15px;font-size:25px;line-height:60px;margin-top:0;right: 300px;left: 0;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left;">屏蔽目录编辑</h3>
+            <div id="MediaBanListTabHighLight" class="Winui3setTabBrickHighlight" style="right:35px;width:105px"></div>
+            <div id="MediaBanListTab" class="Winui3setTabBrick" style="right:20px;width:135px" onclick="">
+                <img src="../assets/ban.svg" alt="Ban" style="width:16px"/>&nbsp;&nbsp;已屏蔽作品 0个</div>
+        </div>
+        <div class="Winui3setpage" style="left:16px;background-color: #27272730;backdrop-filter: blur(200px);overflow:hidden">
+            <div id="MediaBanListSetpageA" class="Winui3setpageINNER" style="width:100%;right:0;background-color: unset; backdrop-filter: unset;">
+                <div class="Winui3brickContainer" style="background-color:#2b4f6c"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#5fb5fc" p-id="1392" style="--darkreader-inline-fill: #5fb5fc;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">你可以在此查看先前被添加至屏蔽列表的作品，若需要恢复，请点击对应作品右侧的恢复按钮</p></div>
+            </div>
+        </div>
+    </div>
+    <!--  *成功、失败横提示  -->
+    <div id="OKStreamer" class="SystemStreamer"></div>
+    <div id="MessageStreamer" class="SystemStreamer" style="background-color:#ffffff9a;color:black"></div>
+    <div id="ErrorStreamer" class="SystemStreamer" style="background-color:#a4414f;"></div>
+</body>
+<script>
+    // 额外引入模块
+    const ipc = nodeRequire('electron').ipcRenderer;                      //?引入ipcRenderer进程通信api
+    const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
+    const store = new Store();                                            //?创建electron-store存储资源库对象
+    let SysdataOption={
+    name:"sysdata",//文件名称,默认 config
+    fileExtension:"json",//文件后缀,默认json
+    }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
+    const { OKErrorStreamer } = nodeRequire('../js/Mainpage_Modules/MainpageToaster.js'); //?引入bgm.res主界面的通知toast函数封装
+
+    if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //初始化自定义颜色
+    {
+    let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    document.getElementById("MediaBanListTabHighLight").style.backgroundColor=CustomColorData;
+    document.getElementById("MediaBanListTabHighLight").style.boxShadow="0px 0px 1px 1px "+CustomColorData;
+    let customcolorstyle=document.createElement('style');//创建一个<style>标签
+    let customchangeText=document.createTextNode('.Winui3inputText:focus{border-bottom:2px solid '+CustomColorData+'}')//更改后伪元素的样式
+    customcolorstyle.appendChild(customchangeText);//把样式添加到style标签里
+    document.body.appendChild(customcolorstyle);//把内联样式表添加到html中    
+    }
+
+    OKErrorStreamer("MessageOn","正在读取...",0);
+    var MediaBaseNumberGet = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");
+    var MediaBaseTempDataSaver = store.get();
+    let MediaBaseTempCounter = 0;
+    for(let MediaBaseScanCounter=1;MediaBaseScanCounter<=MediaBaseNumberGet;MediaBaseScanCounter++){
+        if(MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["ExistCondition"] == "Deleted"){
+            let MediaBaseTempCover = "../assets/banner.jpg";
+            if(MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Cover"] != "./assets/banner.jpg")
+            {MediaBaseTempCover = MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Cover"]}
+            $("#MediaBanListSetpageA").append('<div class="Winui3brickContainer" style="height:auto">'+
+                '<div style="position:relative;left:0%;top:0%;height:80px;aspect-ratio:1;background:url('+MediaBaseTempCover+') no-repeat top;background-size:cover;border-radius:8px;"></div>'+
+                    '<div style="position:relative;margin-left:10px;margin-right:40px;overflow:hidden">'+
+                        '<div style="text-overflow: ellipsis;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;line-height: normal;margin-right:10px;">作品名称：'+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Name"]+'</div>'+
+                        '<div style="text-overflow: ellipsis;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;margin-top:5px;line-height: normal;margin-right:10px;">作品路径：'+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["URL"]+'</div>'+
+                        '<div style="position:relative;font-size:15px;margin-top:5px;color: #aaa;line-height: normal;">'+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Year"]+'/'+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Director"]+
+                            '/'+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Type"]+'</div>'+
+                '</div><button type="button" value="恢复" title="恢复" class="Winui3button" style="width:30px" onclick="MediaBanListRecover('+MediaBaseScanCounter.toString()+')"><img src="../assets/recover.svg" alt="RecoverMedia" style="width:100%"></button></div>');
+            MediaBaseTempCounter++;
+        }
+    }
+    OKErrorStreamer("MessageOff","正在读取...",0);
+    OKErrorStreamer("OK","列表读取完毕",0,"..");
+    $("#MediaBanListTab").html('<img src="../assets/ban.svg" alt="Ban" style="width:16px"/>&nbsp;&nbsp;已屏蔽作品 '+MediaBaseTempCounter+'个');
+    if(MediaBaseTempCounter==0){$("#MediaBanListSetpageA").append("<div style='position:relative;text-align:center;top:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>没有已屏蔽的作品</div>")}
+
+    function MediaBanListRecover(MediaID){
+        OKErrorStreamer("MessageOn","正在恢复...",0);
+        store.set("WorkSaveNo"+MediaID.toString()+".ExistCondition","Exist");
+        let MediaBaseDeleteNumberGet = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseDeleteNumber");
+        sysdata.set("Settings.checkboxC.LocalStorageMediaBaseDeleteNumber",MediaBaseDeleteNumberGet-1);
+        OKErrorStreamer("OK","已恢复",0,"..");
+        setTimeout(function(){ipc.send('MainWindow','InitArchivePage');location.reload();},500);
+    }
+</script>
+</html>

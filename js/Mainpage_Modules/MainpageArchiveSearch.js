@@ -20,10 +20,16 @@ exports.ArchivePageMediaSearch=function(Key){
     document.getElementById('ArchivePageSearchSuggestionBack').style.display='block';
     let MediaNumber = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");//localStorage.getItem("LocalStorageMediaBaseNumber");
     let SearchKeyWord = document.getElementById('ArchivePageSearch').value;
+    // 删除 SearchKeyWord 中的所有标点符号（全角和半角），并转换为小写
+    SearchKeyWord = SearchKeyWord.replace(/[\p{P}\p{S}]/gu, '').toLowerCase();
+
     let SerachResultGetted = 0;
     for(let ScanCounter=1;ScanCounter<=MediaNumber;ScanCounter++){
       let StoreGet = store.get("WorkSaveNo"+ScanCounter+".Name");
-        if(StoreGet.match(eval('/'+SearchKeyWord+'/'))&&store.get("WorkSaveNo"+ScanCounter+".ExistCondition")!='Deleted'){
+      // 删除 StoreGet 中的所有标点符号（全角和半角），并转换为小写
+      let StoreGetNormalized = StoreGet.replace(/[\p{P}\p{S}]/gu, '').toLowerCase();
+      
+        if(StoreGetNormalized.match(eval('/'+SearchKeyWord+'/'))&&store.get("WorkSaveNo"+ScanCounter+".ExistCondition")!='Deleted'){
           SerachResultGetted = 1;
           $("#ArchivePageSearchSuggestion").append("<div class='Winui3brickContainer'>"+"<div style='position:relative;left:0%;top:0%;height:100%;aspect-ratio:1;background:url(\""+store.get("WorkSaveNo"+ScanCounter+".Cover")+"\") no-repeat top;background-size:cover;border-radius:8px;'></div>"+
           "<div style='position:relative;margin-left:10px;margin-right:40px;overflow:hidden'><div style='display: -webkit-box;text-overflow: ellipsis;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;'>"+StoreGet+"</div><div style='position:relative;font-size:15px;margin-top:5px;color: #aaa;'>"+store.get("WorkSaveNo"+ScanCounter+".Year")+"/"+store.get("WorkSaveNo"+ScanCounter+".Director")+"/"+store.get("WorkSaveNo"+ScanCounter+".Type")+"</div></div>"+

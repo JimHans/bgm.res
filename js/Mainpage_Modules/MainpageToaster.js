@@ -19,7 +19,7 @@ exports.OKErrorStreamer=function(type,text,if_reload,rootdir=".") {
         }).showToast();
         // document.getElementById("OKStreamer").innerHTML="✅ "+text.toString();
         // document.getElementById("OKStreamer").style.display="table";
-        if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
+        if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 1000);}
         // else{setTimeout(function() { document.getElementById("OKStreamer").style.display="none"; }, 4000);}
     }
     else if(type=="MessageOn") {
@@ -31,9 +31,11 @@ exports.OKErrorStreamer=function(type,text,if_reload,rootdir=".") {
         document.getElementById("MessageStreamer").style.display="none";
     }
     else {
+        let ToastDuration=3000;
+        if(type=="ErrorHandler"){ToastDuration=-1;}
         Toastify({
         text: text.toString(),
-        duration: 3000,
+        duration: ToastDuration,
         newWindow: true,
         close: true,
         avatar: rootdir+"/assets/widgets/error.svg",
@@ -44,7 +46,7 @@ exports.OKErrorStreamer=function(type,text,if_reload,rootdir=".") {
         }).showToast();
         // document.getElementById("ErrorStreamer").innerHTML="⛔ "+text.toString();
         // document.getElementById("ErrorStreamer").style.display="block";
-        if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 4000);}
+        if(if_reload == 1) {setTimeout(function() { ipcRenderer.send('MainWindow','Refresh'); }, 1000);}
         // else{setTimeout(function() { document.getElementById("ErrorStreamer").style.display="none"; }, 4000);}
     }
 

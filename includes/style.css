@@ -529,6 +529,41 @@ user-select: none;
     bottom:8%;
     /* bottom:10%; */
 }
+
+/* 媒体库切换Tab */
+.ArchivePageSwitchTab{
+    width: 95px;
+    height: 30px;
+    border-radius: 7px;
+    /* background: #00000080; */
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 13px;
+    align-items: center;
+    font-family: 'bgmUIHeavy';
+    transition: background-color .25s;
+}
+.ArchivePageSwitchTab:hover {
+    background: #00000080;
+}
+
+/* 媒体库时间线卡片 */
+.ArchivePageTimelineContentWeekCard{
+    font-family: bgmUI;
+    font-size: min(3vmin,22px);
+    border-radius: 15px;
+    width:95%;
+    height:120px;
+    position: relative;
+    background:#00000060;
+    z-index: 100;
+    -webkit-app-region: no-drag;
+    transform: scale(1) translateX(0);
+    animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);
+    transition: all .5s ease;
+    overflow-y: auto;
+}
+
 /* 媒体库内容容器 */
 .ArchivePageContent{
     font-family: bgmUI;

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <link rel="stylesheet" href="../includes/style.css"> <!--主样式表-->
+    <link rel="stylesheet" href="../includes/winui3.css" type="text/css" /> <!--外挂Winui3样式表-->
+    <meta charset="UTF-8">
+    <title>媒体库设置</title>
+    <style>
+    </style>
+    <script> 
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    </script> <!--重定向NodeRequire以引入JQuery-->
+    <script src="../includes/jquery-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../includes/toastify.min.css"> <!--引入Toastify-->
+    <script type="text/javascript" src="../includes/toastify-js"></script> <!--引入Toastify-->
+    <script src="../js/MediaDirSetPage.js"></script> <!--引入本页脚本-->
+</head>
+
+
+<body style="overflow: hidden;">
+    <div class="TitleBar"> <!--*标题栏-->
+        <img src="../assets/icons/app.png" width="25" height="25" style="position: absolute;line-height: 26px;margin: 4px 0px 0px 5px;left:5px;">
+        <img src="../assets/icons/bgm.res.png" height="17" style="position: absolute;line-height: 26px;margin: 7px 0px 0px 5px;left:40px;aspect-ratio:4.63">
+        <a id="Title" style="height: 30px;line-height: 30px;position:absolute;left:30%;right:30%;text-align: center;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">BGM.res</a>
+    </div>
+    <div class="SettingsPage" style="width:100%;display:block;"> <!--*设置页 -->
+        <div class="Winui3setTab" style="left:16px"> <!--设置tab-->
+            <h3 style="position:absolute;margin-left:15px;font-size:25px;line-height:60px;margin-top:0;right: 300px;left: 0;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;text-align: left;">媒体库目录编辑</h3>
+            <div class="Winui3setTabBrickSmall" style="right:70px;width:135px" onclick="MediaDirSetAdd();">
+                <img src="../assets/add.svg" alt="Ban" style="width:16px"/>&nbsp;&nbsp;添加文件夹</div>
+            <div class="Winui3setTabBrickSmall" style="right:20px;" onclick="MediaDirSetSave();" title="保存"><img src="../assets/save.svg" alt="save"/></div>
+        </div>
+        <div class="Winui3setpage" style="left:16px;background-color: #27272730;backdrop-filter: blur(200px);overflow:hidden">
+            <div id="MediaDirSetpageA" class="Winui3setpageINNER" style="width:100%;right:0;background-color: unset; backdrop-filter: unset;">
+                <div class="Winui3brickContainer" style="background-color:#2b4f6c"><svg t="1669908006524" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1391" data-darkreader-inline-fill="" width="20" height="20"><path d="M510.032 93.09c-229.9 0-416.94 187.924-416.94 418.91 0 230.986 187.92 418.91 418.908 418.91 230.986 0 418.91-187.924 418.91-418.91 0-230.986-188.804-418.91-420.88-418.91z" fill="#5fb5fc" p-id="1392" style="--darkreader-inline-fill: #5fb5fc;" data-darkreader-inline-fill=""></path><path d="M558.546 723.78h-93.092v-93.09h93.092zM558.546 539.928h-93.092V302.546h93.092z" fill="#000" p-id="1393" style="--darkreader-inline-fill: #181a1b;" data-darkreader-inline-fill=""></path></svg><p style="margin-left:13px;font-size: 15px;font-weight: bold;">你可以在此添加或移除你需要纳入扫描的媒体文件夹，bgm.res将可以跟踪并扫描已添加文件夹内的作品信息。</p></div>
+                <div id="MediaDirNoneFlag" style='position:relative;text-align:center;top:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>媒体库暂时为空</div>
+            </div>
+        </div>
+    </div>
+    <!--  *成功、失败横提示  -->
+    <div id="OKStreamer" class="SystemStreamer"></div>
+    <div id="MessageStreamer" class="SystemStreamer" style="background-color:#ffffff9a;color:black"></div>
+    <div id="ErrorStreamer" class="SystemStreamer" style="background-color:#a4414f;"></div>
+</body>
+</html>

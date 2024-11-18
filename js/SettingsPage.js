@@ -88,8 +88,9 @@ function SettingsPageFolderURL(event) { //获取媒体文件夹路径
 
 function SettingsPageConfigInit() { //数据初始化
 
-    if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")){ //初始化自定义颜色
-        let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    let CustomColorData =SettingsColorPicker(1);
+    if(CustomColorData){ //初始化自定义颜色
+        // let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
         document.getElementById("SettingsPageSetTabHighLight").style.backgroundColor=CustomColorData;
         document.getElementById("SettingsPageSetTabHighLight").style.boxShadow="0px 0px 1px 1px "+CustomColorData;
         let customcolorstyle=document.createElement('style');//创建一个<style>标签
@@ -105,6 +106,7 @@ function SettingsPageConfigInit() { //数据初始化
 			"LocalStorageAutoUpdateArchiveInfo",
             "LocalStorageAutoUpdateMediaInfo",
             "LocalStorageMediaSubFolderName",
+            "LocalStorageUseSystemPlayer",
 			"LocalStorageqBittorrnetURL"
 			]
     //初始化PageA
@@ -126,7 +128,19 @@ function SettingsPageConfigInit() { //数据初始化
             if(document.getElementsByName('checkboxB')[Temp].type=='checkbox') 
                 document.getElementsByName('checkboxB')[Temp].checked=sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])
             else
-                document.getElementsByName('checkboxB')[Temp].value=sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])}
+                document.getElementsByName('checkboxB')[Temp].value=sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])
+            if (KeyStoreB[Temp]=="LocalStorageSystemCustomColor") //为取色器设定初始化颜色
+                {
+                    document.getElementById('SettingsPageColorPickerInput').value=sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])
+                    Coloris({
+                        el: document.getElementById('SettingsPageColorPickerInput'),
+                        themeMode: 'dark',
+                        theme: 'pill',
+                        format: 'rgb',
+                        onChange: (color, input) => {document.getElementsByName('checkboxB')[Temp].value=color;},
+                    });
+                }
+            } 
     }document.getElementById('Winui3fileInfoBubble').innerText='当前选定背景图片为：'+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage")
     
     var KeyStoreC=["LocalStorageMediaShowOldSettingPage",

@@ -55,9 +55,8 @@ exports.StoreDeleteWork=function(WorkID){
     type:"question",
     buttons:["取消","确认"],
     title:"警告",
-    message:`
-    您确定要删除作品 [`+store.get("WorkSaveNo"+WorkID+".Name")+
-    `] 吗？此操作将仅删除程序记录，您在磁盘上的文件不会被删除。`
+    message:`您确定要从媒体库中删除作品 [`+store.get("WorkSaveNo"+WorkID+".Name")+
+    `] 吗？此操作将仅在媒体库中屏蔽该作品，您在磁盘上的文件不会被删除，之后您也可以在媒体库中的已屏蔽作品目录中恢复。`
   });
   if(result == 1){store.set("WorkSaveNo"+WorkID+".ExistCondition",'Deleted');
     document.getElementById('ArchivePageContentSettings').style.display='none';
