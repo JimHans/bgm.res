@@ -28,7 +28,7 @@ exports.ArchiveMediaUpdate=function(){
         if(store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".bgmID") != '0'){
           $.getJSON("https://api.bgm.tv/v0/subjects/"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".bgmID").toString(), function(data){
             store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Score",data.rating.score); 
-            store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Year",data.date.substring(0,4));
+            if(data.date) store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Year",data.date.substring(0,4));
             store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Eps",data.eps);
             if(data.name_cn!=""){store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name_cn);}
             else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}
@@ -86,7 +86,7 @@ exports.ArchiveMediaUpdateSingle=function(LocalStorageMediaBaseNumber,ScanSaveCo
       if(store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".bgmID") != '0'){
         $.getJSON("https://api.bgm.tv/v0/subjects/"+store.get("WorkSaveNo"+MediaBaseScanCounter.toString()+".bgmID").toString(), function(data){
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Score",data.rating.score); 
-          store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Year",data.date.substring(0,4));
+          if(data.date) store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Year",data.date.substring(0,4));
           store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Eps",data.eps);
           if(data.name_cn!=null){store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name_cn);}
           else{store.set("WorkSaveNo"+MediaBaseScanCounter.toString()+".Name",data.name);}

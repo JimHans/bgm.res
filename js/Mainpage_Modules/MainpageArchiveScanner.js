@@ -13,7 +13,7 @@ function LocalWorkScanSubModule(ScanDirectory){
   var ScanSubDir = fs.readdirSync(ScanDirectory); //扫描目标媒体库目录
 
   for(var ScanTemp=0;ScanTemp!=ScanSubDir.length;ScanTemp++){ //轮询找到媒体库目录下的子目录
-    if(fs.lstatSync(ScanDirectory+"\\"+ScanSubDir[ScanTemp]).isDirectory()) //如果是目录
+    if(fs.lstatSync(ScanDirectory+"\\"+ScanSubDir[ScanTemp]).isDirectory() && ScanSubDir[ScanTemp]!='qBittorrent') //如果是目录,排除qbit文件夹
     {
       let ScanSubDirFiles = fs.readdirSync(ScanDirectory+"\\"+ScanSubDir[ScanTemp]); 
       let hasMediaFile = ScanSubDirFiles.some(ScanSubDirFiles => {
@@ -32,7 +32,7 @@ function LocalWorkScanSubModule(ScanDirectory){
   }
 }
 
-//! 媒体库-目录全局扫描目录遍历子模块
+//! 媒体库-目录全局扫描目录遍历子模块  
 async function LocalWorkScanProcessDirectory(index,ScanSaveCounter) {
   if (fs.lstatSync(MediaDirectoryStorage[index]).isDirectory()) {
     ScanSaveCounter++;
@@ -61,7 +61,9 @@ exports.LocalWorkScan=function(){
     type:"question",
     buttons:["取消","确认"],
     title:"提示",
-    message:`您确定要进行媒体库全局扫描吗？这将覆盖您当前的媒体库数据信息！`
+    message:`确定要进行媒体库全局扫描吗？这将覆盖您当前的媒体库数据信息！`,
+    detail: "在扫描时，bgm.res将对无法识别的媒体使用Google Translate API进行处理。\n \nGoogle Translate在普通国内网络下无法访问，这会影响bgm.res对您媒体库的匹配效果。\n \n因此，建议您使用可以连接Google相关服务的科学网络连接以提升扫描准确率。",
+    // icon: "./assets/icon.png"
   });
   if(result == 1){
     if(sysdata.get("Settings.checkboxA.LocalStorageMediaBaseURL")) //if(localStorage.getItem('LocalStorageMediaBaseURL'))
@@ -136,53 +138,71 @@ async function LocalWorkScanBackbone() {
           function DefaultSlicer(ScanCounter){
           //TODO 默认刮削器
           let WorkScanExpression = sysdata.get("Settings.checkboxC.LocalStorageMediaScanExpression")
-          if(WorkScanExpression=='default' || WorkScanExpression=='') WorkScanExpression = "/(?<=\])(.+?)(?=\[)/g"; //默认正则表达式
+          if(WorkScanExpression=='default' || WorkScanExpression=='') WorkScanExpression = "/(?<=\\])(.+?)(?=\\[)/g"; //默认正则表达式
           let WorkTempName = store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString().match(eval(WorkScanExpression));
-          console.log(WorkTempName) //当前文件夹名输出
+          // console.log(WorkTempName) //当前文件夹名输出
           if(WorkTempName!=null&&WorkTempName!=" "){ 
             //存在双括号约束
+            setTimeout(function() {
             $.getJSON("https://api.bgm.tv/search/subject/"+WorkTempName+"?type=2", function(data){
-              store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}
+              if (data.list) store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}
               ).fail(function(){ //如果搜索失败，尝试使用Google翻译为日语搜索
                 $.ajax({ 
                 url: 'http://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=en&tl=ja&q="'+WorkTempName.toString()+'"', 
                 type: 'GET',timeout : 2000,
                 success: function(data2){
-                  console.log("尝试使用日语片名搜索:"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, ''));
-                  $.getJSON("https://api.bgm.tv/search/subject/"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, '')+"?type=2", function(data3){
-                  store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data3.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}); //再次初始化id
+                  console.log("尝试使用日语片名搜索:"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, ''));
+                  $.getJSON("https://api.bgm.tv/search/subject/"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, '')+"?type=2", function(data3){
+                  if (data3.list) store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data3.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){
+                    //使用新API尝试搜索
+                    $.ajax({url:"https://api.bgm.tv/v0/search/subjects",type:'POST',data: '{"keyword": "'+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, '')+'","filter": {"type": [2]}}', success: function(data4){
+                      if (data4.total) store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data4.data[0].id); ScanSliceCounter+=1; if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}
+                      }).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}); //再次初始化id
+                    }); //再次初始化id
                   }}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();})});
-          } //初始化id
+          },ScanCounter*150)} //初始化id
           
           else if(store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString().split(/\]/g)[1]!=null&&store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString().split(/\]/g)[1]!=" "){ //存在单括号约束
+          setTimeout(function() {
           $.getJSON("https://api.bgm.tv/search/subject/"+store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString().split(/\]/g)[1]+"?type=2", function(data){
             store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){
               $.ajax({ 
                 url: 'http://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=en&tl=ja&q="'+store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString().split(/\]/g)[1]+'"', 
                 type: 'GET',timeout : 2000,
                 success: function(data2){
-                  console.log("尝试使用日语片名搜索:"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, ''));
-                  $.getJSON("https://api.bgm.tv/search/subject/"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, '')+"?type=2", function(data3){
-                  store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data3.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}); //再次初始化id
-                }}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();})});}  //初始化id
+                  console.log("尝试使用日语片名搜索:"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, ''));
+                  $.getJSON("https://api.bgm.tv/search/subject/"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, '')+"?type=2", function(data3){
+                  store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data3.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){
+                    //使用新API尝试搜索
+                    $.ajax({url:"https://api.bgm.tv/v0/search/subjects",type:'POST',data: '{"keyword": "'+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, '')+'","filter": {"type": [2]}}', success: function(data4){
+                      if (data4.total) store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data4.data[0].id); ScanSliceCounter+=1; if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}
+                      }).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}); //再次初始化id
+                    }); //再次初始化id
+                }}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();})});},ScanCounter*150)}  //初始化id
           
           else { var NipponNameTrans = null; //日语片名翻译临时存储
+          setTimeout(function() {
             $.getJSON("https://api.bgm.tv/search/subject/"+store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString()+"?type=2", function(data){
             store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){
               $.ajax({ 
                 url: 'http://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=en&tl=ja&q="'+store.get("WorkSaveNo"+ScanCounter.toString()+".Name").toString()+'"', 
                 type: 'GET',timeout : 2000,
                 success: function(data2){
-                  console.log("尝试使用日语片名搜索:"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, ''));
-                  NipponNameTrans = data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
-                  $.getJSON("https://api.bgm.tv/search/subject/"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()]/g, '')+"?type=2", function(data3){
+                  console.log("尝试使用日语片名搜索:"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, ''));
+                  NipponNameTrans = data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, '');
+                  $.getJSON("https://api.bgm.tv/search/subject/"+data2.sentences[0].trans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()]/g, '')+"?type=2", function(data3){
                   store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data3.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){
-                    if(NipponNameTrans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()a-zA-Z0-9]/g, '')!=""){
-                    $.getJSON("https://api.bgm.tv/search/subject/"+NipponNameTrans.replace(/[『』」「、\[\].,\/#!$%\^&\*;:{}=\-_`~()a-zA-Z0-9]/g, '')+"?type=2", function(data4){
-                      store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data4.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}); //再次初始化id
+                    if(NipponNameTrans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()a-zA-Z0-9]/g, '')!=""){
+                    $.getJSON("https://api.bgm.tv/search/subject/"+NipponNameTrans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()a-zA-Z0-9]/g, '')+"?type=2", function(data4){
+                      store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data4.list[0].id); ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}).fail(function(){
+                        //使用新API尝试搜索
+                        $.ajax({url:"https://api.bgm.tv/v0/search/subjects",type:'POST',data: '{"keyword": "'+NipponNameTrans.replace(/[『』」「、\[\].,\/#!"$%\^&\*;:{}=\-_`~()a-zA-Z0-9]/g, '')+'","filter": {"type": [2]}}', success: function(data5){
+                          if (data5.total) store.set("WorkSaveNo"+ScanCounter.toString()+".bgmID",data5.data[0].id); ScanSliceCounter+=1; if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}
+                          }).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}); //再次初始化id
+                        }); //再次初始化id
                     } else {ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();}
                       }); //再次初始化id
-                }}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();})});}  //不存在约束
+                }}).fail(function(){ScanSliceCounter+=1;if(ScanSliceCounter==ScanSaveCounter)ScannerEnding();})});},ScanCounter*150)}  //不存在约束
           
             //TODO 默认刮削器END
         }//$.ajaxSetup({ async: true }); //重新打开同步
@@ -312,7 +332,7 @@ async function LocalWorkScanModifyBackbone() {
           //TODO 默认刮削器
           function DefaultSlicer(ScanCounter){
           let WorkScanExpression = sysdata.get("Settings.checkboxC.LocalStorageMediaScanExpression")
-          if(WorkScanExpression=='default' || WorkScanExpression=='') WorkScanExpression = "/(?<=\])(.+?)(?=\[)/g";
+          if(WorkScanExpression=='default' || WorkScanExpression=='') WorkScanExpression = "/(?<=\\])(.+?)(?=\\[)/g";
           let WorkTempName = store.get("WorkSaveNo"+(Number(LocalStorageMediaBaseNumber)+Number(ScanCounter)).toString()+".Name").toString().match(eval(WorkScanExpression));
           if(WorkTempName!=null&&WorkTempName!=" "){ 
             //存在双括号约束

@@ -257,11 +257,13 @@ function SysOnload() {
   if(sysdata.get("Settings.checkboxA.LocalStorageAutoUpdateArchiveInfo")) //判断是否启用自动更新作品信息
   {ArchiveMediaUpdate();}
 
+  ToggleSimpleHomePage(1) //判断是否初始化简洁首页
+
   // *动态跟随进度背景图片启用
   if(sysdata.get("Settings.checkboxB.LocalStorageSystemOpenLiveBackground")==true){
     const ffmpeg = nodeRequire('fluent-ffmpeg');
     fs.readdir(ffmpegUrl+"/portable_config/watch_later", function(err, files) {
-      if (err) {return console.error('Unable to scan directory: ' + err);}
+      if (err || !files) {OKErrorStreamer("Error","因为未曾播放，ffmpeg无法扫描最近播放缓存",0); return console.error('Unable to scan directory: ' + err);}
       // 获取每个文件的创建时间，并找出最新的文件
       let latestFile; let latestTime = 0;
       files.forEach(function(file) {
@@ -330,6 +332,30 @@ function LocalSave(Key,Input){
 }
 
 // TODO MainPage Relavant Function Start
+//! 简洁首页模式切换
+function ToggleSimpleHomePage(command = 0){
+  if (command == 0){ //切换简洁首页指令
+    if (!sysdata.get("Settings.checkboxB.LocalStorageToggleSimpleHomePage")){ //如果未启用简洁首页则打开
+      sysdata.set("Settings.checkboxB.LocalStorageToggleSimpleHomePage",true);
+      document.getElementById("RecentViewRating").style.display="none";
+      document.getElementsByClassName("RecentViewProgressContainer")[0].style.top="78%";
+      document.getElementById("RecentViewDetail").style.display="none";
+      OKErrorStreamer("OK","已启用简洁首页模式",0);
+    } else {  //如果已启用简洁首页则关闭
+      sysdata.set("Settings.checkboxB.LocalStorageToggleSimpleHomePage",false);
+      document.getElementById("RecentViewRating").style.display="block";
+      document.getElementsByClassName("RecentViewProgressContainer")[0].style.top="53%";
+      document.getElementById("RecentViewDetail").style.display="block";
+      OKErrorStreamer("OK","已关闭简洁首页模式",0);
+    }
+  } else if (command == 1){ //初始化简洁首页指令
+    if (sysdata.get("Settings.checkboxB.LocalStorageToggleSimpleHomePage")){ //启用简洁首页
+      document.getElementById("RecentViewRating").style.display="none";
+      document.getElementsByClassName("RecentViewProgressContainer")[0].style.top="78%";
+      document.getElementById("RecentViewDetail").style.display="none";
+    } 
+  }
+}
 
 //! 胶囊菜单-页面切换
 function FloatBarAction(PageID) { //点击切换页面
@@ -847,6 +873,7 @@ function ArchiveMediaDetailsPage(MediaID){
     document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='6.5%';
     let CurrMonth = new Date().getMonth()+1;
     let CurrYear = new Date().getFullYear();
+    if (data.date == null) data.date = "1368-01-23";
     let CurrSeason = Math.floor( (CurrMonth%3 == 0 ? (CurrMonth/3):(CurrMonth/3 + 1) ) )
     let AnimeSeason = Math.floor( (parseInt(data.date.substr(5,2))%3 == 0 ? (parseInt(data.date.substr(5,2))/3):(parseInt(data.date.substr(5,2))/3 + 1) ) )
     if(CurrSeason == AnimeSeason && parseInt(CurrYear) == parseInt(data.date.substr(0,4)))
@@ -1191,6 +1218,7 @@ function ArchiveMediaDetailsPage(MediaID){
     timeout : 2000,
     success: function (data) {
       let bgmTempHTML = cheerio.load(data); //加载获取的作品详情页html
+      if(!bgmTempHTML('#subjectPanelIndex').length) return -1; //判断是否有目录
       bgmTempHTML = bgmTempHTML('#subjectPanelIndex')[0].children[3].children //解析目录部分
       // console.log(bgmTempHTML)
       for (let Tempi = 0;Tempi!=bgmTempHTML.length;Tempi++){
