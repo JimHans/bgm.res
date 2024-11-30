@@ -30,11 +30,6 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
   console.log(arg);
   if(arg.slice(0,18)=='RefreshArchivePage'){
     // ArchivePageInit();
-    let archivePageContent = document.getElementById("ArchivePageContent");
-    if (archivePageContent) {
-      let MediaDetailsBlock = document.getElementById('ArchiveWorkNo'+arg.slice(18));
-      archivePageContent.scrollTop = MediaDetailsBlock.offsetTop-20;//archivePageContent.scrollHeight;
-    } //将媒体库滚到最底以显示最新添加的作品
     ArchiveMediaDetailsPage(arg.slice(18));
     let RefreshArchivePageTempDataSaver = store.get("WorkSaveNo"+arg.slice(18));
     // *计算作品进度信息
@@ -76,6 +71,11 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
       "</div>" );
       OKErrorStreamer("OK","媒体数据添加完成！",0);
     }
+  let archivePageContent = document.getElementById("ArchivePageContent");
+  if (archivePageContent) {
+    let MediaDetailsBlock = document.getElementById('ArchiveWorkNo'+arg.slice(18));
+    archivePageContent.scrollTop = MediaDetailsBlock.offsetTop-20;//archivePageContent.scrollHeight;
+  } //将媒体库滚到最底以显示最新添加的作品
 }else if(arg.slice(0,15)=='InitArchivePage'){
   console.log("Init without update database");
   document.getElementById('ArchivePageContentDetails').style.marginLeft = '100%';
