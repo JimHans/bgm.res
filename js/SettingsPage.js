@@ -45,7 +45,7 @@ function SettingsPageSetpageInfoShower() { //点击显示关于界面
 
 function SettingsPageAPIPing(ButtonID) { //网络探针
     let p = new Ping();
-    let urlstore = ["https://api.bgm.tv/","https://netaba.re/","https://api.github.com/repos/jimhans/bgm.res/releases/latest"]
+    let urlstore = ["https://api.bgm.tv/","https://netaba.re/","https://api.github.com/repos/jimhans/bgm.res/releases/latest","https://graphql.anilist.co/","https://v3.sg.media-imdb.com/suggestion/x/"]
     document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].innerHTML='检测中...'
     document.getElementsByName('SettingsPageAPIPingCard')[ButtonID].style.color ="#b9b9b9";
     p.ping(urlstore[ButtonID], function(err,data) {
@@ -74,6 +74,13 @@ function SettingsPageSaveConfig(checkboxName,checkboxID,key,type) { //数据保�
     else if(type == 'fillblank') {
         let Value = document.getElementsByName(checkboxName)[checkboxID].value;
         if(Value!=""){sysdata.set("Settings."+checkboxName.toString()+"."+key.toString(),Value);
+            if(key=='LocalStorageMediaScanExpression'||key=='LocalStorageMediaScanExpressionSub'){
+                let keywords = Value.split(/[,，]/); let keywordObject = {};
+                keywords.forEach(keyword => {
+                    keywordObject[keyword.trim()] = true;
+                });
+                sysdata.set("Settings."+checkboxName.toString()+"."+key.toString(), keywordObject);
+            }//刮削器设定特殊保存
         OKErrorStreamer("OK","设置完成，刷新或重启客户端生效",0);}
         else {sysdata.set("Settings."+checkboxName.toString()+"."+key.toString(),Value);OKErrorStreamer("Error","输入不能为空",0);}
     }
@@ -121,7 +128,8 @@ function SettingsPageConfigInit() { //数据初始化
     var KeyStoreB=['LocalStorageMediaShowSciMark',
                     'LocalStorageMediaShowStd',"LocalStorageMediaShowProgress","LocalStorageMediaShowRelative","LocalStorageMediaShowCharacter",
                     "LocalStorageMediaShowCharacterCN","LocalStorageMediaShowCharacterCV","LocalStorageMediaShowTranslation","LocalStorageMediaShowStaff",
-                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode","LocalStorageSystemOpenMicaMode","LocalStorageSystemOpenLiveBackground"]
+                    "LocalStorageSystemCustomColor","LocalStorageSystemShowModifiedCover","LocalStorageSystemOpenLightMode","LocalStorageSystemOpenMicaMode","LocalStorageSystemOpenLiveBackground",
+                    "LocalStorageSystemOpenSpeedMode"]
     //初始化PageB
     for(let Temp = 0;Temp!=KeyStoreB.length;Temp++){ //Object.keys(sysdata.get("Settings.checkboxB"))
         if(sysdata.get("Settings.checkboxB."+KeyStoreB[Temp])!=''){
@@ -141,7 +149,7 @@ function SettingsPageConfigInit() { //数据初始化
                     });
                 }
             } 
-    }document.getElementById('Winui3fileInfoBubble').innerText='当前选定背景图片为：'+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage")
+    }if(sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage"))document.getElementById('Winui3fileInfoBubble').innerText='当前选定背景图片为：'+sysdata.get("Settings.checkboxB.LocalStorageSystemBackgroundImage")
     
     var KeyStoreC=["LocalStorageMediaShowOldSettingPage",
                 "LocalStorageMediaScanExpression",
@@ -159,7 +167,14 @@ function SettingsPageConfigInit() { //数据初始化
         if(sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])!=''){
             if(document.getElementsByName('checkboxC')[Temp].type=='checkbox') 
                 document.getElementsByName('checkboxC')[Temp].checked=sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])
-            else
-                document.getElementsByName('checkboxC')[Temp].value=sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])}
+            else {
+                document.getElementsByName('checkboxC')[Temp].value=sysdata.get("Settings.checkboxC."+KeyStoreC[Temp])
+                if(KeyStoreC[Temp]=="LocalStorageMediaScanExpression"||KeyStoreC[Temp]=="LocalStorageMediaScanExpressionSub"){
+                    let keywordObject = sysdata.get("Settings.checkboxC."+KeyStoreC[Temp]);
+                    let keywords = Object.keys(keywordObject);
+                    document.getElementsByName('checkboxC')[Temp].value = keywords.join(', ');
+                }
+            }
+        }
     }
 }

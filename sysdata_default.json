@@ -25,12 +25,20 @@
 			"LocalStorageSystemOpenLightMode": false,
 			"LocalStorageSystemOpenMicaMode": false,
 			"LocalStorageSystemOpenLiveBackground": false,
-			"LocalStorageToggleSimpleHomePage": false
+			"LocalStorageToggleSimpleHomePage": false,
+			"LocalStorageSystemOpenSpeedMode": false,
 		},
 		"checkboxC": {
 			"LocalStorageMediaShowOldSettingPage": false,
-			"LocalStorageMediaScanExpression": "/(?<=\\])(.+?)(?=\\[)/g",
-			"LocalStorageMediaScanExpressionSub": "未启用",
+			"LocalStorageMediaScanExpression": 
+			{"2160p":true,"1080p":true,"720p":true,"480p":true,"4K":true,"HD":true, 
+            "BDRip":true,"DVDRip":true,"BD":true,"DVD":true,"TV":true, 
+            "Ma10p":true,"10bit":true,"8bit":true, 
+            "MKV":true,"mp4":true,"AVC":true,"x264":true,"x265":true,"HEVC":true, 
+            "SP": true,"OVA": true,"Movie": true,"Fin":true,"GB":true ,
+			"FREEWIND": true},
+			"LocalStorageMediaScanExpressionSub": 
+			{"- TV \\+ SP": true, "TV \\+ SP": true, "- TV": true},
 			"LocalStorageRecentViewID": null,
 			"LocalStorageRecentViewEpisode": null,
 			"LocalStorageRecentViewEpisodeType": "EP",

@@ -184,4 +184,13 @@ window.onload = function () {
     if(sysdata.get('UserData.UserToken')&&sysdata.get('UserData.UserToken')!=''){
         document.getElementById('UserTokenBox').value=sysdata.get('UserData.UserToken');
     }
+
+    if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //初始化自定义颜色
+    {
+    let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    let customcolorstyle=document.createElement('style');//创建一个<style>标签
+    let customchangeText=document.createTextNode('.Winui3inputText:focus{border-bottom:2px solid '+CustomColorData+'}')//更改后伪元素的样式
+    customcolorstyle.appendChild(customchangeText);//把样式添加到style标签里
+    document.body.appendChild(customcolorstyle);//把内联样式表添加到html中    
+    }
 }

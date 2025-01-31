@@ -30,13 +30,16 @@ exports.ArchiveMediaDetailsEpInfoCard=function(event,MediaID,TempCounter,Type){
       else{document.getElementById("RecentViewPlayEPInfo").innerText="ep"+bgmEP;}
     }}).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); document.getElementById("RecentViewPlayEPInfo").innerText="ep"+bgmEP;document.getElementById("RecentViewPlayEPInfoCN").innerText="中文标题: 未知";document.getElementById("RecentViewPlayEPInfoLength").innerText="时长: 未知"}); // *错误回调
   document.getElementById('RecentViewEpisodePlayCard').innerHTML="<div id='RecentViewEpisodePlayCardEpURL' style='left: 10px;right: 10px;top: 85px;width: auto;height: 25px;overflow: hidden;position: absolute;display: inline-block;white-space: nowrap;'><marquee style='/*animation: 8s wordsLoop linear infinite normal;*/'>"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL")+"</marquee></div>"+
-  "<div style='left: 12px;top: 121px;position:absolute'>设置状态</div><div id='RecentViewEpisodePlayCardProgressWatched' class='RecentViewEpisodePlayCardProgressBtn' style='left:10px;border-top-right-radius: 0;border-bottom-right-radius: 0px;' onclick='store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition\",\"Watched\");"+
-  /*点击标注看过*/"document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"rgb(240 145 153)\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px rgb(240 145 153)\";ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+","+bgmEP+","+(bgmEP+1)+",2);'>看过</div>"+
+  "<div style='left: 12px;top: 121px;position:absolute'>设置状态</div><div id='RecentViewEpisodePlayCardProgressWatched' class='RecentViewEpisodePlayCardProgressBtn' style='left:11px;border-top-right-radius: 0;border-bottom-right-radius: 0px;' onclick='ArchiveMediaDetailsEpInfoCardWatched("+MediaID+","+TempCounter+","+bgmID+","+bgmEP+",2)'>看过</div>"+
+  
   /*点击标注看到此ep*/"<div id='RecentViewEpisodePlayCardProgressWatchedTill' class='RecentViewEpisodePlayCardProgressBtn' style='left: 64px;border-radius: 0px;border-left-width:0px;border-right-width:0px' onclick='for(var Tempj=1;Tempj<="+TempCounter+";Tempj++)"+
-  "{store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP\"+Tempj+\".Condition\",\"Watched\");document.getElementById(\"ArchivePageContentDetailsEpisodeNo\"+Tempj).style.boxShadow=\"0px 0px 0px 2px rgb(240 145 153)\"}"+
-  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatchedTill\").style.backgroundColor=\"#4897ff\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatchedTill\").style.color=\"#000\";ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+",1,"+(bgmEP+1)+",2);'>看到</div>"+
+  "{store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP\"+Tempj+\".Condition\",\"Watched\");document.getElementById(\"ArchivePageContentDetailsEpisodeNo\"+Tempj).style.boxShadow=\"0px 0px 0px 2px "+SettingsColorPicker(0.4)+"\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo\"+Tempj).style.backgroundColor=\""+SettingsColorPicker(0.4)+"\";}"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\""+SettingsColorPicker(0.6)+"\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+",1,"+(bgmEP+1)+",2);'>看到</div>"+
+  
   /*点击撤销观看此ep*/"<div class='RecentViewEpisodePlayCardProgressBtn' style='left: 114px;border-top-left-radius: 0;border-bottom-left-radius: 0;' onclick='store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition\",\"Unwatched\");"+
-  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"#00000055\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"rgb(172, 172, 172)\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px #ffffff4a\";ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+","+bgmEP+","+(bgmEP+1)+",0);'>撤销</div>"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"#00000055\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"rgb(172, 172, 172)\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 0px #ffffff4a\";"+
+  "document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.backgroundColor=\"rgb(0,0,0,0.3)\";"+
+  "ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+","+bgmEP+","+(bgmEP+1)+",0);'>撤销</div>"+
   
   "<div class='RecentViewEpisodePlayCardPlay' style='right:10px;top:122px;width:28%;height:28%;border:0px solid' onclick='ArchiveMediaDetailsEpInfoPlayer("+MediaID+","+TempCounter+",\"EP\");'>"+
   "<div style='width: 80%;height: 100%;left:10%;position: absolute;background:url(./assets/play.svg) no-repeat center;background-size: contain;'></div>"+
@@ -44,9 +47,9 @@ exports.ArchiveMediaDetailsEpInfoCard=function(event,MediaID,TempCounter,Type){
   "<div id='RecentViewPlayEPInfo' style='position:absolute;left:15px;right:15px;top:10px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
   "<div id='RecentViewPlayEPInfoCN' style='position:absolute;left:15px;right:15px;top:35px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
   "<div id='RecentViewPlayEPInfoLength' style='position:absolute;left:15px;right:15px;top:60px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
-  "<div id='RecentViewPlayEPInfoDiscuss' style='color:rgb(240, 145, 153);position:absolute;left:15px;right:15px;bottom:10px;top:195px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"
+  "<div id='RecentViewPlayEPInfoDiscuss' style='color:"+SettingsColorPicker(1)+";position:absolute;left:15px;right:15px;bottom:10px;top:195px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"
   //检测看过，自动高亮
-  if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition")=='Watched'){document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.backgroundColor="rgb(240 145 153)";document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.color="#000"}
+  if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition")=='Watched'){document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.backgroundColor=SettingsColorPicker(0.6);document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.color="#000"}
   }
   if(Type == 'SP'){
   var bgmSP = TempCounter;
@@ -56,7 +59,7 @@ exports.ArchiveMediaDetailsEpInfoCard=function(event,MediaID,TempCounter,Type){
       if(data1.data[SPTemper].type=='1'&&data1.data[SPTemper].sort==bgmSP) {
         
         $.getJSON("https://api.bgm.tv/v0/episodes/"+data1.data[SPTemper].id, function(data2){
-        document.getElementById("RecentViewPlayEPInfo").innerText="sp"+data2.type+": "+data2.name;document.getElementById("RecentViewPlayEPInfo").title="sp"+data2.type+": "+data2.name;
+        document.getElementById("RecentViewPlayEPInfo").innerText="sp"+data2.sort+": "+data2.name;document.getElementById("RecentViewPlayEPInfo").title="sp"+data2.sort+": "+data2.name;
         document.getElementById("RecentViewPlayEPInfoCN").innerText="中文标题: "+data2.name_cn;document.getElementById("RecentViewPlayEPInfoCN").title="中文标题: "+data2.name_cn;
         document.getElementById("RecentViewPlayEPInfoLength").innerText="时长: "+data2.duration;
         $("#RecentViewPlayEPInfoDiscuss").attr('onclick','window.open("https://bgm.tv/ep/'+data2.id+'")');
@@ -67,13 +70,18 @@ exports.ArchiveMediaDetailsEpInfoCard=function(event,MediaID,TempCounter,Type){
     }}).fail(function() { OKErrorStreamer("Error","无法连接Bangumi",0); document.getElementById("RecentViewPlayEPInfo").innerText="sp"+bgmSP;document.getElementById("RecentViewPlayEPInfoCN").innerText="中文标题: 未知";document.getElementById("RecentViewPlayEPInfoLength").innerText="时长: 未知"}); // *错误回调
   
     document.getElementById('RecentViewEpisodePlayCard').innerHTML="<div id='RecentViewEpisodePlayCardEpURL' style='left: 10px;right: 10px;top: 85px;width: auto;height: 25px;overflow: hidden;position: absolute;display: inline-block;white-space: nowrap;'><marquee style='/*animation: 8s wordsLoop linear infinite normal;*/'>"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".URL")+"</marquee></div>"+
-  "<div style='left: 12px;top: 121px;position:absolute'>设置状态</div><div id='RecentViewEpisodePlayCardProgressWatched' class='RecentViewEpisodePlayCardProgressBtn' style='left:10px;border-top-right-radius: 0;border-bottom-right-radius: 0px;' onclick='store.set(\"WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".Condition\",\"Watched\");"+
-  /*点击标注看过*/"document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"rgb(240 145 153)\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px rgb(240 145 153)\";'>看过</div>"+
-  /*点击标注看到此ep*/"<div id='RecentViewEpisodePlayCardProgressWatchedTill' class='RecentViewEpisodePlayCardProgressBtn' style='left: 64px;border-radius: 0px;border-left-width:0px;border-right-width:0px' onclick='for(var Tempj=1;Tempj<="+TempCounter+";Tempj++)"+
-  "{store.set(\"WorkSaveNo"+MediaID+".SPDetails.SP\"+Tempj+\".Condition\",\"Watched\");document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo\"+Tempj).style.boxShadow=\"0px 0px 0px 2px rgb(240 145 153)\"}"+
-  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatchedTill\").style.backgroundColor=\"#4897ff\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatchedTill\").style.color=\"#000\";'>看到</div>"+
-  /*点击撤销观看此ep*/"<div class='RecentViewEpisodePlayCardProgressBtn' style='left: 114px;border-top-left-radius: 0;border-bottom-left-radius: 0;' onclick='store.set(\"WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".Condition\",\"Unwatched\");"+
-  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"#00000055\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"rgb(172, 172, 172)\";document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px #ffffff4a\";'>撤销</div>"+
+  "<div style='left: 12px;top: 121px;position:absolute'>设置状态</div><div id='RecentViewEpisodePlayCardProgressWatched' class='RecentViewEpisodePlayCardProgressBtn' style='left:11px;border-top-right-radius: 0;border-bottom-right-radius: 0px;' onclick='store.set(\"WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".Condition\",\"Watched\");"+
+  /*点击标注看过*/"document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\""+SettingsColorPicker(0.6)+"\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 2px "+SettingsColorPicker(0.4)+"\";"+
+  "document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"\").style.backgroundColor=\""+SettingsColorPicker(0.4)+"\";'>看过</div>"+
+  
+  /*点击标注看到此sp*/"<div id='RecentViewEpisodePlayCardProgressWatchedTill' class='RecentViewEpisodePlayCardProgressBtn' style='left: 64px;border-radius: 0px;border-left-width:0px;border-right-width:0px' onclick='for(var Tempj=1;Tempj<="+TempCounter+";Tempj++)"+
+  "{store.set(\"WorkSaveNo"+MediaID+".SPDetails.SP\"+Tempj+\".Condition\",\"Watched\");document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo\"+Tempj).style.boxShadow=\"0px 0px 0px 2px "+SettingsColorPicker(0.4)+"\";document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo\"+Tempj).style.backgroundColor=\""+SettingsColorPicker(0.4)+"\"}"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\""+SettingsColorPicker(0.6)+"\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";'>看到</div>"+
+  
+  /*点击撤销观看此sp*/"<div class='RecentViewEpisodePlayCardProgressBtn' style='left: 114px;border-top-left-radius: 0;border-bottom-left-radius: 0;' onclick='store.set(\"WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".Condition\",\"Unwatched\");"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"#00000055\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"rgb(172, 172, 172)\";document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 0px #ffffff4a\";"+
+  "document.getElementById(\"ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"\").style.backgroundColor=\"rgb(0,0,0,0.3)\";"+
+  "'>撤销</div>"+
   
   "<div class='RecentViewEpisodePlayCardPlay' style='right:10px;top:122px;width:28%;height:28%;border:0px solid' onclick='ArchiveMediaDetailsEpInfoPlayer("+MediaID+","+TempCounter+",\"SP\");'>"+
   "<div style='width: 80%;height: 100%;left:10%;position: absolute;background:url(./assets/play.svg) no-repeat center;background-size: contain;'></div>"+
@@ -81,9 +89,9 @@ exports.ArchiveMediaDetailsEpInfoCard=function(event,MediaID,TempCounter,Type){
   "<div id='RecentViewPlayEPInfo' style='position:absolute;left:15px;right:15px;top:10px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
   "<div id='RecentViewPlayEPInfoCN' style='position:absolute;left:15px;right:15px;top:35px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
   "<div id='RecentViewPlayEPInfoLength' style='position:absolute;left:15px;right:15px;top:60px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"+
-  "<div id='RecentViewPlayEPInfoDiscuss' style='color:rgb(240, 145, 153);position:absolute;left:15px;right:15px;bottom:10px;top:195px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"
+  "<div id='RecentViewPlayEPInfoDiscuss' style='color:"+SettingsColorPicker(1)+";position:absolute;left:15px;right:15px;bottom:10px;top:195px;overflow: hidden;text-overflow: ellipsis;white-space:nowrap; '></div>"
   //检测看过，自动高亮
-  if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".Condition")=='Watched'){document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.backgroundColor="rgb(240 145 153)";document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.color="#000"}
+  if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".Condition")=='Watched'){document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.backgroundColor=SettingsColorPicker(0.6);document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.color="#000"}
   }
 }
 
@@ -160,13 +168,15 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
       sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
       localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
       sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'EP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'EP');
-      document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px rgb(240 145 153)";
+      document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px "+SettingsColorPicker(0.4);
+      document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
     }
     if(Type == 'SP') {
       sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));
       localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));
       sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'SP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'SP');
-      document.getElementById("ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px rgb(240 145 153)";
+      document.getElementById("ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px "+SettingsColorPicker(0.4);
+      document.getElementById("ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
     }
 
     // *Recent View Get <!--格式化HomePage主页继续观看内容-->
@@ -256,4 +266,14 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
       console.log("Success");
     }
   }
+}
+
+exports.ArchiveMediaDetailsEpInfoCardWatched = function (MediaID,TempCounter,bgmID,bgmEP,Type){
+  store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition","Watched");
+  /*点击标注看过*/
+  document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.backgroundColor=SettingsColorPicker(0.6);
+  document.getElementById("RecentViewEpisodePlayCardProgressWatched").style.color="#000";
+  document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px "+SettingsColorPicker(0.4);
+  document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
+  ArchivePageMediaProgressCalc(MediaID);ArchiveMediaDetailsEpisodeUserUpdate(bgmID,bgmEP,(bgmEP+1),2);
 }

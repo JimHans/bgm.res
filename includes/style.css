@@ -385,6 +385,7 @@ user-select: none;
     transition: background-color .25s;    
     display: flex;
     align-items: center;
+    max-width: 80%;
 }
 .RecentViewProgress:hover {
     background-color: rgba(134, 134, 134, 0.441);
@@ -404,7 +405,7 @@ user-select: none;
     align-items: stretch;
     flex-wrap: nowrap;
     width: 100%;
-
+    max-width: 55%;
 }
 .RecentViewRating{
     font-family: bgmUI;
@@ -562,6 +563,46 @@ user-select: none;
     animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);
     transition: all .5s ease;
     overflow-y: auto;
+}
+
+/* 媒体库BDMV标签 */
+.ArchivePageBDMVTag{
+    border-radius: 4px;
+    background-color: #0095d56b;
+    position: relative;
+    left: 10px;
+    top: 50px;
+    width: 60px;
+    height: 25px;
+    backdrop-filter: blur(10px);
+    font-size: 14px;
+    text-align: center;
+    font-family: 'bgmUIHeavy';
+    line-height: 25px;
+    color: rgb(255 255 255 / 80%);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.664);
+}
+
+/* 媒体库快速编辑 */
+.ArchivePageQuickConfig{
+    display: flex;
+    right: 5px;
+    position: absolute;
+    width: 25px;
+    top:  15px;
+    background: #00000000;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 4px;
+    height: 25px;
+    transition: background-color .25s;
+    /* backdrop-filter: blur(10px); */
+    /* color: rgb(255 255 255 / 80%); */
+    /* box-shadow: 0 0 8px rgba(0, 0, 0, 0.664); */
+}
+/*悬停后背景色变化,高斯模糊背景*/
+.ArchivePageQuickConfig:hover {
+    background: #00000080;
 }
 
 /* 媒体库内容容器 */

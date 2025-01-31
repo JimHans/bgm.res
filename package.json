@@ -1,9 +1,9 @@
 {
   "name": "bgm.res",
   "title": "bgm.res",
-  "version": "0.17.3",
+  "version": "0.18.0",
   "description": "bgm.res-A local bangumi manager",
-  "buildinf": "Build 2024-11-30 Beta",
+  "buildinf": "Build 2025-01-31 Beta",
   "main": "index.js",
   "scripts": {
     "start": "electron .",
@@ -17,10 +17,10 @@
   ],
   "author": "JimHan",
   "license": "GPL",
-  "build": { 
+  "build": {
     "productName": "bgm.res",
     "appId": "com.Zerolite.bgm-res",
-    "copyright": "2024 Zerolite Studio All Rights Reserved.",
+    "copyright": "2025 Zerolite Studio All Rights Reserved.",
     "asar": true,
     "directories": {
       "buildResources": "build",
@@ -53,17 +53,17 @@
   },
   "devDependencies": {
     "electron": "^25.9.8",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.13.3"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "canvas-txt": "^4.0.5",
     "cheerio": "^1.0.0-rc.12",
-    "electron-store": "^8.1.0",
+    "electron-store": "^8.2.0",
     "fluent-ffmpeg": "^2.1.2",
     "html-to-image": "^1.11.11",
     "jquery": "^3.7.1",
-    "mica-electron": "^1.5.4",
+    "mica-electron": "^1.5.16",
     "node-mpv": "^1.5.0",
     "node-mpv-2": "^2.0.0-beta.3",
     "qbittorrent-api-v2": "^1.2.2",

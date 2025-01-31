@@ -12,10 +12,25 @@ const store = new Store();                                            //?创建e
 var htmlToImage = nodeRequire('html-to-image');                       //?引入html-to-image截图库
 const { drawText } = nodeRequire('canvas-txt')                        //?canvas-txt文本绘制模块
 var MediaIDStorage = null;                                          //?媒体ID
+
+let SysdataOption={
+    name:"sysdata",//文件名称,默认 config
+    fileExtension:"json",//文件后缀,默认json
+}; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
+
 const { OKErrorStreamer } = nodeRequire('../js/Mainpage_Modules/MainpageToaster.js'); //?引入bgm.res主界面的通知toast函数封装
 ipc.on('data', (e,arg) => {console.log(arg);MediaIDStorage = arg;SharePostPreGenerate(arg);});       //?接收主进程传来的数据
 
 function SharePostPreGenerate(MediaID){
+    if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //初始化自定义颜色
+    {
+    let CustomColorData = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    let customcolorstyle=document.createElement('style');//创建一个<style>标签
+    let customchangeText=document.createTextNode('.Winui3inputText:focus{border-bottom:2px solid '+CustomColorData+'}')//更改后伪元素的样式
+    customcolorstyle.appendChild(customchangeText);//把样式添加到style标签里
+    document.body.appendChild(customcolorstyle);//把内联样式表添加到html中    
+    }
+
     document.getElementById('ShareCanvasBackGround').style.background = "url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
     document.getElementById('ShareCanvasBackGround').style.backgroundSize = "cover";
     document.getElementById('ShareCanvasCover').style.background = "url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";

@@ -40,9 +40,15 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
     } RefreshArchiveCardWatchPercent = (RefreshArchiveCardWatchPercent/parseInt(RefreshArchivePageTempDataSaver["EPTrueNum"]))*100
     if(RefreshArchiveCardWatchPercent==100) RefreshArchiveCardWatchPercentBorder='0'
     if(!sysdata.get("Settings.checkboxB.LocalStorageMediaShowProgress")){RefreshArchiveCardWatchPercent = 0} //若禁用进度条，设定长度为0
+
+    var ArchiveCoverPNG = "ArchiveCover.png"; var ArchiveBDMVTag = "none"; //默认关闭BDMV标志
+    if (RefreshArchivePageTempDataSaver["BDMV"] == "BDMV") 
+      {ArchiveCoverPNG = "ArchiveCoverBDMV.png"; ArchiveBDMVTag = "block"} //BDMV封面
+
     if(document.getElementById("ArchiveWorkNo"+arg.slice(18)) !== null){
       $("#ArchiveWorkNo"+arg.slice(18)).html(
-        "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
+        "<div class='ArchiveCardThumb' style='background:url(./assets/"+ArchiveCoverPNG+") no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
+        "<div class='ArchivePageBDMVTag' style='display:"+ArchiveBDMVTag+"'>BDMV</div>"+ //BDMV标志
         "<div id='ArchiveCardProgressShowerNo"+arg.slice(18)+"' class='ArchiveCardProgressShower' style='width:"+RefreshArchiveCardWatchPercent+"%;border-bottom-right-radius: "+RefreshArchiveCardWatchPercentBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
         "<div class='ArchiveCardTitle'>"+RefreshArchivePageTempDataSaver["Name"]+"</div>"+ //名称
         "<div class='ArchiveCardRateStar'>⭐&nbsp;"+RefreshArchivePageTempDataSaver["Score"]+"</div>"+ //评分
@@ -58,7 +64,8 @@ ipcRenderer.on('data', (e,arg) => {                                   //?接收�
     }
     else {
       $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+arg.slice(18)+"' class='ArchiveCardHover' style='background:url(\""+RefreshArchivePageTempDataSaver["Cover"]+"\") no-repeat top;background-size:cover;'>"+
-      "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
+      "<div class='ArchiveCardThumb' style='background:url(./assets/"+ArchiveCoverPNG+") no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
+      "<div class='ArchivePageBDMVTag' style='display:"+ArchiveBDMVTag+"'>BDMV</div>"+ //BDMV标志
       "<div id='ArchiveCardProgressShowerNo"+arg.slice(18)+"' class='ArchiveCardProgressShower' style='width:"+RefreshArchiveCardWatchPercent+"%;border-bottom-right-radius: "+RefreshArchiveCardWatchPercentBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
       "<div class='ArchiveCardTitle'>"+RefreshArchivePageTempDataSaver["Name"]+"</div>"+ //名称
       "<div class='ArchiveCardRateStar'>⭐&nbsp;"+RefreshArchivePageTempDataSaver["Score"]+"</div>"+ //评分
@@ -244,6 +251,11 @@ function SysOnload() {
   if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //判断是否启用自定义主题色
   { HomeIconColor = sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor"); // 如果有自定义颜色，就使用自定义颜色
     // document.getElementById("Home").style.border="3px solid "+sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor");
+    let CustomColorData = HomeIconColor
+    let customcolorstyle=document.createElement('style');//创建一个<style>标签
+    let customchangeText=document.createTextNode('.Winui3inputText:focus{border-bottom:2px solid '+CustomColorData+'}')//更改后伪元素的样式
+    customcolorstyle.appendChild(customchangeText);//把样式添加到style标签里
+    document.body.appendChild(customcolorstyle);//把内联样式表添加到html中  
   }
   document.getElementById("Home").style.color=SettingsColorPicker(1);
   document.getElementById("Home").style.backgroundColor=SettingsColorPicker(0.1);
@@ -307,7 +319,7 @@ window.onresize=function(){
 
     document.getElementById('RecentViewEpisodePlayCard').style.display='none';document.getElementById('RecentViewEpisodePlayCardBack').style.display='none'; //自动关闭作品播放卡片
 
-    setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 100);  //控制作品详情模糊背景高度自适应
+    setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 50);  //控制作品详情模糊背景高度自适应
   }
 } 
 
@@ -678,16 +690,21 @@ function ArchivePageInit(){
       else{
 
       // *计算作品进度信息
-      var ArchiveCardWatchPercentSaver = 0;var ArchiveCardWatchPercentRightBorder='8px'
+      let ArchiveCardWatchPercentSaver = 0;let ArchiveCardWatchPercentRightBorder='4px';let ArchiveCardWatchPercentRightTopBorder = '4px';
       for(let Tempi=1;Tempi<=parseInt(MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["EPTrueNum"]);Tempi++){
         if(MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()].EPDetails["EP"+Tempi].Condition=='Watched') ArchiveCardWatchPercentSaver++;
       } ArchiveCardWatchPercentSaver = (ArchiveCardWatchPercentSaver/parseInt(MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["EPTrueNum"]))*100
-      if(ArchiveCardWatchPercentSaver==100) ArchiveCardWatchPercentRightBorder='0'
+      if(ArchiveCardWatchPercentSaver==100) {ArchiveCardWatchPercentRightBorder='0';ArchiveCardWatchPercentRightTopBorder = '8px';}
       if(!sysdata.get("Settings.checkboxB.LocalStorageMediaShowProgress")){ArchiveCardWatchPercentSaver = 0} //若禁用进度条，设定长度为0
 
+      var ArchiveCoverPNG = "ArchiveCover.png"; var ArchiveBDMVTag = "none"; //默认关闭BDMV标志
+      if (MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["BDMV"] == "BDMV") 
+        {ArchiveCoverPNG = "ArchiveCoverBDMV.png"; ArchiveBDMVTag = "block"} //BDMV封面
+
       $("#ArchivePageContent").append( "<div id='ArchiveWorkNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardHover' style='background:url(\""+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Cover"]+"\") no-repeat top;background-size:cover;'>"+
-      "<div class='ArchiveCardThumb' style='background:url(./assets/ArchiveCover.png) no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
-      "<div id='ArchiveCardProgressShowerNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardProgressShower' style='width:"+ArchiveCardWatchPercentSaver+"%;border-bottom-right-radius: "+ArchiveCardWatchPercentRightBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
+      "<div class='ArchiveCardThumb' style='background:url(./assets/"+ArchiveCoverPNG+") no-repeat center;background-size:cover;'></div>"+ //封面遮罩阴影
+      "<div class='ArchivePageBDMVTag' style='display:"+ArchiveBDMVTag+"'>BDMV</div>"+ //BDMV标志
+      "<div id='ArchiveCardProgressShowerNo"+MediaBaseScanCounter.toString()+"' class='ArchiveCardProgressShower' style='width:"+ArchiveCardWatchPercentSaver+"%;border-top-right-radius: "+ArchiveCardWatchPercentRightTopBorder+";border-bottom-right-radius: "+ArchiveCardWatchPercentRightBorder+";background-color:"+SettingsColorPicker(0.8)+";'></div>"+ //进度指示
       "<div class='ArchiveCardTitle'>"+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Name"]+"</div>"+ //名称
       "<div class='ArchiveCardRateStar'>⭐&nbsp;"+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Score"]+"</div>"+ //评分
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:22%;left:5%;right:5%;text-align:center;font-style:italic;'>"+
@@ -697,6 +714,7 @@ function ArchivePageInit(){
       "<div class='ArchiveCardDirectorYearCorp' style='bottom:2%;left:5%;right:50%;text-align:left;color: rgba(255, 255, 255, 0.79);'>"+MediaBaseTempDataSaver["WorkSaveNo"+MediaBaseScanCounter.toString()]["Corp"]+"</div>"+ //制作公司
       "<div style='border-radius: 8px;transition: all 0.5s;left:0%;right:0%;top:0%;bottom:0%;position:absolute;' onclick='ArchiveMediaDetailsPage("+MediaBaseScanCounter+")'></div>"+ // 点击触发区域
       // "<div class='ArchiveCardDirectorYearCorp' style='font-family:bgmUIHeavy;top:2%;left:45%;right:5%;text-align:right;color: rgba(255, 255, 255, 0.79);z-index:20;' onclick='ArchiveContentEditer("+MediaBaseScanCounter.toString()+");'>编辑</div>"+ //编辑按键
+      "<div class='ArchivePageQuickConfig' onclick='ArchiveContentEditer("+MediaBaseScanCounter.toString()+");' title='快速编辑'><img src='./assets/menu.png' style='width:80%'></div>"+ //快速编辑
       "</div>" );
     }MediaBaseScanCounter+=1;ArchivePageInitCore();//requestAnimationFrame(ArchivePageInitCore);
     // cancelAnimationFrame(ArchivePageInitCore);
@@ -809,9 +827,21 @@ function ArchiveMediaDetailsPage(MediaID){
   document.getElementById("ArchivePageContentDetailsFriendScore").innerHTML="-.-"; //清空FriendScore
   document.getElementById("ArchivePageContentDetailsFriendRank").innerHTML="暂无评价"; //清空FriendRank
   
+  //?填充BDMV标志
+  var ArchiveInfoCoverPNG = "display:none"; var ArchiveInfoBDMVTag = "none"; //默认关闭BDMV标志
+  document.getElementById("ArchivePageContentDetailsEpisodeBlockContainer").style.display = "block"; //显示章节详情
+  document.getElementById("ArchivePageContentDetailsBDMVBanner").style.display = "none"; //默认屏蔽BDMV横幅
+  document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='6.5%';
+  if (store.get("WorkSaveNo"+MediaID+".BDMV") == "BDMV") {
+    ArchiveInfoCoverPNG = "background:url(./assets/ArchiveInfoBDMV.png) no-repeat center;background-size:cover;opacity:1"; 
+    document.getElementById("ArchivePageContentDetailsEpisodeBlockContainer").style.display = "none"; //对于BDMV屏蔽章节详情
+    document.getElementById("ArchivePageContentDetailsBDMVBanner").style.display = "flex"; //显示BDMV横幅
+    document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='2%';
+    ArchiveInfoBDMVTag = "block";} //BDMV封面
+
   //?填充标题&评分条UI
   $("#ArchivePageContentDetailsTitleBlock").append(
-    "<div id='ArchivePageContentDetailsCover' class='ArchiveCardHover' style='position:absolute;top:7%;height:86%;left:17%;width:auto;aspect-ratio:3/4;margin:2%' onclick='shell.openExternal(\"https://bgm.tv/subject/"+store.get("WorkSaveNo"+MediaID+".bgmID")+"\");'></div>"+
+    "<div id='ArchivePageContentDetailsCover' class='ArchiveCardHover' style='position:absolute;top:7%;height:86%;left:17%;width:auto;aspect-ratio:3/4;margin:2%' onclick='shell.openExternal(\"https://bgm.tv/subject/"+store.get("WorkSaveNo"+MediaID+".bgmID")+"\");'><div class='ArchiveCardThumb' style='"+ArchiveInfoCoverPNG+"'></div></div>"+
     "<div id='ArchivePageContentDetailsTitle' class='RecentViewName' style='height:auto;top:15%;font-size:min(3vw, 45px);right:max(25%, 270px);overflow: hidden;display: -webkit-box; text-overflow: ellipsis; -webkit-box-orient: vertical;-webkit-line-clamp: 2;   '>未知作品</div>"+
     "<div id='ArchivePageContentDetailsTitleJp' class='RecentViewName' style='height:auto;top:15%;font-size:min(1.5vw,30px);right:max(25%, 270px);overflow: hidden;display: -webkit-box; text-overflow: ellipsis; -webkit-box-orient: vertical;-webkit-line-clamp: 2;   '>不明な作品</div>"+
     "<div id='ArchivePageContentDetailsBannerButtonContainer' style='position: absolute;width: 30%;height: auto;left: 38.5787%;top: 80%;bottom: 0%;max-width: 500px;display: flex;align-content: stretch;align-items: stretch;flex-direction: row;'>"+
@@ -870,7 +900,7 @@ function ArchiveMediaDetailsPage(MediaID){
     
     // 检查是否为当季新番
     document.getElementById('ArchivePageContentDetailsAutoEPBanner').style.display='none';
-    document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='6.5%';
+    // document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='6.5%';
     let CurrMonth = new Date().getMonth()+1;
     let CurrYear = new Date().getFullYear();
     if (data.date == null) data.date = "1368-01-23";
@@ -882,6 +912,8 @@ function ArchiveMediaDetailsPage(MediaID){
       document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='2%';
       store.set("WorkSaveNo"+MediaID+".EPAutoUpdate",true);
     }
+    if (store.get("WorkSaveNo"+MediaID+".BDMV") == "BDMV")  //给BDMV标头擦屁股
+      {document.getElementById('ArchivePageContentDetailsSelfRankBlock').style.marginTop='2%';}
 
     //计算标准差
     if(sysdata.get("Settings.checkboxB.LocalStorageMediaShowStd")){ //判断是否显示标准差
@@ -903,10 +935,12 @@ function ArchiveMediaDetailsPage(MediaID){
       LocalWorkEpsScanModule(MediaID);
       for(let TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
         $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' "+
-        "style='width:100%;height:100%;padding:0px;font-size:3vmin;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:rgb(0,0,0,0.05);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
+        "style='width:100%;height:100%;padding:0px;font-family: bgmUIHeavy;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;transition:all 0.3s cubic-bezier(0,0,0.2,1);box-shadow:0px 0px 0px 0px #ffffff4a;background-color:rgb(0,0,0,0.3);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
         //width:12.1%;height:4vw;padding:2px;
         //检测是否已播放过
-        if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
+        if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){
+          document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
+          document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(0.4)} //' rgb(240 145 153)'
       } 
       ArchivePageMediaProgressCalc(MediaID);OKErrorStreamer("MessageOff","<div class='LoadingCircle'></div>",0);OKErrorStreamer("OK","已更新EP信息",0);//刷新外部进度条
     },5);//更新EP信息
@@ -914,20 +948,25 @@ function ArchiveMediaDetailsPage(MediaID){
   else{
     for(let TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
       $("#ArchivePageContentDetailsEpisodeBlock").append( "<div id='ArchivePageContentDetailsEpisodeNo"+TempCounter+"' class='ArchiveCardHover' "+
-      "style='width:100%;height:100%;padding:0px;font-size:3vmin;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:rgb(0,0,0,0.05);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
+      "style='width:100%;height:100%;padding:0px;font-family: bgmUIHeavy;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;transition:all 0.3s cubic-bezier(0,0,0.2,1);box-shadow:0px 0px 0px 0px #ffffff4a;background-color:rgb(0,0,0,0.3);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"EP\");'>"+"EP "+TempCounter+"</div>" );
       //width:12.1%;height:4vw;padding:2px;
       //检测是否已播放过
-      if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
+      if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){
+        document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
+        document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(0.4)} //' rgb(240 145 153)'
     } 
   }
   //?填充SP选集列表
   if(!store.get("WorkSaveNo"+MediaID+".SPTrueNum") || store.get("WorkSaveNo"+MediaID+".SPTrueNum")==0){document.getElementById('ArchivePageContentDetailsSpecialEpisodeBlock').style.display='none';} //若没有SP就不显示
   else {document.getElementById('ArchivePageContentDetailsSpecialEpisodeBlock').style.display='grid';}
   for(let TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".SPTrueNum");TempCounter++){
-    $("#ArchivePageContentDetailsSpecialEpisodeBlock").append( "<div id='ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"' class='ArchiveCardHover' style='width:100%;height:100%;padding:0px;font-size:3vmin;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;box-shadow:0px 0px 0px 2px #ffffff4a;background-color:#ffffff0a;backdrop-filter: blur(30px)' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"SP\");'>"+"SP "+TempCounter+"</div>" );
+    $("#ArchivePageContentDetailsSpecialEpisodeBlock").append( "<div id='ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter+"' class='ArchiveCardHover' "+
+    "style='width:100%;height:100%;padding:0px;font-family: bgmUIHeavy;font-size:25px;text-align:center;display:flex;justify-content:center;align-items:center;transition:all 0.3s cubic-bezier(0,0,0.2,1);box-shadow:0px 0px 0px 0px #ffffff4a;background-color:rgb(0,0,0,0.3);/*backdrop-filter: blur(30px)*/' onclick='ArchiveMediaDetailsEpInfoCard(event,"+MediaID+","+TempCounter+",\"SP\");'>"+"SP "+TempCounter+"</div>" );
     //width:12.1%;height:4vw;padding:2px;
     //检测是否已播放过
-    if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsSpecialEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
+    if(store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+'.Condition')=='Watched'){
+      document.getElementById('ArchivePageContentDetailsSpecialEpisodeNo'+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
+      document.getElementById('ArchivePageContentDetailsSpecialEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(0.4)} //' rgb(240 145 153)'
   } 
 
   //?填充个人评分信息
@@ -1170,7 +1209,7 @@ function ArchiveMediaDetailsPage(MediaID){
   //?填充科学排名
   if(sysdata.get("Settings.checkboxB.LocalStorageMediaShowSciMark")){ //判断是否显示科学排名
     document.getElementById("ArchivePageContentDetailsRatingRank").innerText="计算中...";
-    $.getJSON("https://raw.githubusercontent.com/NeutrinoLiu/sciRanking_simple/master/shrank.json", function(data){
+    $.getJSON("https://ghproxy.net/https://raw.githubusercontent.com/NeutrinoLiu/API/main/sciRank/shrank.json", function(data){
       for(let Temps = 0;Temps!=data.length;Temps++){if(data[Temps].i==bgmID) {document.getElementById("ArchivePageContentDetailsRatingRank").innerText="科排:"+data[Temps].r;break;}
         if(Temps>=data.length-1){document.getElementById("ArchivePageContentDetailsRatingRank").innerText="暂无排名"}}
     }).fail(function() {document.getElementById("ArchivePageContentDetailsRatingRank").innerText="获取失败";})}
@@ -1191,6 +1230,16 @@ function ArchiveMediaDetailsPage(MediaID){
   document.getElementById("ArchivePageContentDetailsBlur").style.backgroundSize="cover";
   document.getElementById("ArchivePageContentDetailsBlur").style.filter="blur(40px) brightness(40%)";   // 渲染模糊背景
   document.getElementById("ArchivePageContentDetails").scrollTo(0,0); //页面回顶部
+  //?启用性能模式
+  if(sysdata.get("Settings.checkboxB.LocalStorageSystemOpenSpeedMode")==true){
+    document.getElementById("ArchivePageContentDetailsBlur").style.background = "#404040";
+    document.getElementById("ArchivePageContentDetailsBlur").style.filter = "unset";
+    for (let i = 0; i < document.getElementsByClassName("RecentViewDetail").length; i++) {
+      document.getElementsByClassName("RecentViewDetail")[i].style.backdropFilter = "brightness(1)";
+    }
+    document.getElementsByClassName("ArchivePageContentDetailsCharacterContainer")[0].style.backdropFilter = "brightness(1)";
+    document.getElementsByClassName("ArchivePageContentDetailsCharacterContainer")[1].style.backdropFilter = "brightness(1)";
+  }
   //贴边控制
   document.getElementById("ArchivePageContentDetailsTitle").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制标题贴边
   document.getElementById("ArchivePageContentDetailsTitleJp").style.left=(22+(document.getElementById("ArchivePageContentDetailsCover").getBoundingClientRect().width)/($(window).width())*100).toString()+"%"; // 控制日文标题贴左边
@@ -1358,7 +1407,8 @@ function ArchiveMediaDetailsFriendRankCard(friend_comment,friend_score,friend_ra
 }
 
 //! 媒体库-作品详情页章节选择弹窗 媒体库-作品详情页章节选择并播放
-const { ArchiveMediaDetailsEpInfoCard,ArchiveMediaDetailsEpInfoPlayer } = nodeRequire('./js/Mainpage_Modules/MainpageArchiveDetailsSelectandPlay.js'); //?引入bgm.res主界面的作品详情页章节选择播放函数封装
+const { ArchiveMediaDetailsEpInfoCard,ArchiveMediaDetailsEpInfoPlayer,ArchiveMediaDetailsEpInfoCardWatched } 
+= nodeRequire('./js/Mainpage_Modules/MainpageArchiveDetailsSelectandPlay.js'); //?引入bgm.res主界面的作品详情页章节选择播放函数封装
 
 //! 媒体库-作品详情页条目用户收藏更新
 function ArchiveMediaDetailsUserFavouriteUpdate(bgmID){
