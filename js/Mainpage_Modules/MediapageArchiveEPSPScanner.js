@@ -4,11 +4,18 @@
  * @description bgm.res主界面的EP\SP章节扫描模块
  */
 
+function naturalSort(a, b) {
+  return a.localeCompare(b, undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  });
+}
+
 //! 媒体库-作品ep扫描模块
 exports.LocalWorkEpsScanModule = function(MediaID){
   if(fs.existsSync(store.get("WorkSaveNo"+MediaID+".URL"))){       // *当目标媒体库目录存在
     // OKErrorStreamer("MessageOn","<div class='LoadingCircle'>正在扫描EP信息，请稍后</div>",0);
-    var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")); //扫描目标媒体库目录下EP
+    var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")).sort(naturalSort); //扫描目标媒体库目录下EP
     console.log(TargetWorkEP.length);
     //读取当前epsp数目,如果读取不到按0计算
     let EPNum = store.has("WorkSaveNo"+MediaID+".EPTrueNum") ? store.get("WorkSaveNo"+MediaID+".EPTrueNum") : 0;
