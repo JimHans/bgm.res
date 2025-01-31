@@ -1028,6 +1028,7 @@ function ArchiveMediaDetailsPage(MediaID){
             for(let tempi = 1;tempi<=SyncEPNum;tempi++){
               if(data.data[tempi-1].type==2){
                 store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+tempi+'.Condition',"Watched")
+                document.getElementById('ArchivePageContentDetailsEpisodeNo'+tempi).style.backgroundColor=SettingsColorPicker(0.4); //' rgb(240 145 153)'
                 document.getElementById('ArchivePageContentDetailsEpisodeNo'+tempi).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
               if(data.data[tempi-1].type==0&&sysdata.get("UserData.userpageProgressSyncOptions")=='Cloud'){
                 store.set("WorkSaveNo"+MediaID+".EPDetails.EP"+tempi+'.Condition',"Unwatched")}
@@ -1047,7 +1048,9 @@ function ArchiveMediaDetailsPage(MediaID){
             }
             //再次检测是否已播放过
             for(let TempCounter = 1;TempCounter<=store.get("WorkSaveNo"+MediaID+".EPTrueNum");TempCounter++){
-              if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched'){document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
+              if(store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+'.Condition')=='Watched')
+                {document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.backgroundColor=SettingsColorPicker(0.4); //' rgb(240 145 153)'
+                document.getElementById('ArchivePageContentDetailsEpisodeNo'+TempCounter).style.boxShadow='0px 0px 0px 2px '+SettingsColorPicker(1)} //' rgb(240 145 153)'
             } 
             ArchivePageMediaProgressCalc(MediaID);OKErrorStreamer("OK","加载作品信息完成,与云端同步成功",0);
             }

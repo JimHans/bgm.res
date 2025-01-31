@@ -303,8 +303,8 @@ function userpageShow () {
   var setheight = screenElectron.getPrimaryDisplay().workAreaSize.height;
   //新建窗口
   userpage = new BrowserWindow({
-    width: parseInt(setheight*0.4),
-    height: parseInt(setheight*0.75),
+    width: Math.max(parseInt(setheight*0.4),470),
+    height: Math.max(parseInt(setheight*0.75),320),
     minWidth: 470,
     minHeight: 320,
     skipTaskbar: false,//显示在任务栏
