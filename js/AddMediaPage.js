@@ -128,10 +128,17 @@ function triggerFolderURL(event) {
     document.getElementsByName('checkboxA')[1].value = FolderPath.substr(0,FolderPath.length-SubFolderPath.length-1);
 }
 
+function naturalSort(a, b) {
+    return a.localeCompare(b, undefined, {
+        numeric: true,
+        sensitivity: 'base'
+    });
+}
+
 //! 作品ep扫描模块
 function LocalWorkEpsScanModule(MediaID){
     if(fs.existsSync(store.get("WorkSaveNo"+MediaID+".URL"))){       // *当目标媒体库目录存在
-        var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")); //扫描目标媒体库目录下EP
+        var TargetWorkEP = fs.readdirSync(store.get("WorkSaveNo"+MediaID+".URL")).sort(naturalSort); //扫描目标媒体库目录下EP
         console.log(TargetWorkEP.length);
         var RealWorkEP = 0;
         for (var TempCounter = 0;TempCounter!=TargetWorkEP.length;TempCounter++){
