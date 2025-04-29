@@ -508,7 +508,7 @@ user-select: none;
     /* left: 18%; */
     left:max(18%,220px);
     right:2%;
-    z-index: 12;
+    z-index: 14;
     -webkit-app-region: no-drag;
     /* border: 1px solid rgb(64, 64, 64); */
     backdrop-filter: blur(30px);
@@ -603,6 +603,44 @@ user-select: none;
 /*悬停后背景色变化,高斯模糊背景*/
 .ArchivePageQuickConfig:hover {
     background: #00000080;
+}
+
+.ArchivePageMediaSortList{
+    position: absolute;
+    right: 70%;
+    font-family: 'bgmUIHeavy';
+    text-align: right;
+    top: 60px;
+    width: 90px;
+    background-color: rgb(31 31 31 / 95%);
+    border-radius: 7px;
+    display: none;
+    grid-template-columns: auto;
+    grid-auto-rows: 30px;
+    height: 0px;
+    align-content: space-evenly;
+    justify-items: center;
+    align-items: center;
+    gap: 3px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    transition: all .25s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    overflow: hidden;
+}
+
+.ArchivePageMediaSortListContent{
+    display: flex;
+    align-items: center;  /* 垂直居中 */
+    justify-content: space-around;
+    position: relative;
+    width: 90%;
+    height: 100%;
+    text-align: center;
+    border-radius: 7px;
+    transition: background-color .25s;
+}
+.ArchivePageMediaSortListContent:hover {
+    background-color: #56565680;
 }
 
 /* 媒体库内容容器 */
@@ -1122,6 +1160,21 @@ user-select: none;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     border-radius: 0px;
     background: rgba(59, 59, 59, 0.744);
+}
+
+/* 作品详情页章节滚动页面样式 */
+.ArchivePageContentDetailsEpisodePage {
+    flex: 0 0 100%; /* Each page takes full width */
+    box-sizing: border-box;
+    padding: 20px; /* Keep original padding */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); /* Keep original columns */
+    grid-auto-rows: 55px; /* Keep original row height */
+    grid-gap: 30px 25px; /* Keep original gaps */
+    /* Calculate height for 2 rows + 1 row gap + top/bottom padding */
+    height: calc(2 * 55px + 30px + 2 * 20px);
+    overflow: hidden; /* Prevent content overflow within a page */
+    scroll-snap-align: start; /* Align pages */
 }
 
 /* 作品标签tag样式 */

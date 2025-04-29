@@ -4,7 +4,20 @@
  * @description bgm.res新增媒体编辑界面渲染js
  */
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
-const store = new Store();                                            //?创建electron-store存储资源库对象
+// const store = new Store();                                            //?创建electron-store存储资源库对象
+
+//! NeDB数据库初始化
+const path = nodeRequire("path");                                     //?引入path
+const appDataPath = process.env.APPDATA || path.join(process.env.HOME, 'Library', 'Application Support'); // 获取appdata
+const Datastore = nodeRequire('nedb');
+const db = new Datastore({
+  filename: path.join(path.join(appDataPath, 'bgm.res'), 'MediaData.db'),
+  autoload: true
+});
+const ElectronStoreAdapter = nodeRequire('../js/ElectronStore2NeDB.js');
+const store = new ElectronStoreAdapter();  // 创建自定义适配器实例
+//! NeDB数据库初始化OVER
+
 const ipc = nodeRequire('electron').ipcRenderer;                      //?引入ipcRenderer进程通信api
 const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
 const { dialog } = nodeRequire('@electron/remote')                    //?引入remote.dialog 对话框弹出api
@@ -127,6 +140,17 @@ function triggerFolderURL(event) {
     let FolderPath = document.getElementById('AddMediaPageURL').files[0].path.replaceAll('\\','/')
     document.getElementsByName('checkboxA')[1].value = FolderPath.substr(0,FolderPath.length-SubFolderPath.length-1);
 }
+// !获取媒体文件夹路径(NEW)
+function selectFolder() {
+    dialog.showOpenDialog({
+        properties: ['openDirectory']
+    }).then(result => {
+        if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
+            // 将选中的文件夹路径赋值给对应的 input 框
+            document.getElementsByName('checkboxA')[1].value = result.filePaths[0];
+        }
+    }).catch(err => console.error(err));
+}
 
 function naturalSort(a, b) {
     return a.localeCompare(b, undefined, {
@@ -188,8 +212,9 @@ function submitA(){
 
     OKErrorStreamer('MessageOff','新作品添加完成！',0);
     OKErrorStreamer('OK','新作品添加完成！',0);
+    setTimeout(function(){
     ipc.send('MainWindow','RefreshArchivePage'+WorkTotalNumberNew);
-    ipc.send('AddMediaPage','Close');
+    ipc.send('AddMediaPage','Close');},100);
     }
     else {OKErrorStreamer('Error','作品信息不完整！',0);}
 }

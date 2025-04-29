@@ -9,13 +9,27 @@ const fs = nodeRequire('fs');                                         //?使用n
 const { dialog } = nodeRequire('@electron/remote')                    //?引入remote.dialog 对话框弹出api
 // 额外引入模块
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
-const store = new Store();                                            //?创建electron-store存储资源库对象
+// const store = new Store();                                            //?创建electron-store存储资源库对象
+
+//! NeDB数据库初始化
+const path = nodeRequire("path");                                     //?引入path
+const appDataPath = process.env.APPDATA || path.join(process.env.HOME, 'Library', 'Application Support'); // 获取appdata
+const Datastore = nodeRequire('nedb');
+const db = new Datastore({
+    filename: path.join(path.join(appDataPath, 'bgm.res'), 'MediaData.db'),
+    autoload: false
+});
+const ElectronStoreAdapter = nodeRequire('../js/ElectronStore2NeDB.js');
+const store = new ElectronStoreAdapter();  // 创建自定义适配器实例
+//! NeDB数据库初始化OVER
+
 let SysdataOption={
     name:"sysdata",//文件名称,默认 config
     fileExtension:"json",//文件后缀,默认json
 }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
 var MediaID = 0;var MediaSettingsSPNumber = 1;
-ipc.on('data', (e,arg) => {MediaID = arg;console.log(MediaID);MediaPageLoad(MediaID);});
+ipc.on('data', (e,arg) => {MediaID = arg;console.log(MediaID);store.update().then(() => {MediaPageLoad(MediaID);}).catch(err => {
+    console.error('更新缓存时出错:', err);});});
 //引入各子页面初始化模组
 const { OKErrorStreamer } = nodeRequire('../js/Mainpage_Modules/MainpageToaster.js'); //?引入bgm.res主界面的通知toast函数封装
 
@@ -189,7 +203,8 @@ function submitA(){
     document.getElementById("Title").innerText=MediaName+'-作品编辑';
     document.getElementById("PageTitle").innerText=MediaName+'-作品编辑';
     OKErrorStreamer("OK","作品信息设置完成",0,"..");
-    ipc.send('MainWindow','RefreshArchivePage'+MediaID);
+    setTimeout(function() {ipc.send('MainWindow','RefreshArchivePage'+MediaID);},200);
+    // ipc.send('MainWindow','RefreshArchivePage'+MediaID);
     // ipc.send('MainWindow','Refresh');
 }
 
@@ -208,7 +223,7 @@ function submitB(){
     }
     OKErrorStreamer("OK","作品信息设置完成",0,"..");
     MediaPageLoad(MediaID);
-    ipc.send('MainWindow','RefreshArchivePage'+MediaID);
+    setTimeout(function() {ipc.send('MainWindow','RefreshArchivePage'+MediaID);} ,200);
     // ipc.send('MainWindow','Refresh');
 }
 
@@ -228,7 +243,7 @@ if(result == 1){store.set("WorkSaveNo"+WorkID+".ExistCondition",'Deleted');
     sysdata.set("Settings.checkboxC.LocalStorageMediaBaseDeleteNumber",MediaBaseDeleteNumber+1);
     localStorage.setItem('LocalStorageMediaBaseDeleteNumber',MediaBaseDeleteNumber+1);
     // ArchivePageInit();
-    ipc.send('MainWindow','InitArchivePage');
+    setTimeout(function() {ipc.send('MainWindow','InitArchivePage');},100);
     OKErrorStreamer("OK","作品已从数据库删除，窗口将于1s后关闭",0,"..");
     setTimeout(function() {window.close();}, 1000);
 }

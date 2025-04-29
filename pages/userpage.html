@@ -94,7 +94,7 @@
 
                 <div class="Winui3brickContainer">
                     <svg t="1678293876255" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3579" width="20" height="20" style="margin-right: 10px;margin-left:5px"><path d="M596.8 627.2c-17.6 27.2-57.6 40-89.6 35.2 4.8-9.6 9.6-17.6 9.6-27.2 0-27.2-17.6-44.8-44.8-44.8h-80c-27.2 0-52.8 22.4-52.8 52.8v75.2c0 27.2 17.6 44.8 44.8 44.8 22.4 0 44.8-17.6 44.8-44.8 27.2 17.6 62.4 30.4 97.6 30.4 57.6 0 112-27.2 147.2-75.2 12.8-22.4 9.6-49.6-12.8-62.4s-51.2-6.4-64 16zM649.6 364.8c-12.8 0-27.2 9.6-35.2 17.6-30.4-22.4-67.2-35.2-102.4-35.2-67.2 0-124.8 35.2-155.2 92.8-12.8 22.4-4.8 49.6 17.6 62.4 4.8 4.8 12.8 4.8 22.4 4.8 17.6 0 30.4-9.6 40-22.4 17.6-30.4 44.8-49.6 75.2-49.6 17.6 0 35.2 4.8 49.6 12.8-22.4 0-44.8 22.4-44.8 44.8 0 27.2 17.6 44.8 44.8 44.8h80c27.2 0 52.8-22.4 52.8-52.8v-75.2c0-27.2-17.6-44.8-44.8-44.8z" p-id="3580" fill="#ffffff"></path><path d="M939.2 369.6C894.4 320 832 284.8 766.4 272c-35.2-57.6-92.8-102.4-155.2-124.8-30.4-12.8-62.4-17.6-97.6-17.6-160 0-294.4 124.8-302.4 280C89.6 427.2 0 529.6 0 649.6 0 784 112 894.4 244.8 894.4h462.4C881.6 894.4 1024 752 1024 579.2c0-76.8-30.4-152-84.8-209.6zM704 809.6H240c-89.6 0-155.2-67.2-155.2-155.2s72-155.2 155.2-155.2h52.8v-62.4c0-120 97.6-217.6 217.6-217.6 27.2 0 49.6 4.8 72 12.8 49.6 17.6 92.8 52.8 120 102.4l12.8 22.4 22.4 4.8c52.8 4.8 107.2 30.4 142.4 72 40 44.8 62.4 97.6 62.4 155.2-8 118.4-110.4 220.8-238.4 220.8z" p-id="3581" fill="#ffffff"></path></svg>
-                    进度同步选项
+                    <div>进度同步选项<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">要了解每个同步模式的细节，请<a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;text-decoration: underline;" onclick="shell.openExternal('https://github.com/JimHans/bgm.res/wiki/%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B')">查阅Wiki</a></a></div>
                     <select class="Winui3selectMenu" id="userpageProgressSyncOptions" onchange="console.log(document.getElementById('userpageProgressSyncOptions').value);sysdata.set('UserData.userpageProgressSyncOptions',document.getElementById('userpageProgressSyncOptions').value);">
                         <option value="Cloud">云端优先</option>
                         <option value="Local">本地优先</option>
@@ -102,6 +102,9 @@
                         <option value="Disabled">关闭同步</option>
                     </select>
                 </div>
+
+                <div class="Winui3brickContainer"><div>启用主页媒体进度自动更新<br><a class="Winui3brickSubtitle" style="font-size: 13px;margin-top:2px;">此功能需要首先开启进度同步</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" id="EnableTitleProgressUpdate" onchange="
+                sysdata.set('UserData.EnableTitleProgressUpdate',document.getElementById('EnableTitleProgressUpdate').checked)"/><div class="Winui3slider"></div></label></div>
 
                 <div class="Winui3brickContainer" style="height: 60px;"><div>退出登录<br><a class="Winui3brickSubtitle" style="font-size: 13px;color: #999999;"> 退出当前账户，并清除token记录</a></div>
                 <button type="button" value="登出"  class="Winui3button_red" style="width:120px" onclick="UserpageLogout();">登出</button>

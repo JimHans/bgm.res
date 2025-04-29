@@ -4,7 +4,7 @@
  * @description bgm.res用户信息界面渲染js
  */
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
-const store = new Store();                                            //?创建electron-store存储资源库对象
+// const store = new Store();                                            //?创建electron-store存储资源库对象
 const ipc = nodeRequire('electron').ipcRenderer;
 const {shell, ipcRenderer, nativeTheme} = nodeRequire('electron');
 const fs = nodeRequire('fs');                                         //?使用nodejs fs文件操作库
@@ -193,4 +193,7 @@ window.onload = function () {
     customcolorstyle.appendChild(customchangeText);//把样式添加到style标签里
     document.body.appendChild(customcolorstyle);//把内联样式表添加到html中    
     }
+
+    //初始化 启用主页媒体进度自动更新状态
+    document.getElementById("EnableTitleProgressUpdate").checked = sysdata.get("UserData.EnableTitleProgressUpdate") == true ? true : false;
 }

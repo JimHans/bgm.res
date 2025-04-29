@@ -26,7 +26,7 @@
 			"LocalStorageSystemOpenMicaMode": false,
 			"LocalStorageSystemOpenLiveBackground": false,
 			"LocalStorageToggleSimpleHomePage": false,
-			"LocalStorageSystemOpenSpeedMode": false,
+			"LocalStorageSystemOpenSpeedMode": false
 		},
 		"checkboxC": {
 			"LocalStorageMediaShowOldSettingPage": false,
@@ -47,11 +47,14 @@
 			"LocalStorageRecentViewLocalID": null,
 			"LocalStorageMediaBaseNumber": null,
 			"LocalStorageMediaBaseDeleteNumber": null,
-			"OOBE": false
+			"OOBE": false,
+			"LocalStorageMediaSortType": ["WorkSaveNo", "asc"],
+			"LocalStorageArchiveTabPos": "Archive"
 		}
 	},
 	"UserData": {
 		"UserToken": null,
-		"userpageProgressSyncOptions": "Disabled"
+		"userpageProgressSyncOptions": "Disabled",
+		"EnableTitleProgressUpdate": false
 	}
 }

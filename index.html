@@ -54,13 +54,13 @@
             <div class="hider" onclick="Hider()"></div> 不需要的自定义container-->
         </div>
         <div class="FloatBar"> <!--TODO 胶囊菜单-->
-            <div id="Home" class="BarBrick" style="/*top:8%; border: 3px solid rgb(240 145 153) rgb(66, 66, 66);*/margin-top: 15%;margin-bottom: 10px;" onclick="FloatBarAction('Home')" title="主页"><img id="HomeIcon" style="height: 25px;margin-right:5%;" src="./assets/Home.svg">&nbsp;首页
+            <div id="Home" class="BarBrick" style="/*top:8%; border: 3px solid rgb(240 145 153) rgb(66, 66, 66);*/margin-top: 15%;margin-bottom: 10px;font-size: 17px;" onclick="FloatBarAction('Home')" title="主页"><img id="HomeIcon" style="height: 25px;margin-right:5%;" src="./assets/Home.svg">&nbsp;首页
             </div>
-            <div id="Archive" class="BarBrick" style="/*top:31%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;" onclick="FloatBarAction('Archive')" title="媒体库"><img id="ArchiveIcon" style="height: 25px;margin-right:5%;" src="./assets/Archive.svg">&nbsp;媒体
+            <div id="Archive" class="BarBrick" style="/*top:31%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;font-size: 17px;" onclick="FloatBarAction('Archive')" title="媒体库"><img id="ArchiveIcon" style="height: 25px;margin-right:5%;" src="./assets/Archive.svg">&nbsp;媒体
             </div>
-            <div id="Torrnet" class="BarBrick" style="/*top:54%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;" onclick="FloatBarAction('Torrnet')" title="做种管理"><img id="TorrentIcon" style="height: 25px;margin-right:5%;" src="./assets/qbittorrent.svg">&nbsp;做种
+            <div id="Torrnet" class="BarBrick" style="/*top:54%;margin-top: 20%*/margin-top: 5px;margin-bottom: 10px;font-size: 17px;" onclick="FloatBarAction('Torrnet')" title="做种管理"><img id="TorrentIcon" style="height: 25px;margin-right:5%;" src="./assets/qbittorrent.svg">&nbsp;做种
             </div>
-            <div id="Settings" class="BarBrick" style="/*top:77%;margin-bottom: 25%;*/margin-top: 5px;" onclick="FloatBarAction('Settings')" title="设置"><img id="SettingsIcon" style="height: 25px;margin-right:5%;" src="./assets/Settings.svg">&nbsp;设置
+            <div id="Settings" class="BarBrick" style="/*top:77%;margin-bottom: 25%;*/margin-top: 5px;font-size: 17px;" onclick="FloatBarAction('Settings')" title="设置"><img id="SettingsIcon" style="height: 25px;margin-right:5%;" src="./assets/Settings.svg">&nbsp;设置
             </div>
             <div class="BarBrick" style="margin-left: 0px;margin-right: 0px;border: 0px solid rgb(66, 66, 66);height:80px;margin-top: auto;box-shadow: 0 0 0 0;margin-bottom:0px;padding: unset;justify-content: center;padding-left: 8px;padding-right: 8px;border-radius:15px" title="我" onclick="ipcRenderer.send('userpage','Open');">
                 <div class="avatar" id="UserCard"></div>
@@ -78,7 +78,8 @@
             <div class="RecentViewProgressContainer">
                 <div class="RecentViewProgress" style="position: relative;left: 0;" title="上次观看"><img src='./assets/RecentEP.svg' alt='SVG image' style='height:3.5vmin;margin-right:10px' /><div id="RecentViewProgress" style="overflow: hidden;
                     text-overflow: ellipsis;white-space: nowrap;">上次看到：读取中...</div></div> <!--TODO首页最近观看-上次进度-->
-                <div class="RecentViewProgress" style="width: auto;aspect-ratio: 1;left: auto;position: relative;margin-left: 20px;text-align: center;" title="作品详情" onclick="FloatBarAction('Archive');setTimeout(function(){ArchiveMediaDetailsPage(sysdata.get('Settings.checkboxC.LocalStorageRecentViewLocalID'))},50)" ><img src='./assets/details.svg' alt='SVG image' style='height:5vmin;'/></div> <!--TODO首页最近观看-详情-->
+                <div class="RecentViewProgress" style="width: auto;aspect-ratio: 1;left: auto;position: relative;margin-left: 20px;text-align: center;" title="作品详情" onclick="FloatBarAction('Archive');setTimeout(function(){store.convertWorkSaveNo('WorkSaveNo'+sysdata.get('Settings.checkboxC.LocalStorageRecentViewLocalID'))
+                .then(currentId => {ArchiveMediaDetailsPage(currentId.replace(/[^0-9]/g, ''))})},50)" ><img src='./assets/details.svg' alt='SVG image' style='height:5vmin;'/></div> <!--TODO首页最近观看-详情-->
             </div>
             <div id="RecentViewDetail" class="RecentViewDetail">简介加载中...</div> <!--TODO首页最近观看-简介部分-->
             <div id="RecentViewRating" class="RecentViewRating"> <!--TODO首页最近观看-评分部分-->
@@ -113,7 +114,19 @@
             <div id="ArchivePageSearchSuggestion" class="ArchivePageSearchSuggestion"></div>
             <div class="ArchivePageHeader">
                 <div class="RecentViewName" style="height:auto;/*left:2%;*/left:15px;top:4%;right:auto;font-size: 23px;/*font-size: 5vmin;*/animation: Ascent-Fonts .7s cubic-bezier(0,0,0.2,1);animation:none">媒体库</div>
-                <div id="ArchivePageMediaBanList" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:70%;width: 40px;height: 64%;top: 18%;margin-right:20px" title="已屏蔽作品" onclick="ipcRenderer.send('RecycleBin','Open');"><img src="./assets/trashcan.svg" alt="SyncMediaInfo" style="width:50%"/></div>
+                <div id="ArchivePageMediaBanList" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:70%;width: 40px;height: 64%;top: 18%;margin-right:80px" title="已屏蔽作品" onclick="ipcRenderer.send('RecycleBin','Open');"><img src="./assets/trashcan.svg" alt="MediaBan" style="width:50%"/></div>
+                <div id="ArchivePageMediaSort" class="Winui3setTabBrick" style="background-color:#1f1f1f;right:70%;width: 40px;height: 64%;top: 18%;margin-right:25px" title="排序" onclick="ArchivePageMediaSort('Switch')"><img src="./assets/sort.svg" alt="MediaSort" style="width:60%"/></div>
+                <div id="ArchivePageMediaSortList" class="ArchivePageMediaSortList">
+                    <div class="ArchivePageMediaSortListContent" style="background-color: #00000066;">
+                        <div class="ArchivePageMediaSortListContent" id="ArchivePageMediaSortListAsc" title="正序" onclick="ArchivePageMediaSort('AscOrder')"><img src="./assets/sortUp.svg" style="height: 60%;"/></div>
+                        <div class="ArchivePageMediaSortListContent" id="ArchivePageMediaSortListDesc" title="倒序" onclick="ArchivePageMediaSort('DescOrder')"><img src="./assets/sortDown.svg" style="height: 60%;"/></div>
+                    </div>
+                    <div class="ArchivePageMediaSortListContent" onclick="ArchivePageMediaSort('Name')"><img src="./assets/font-colors.svg" style="height: 60%;"/>名称</div>
+                    <div class="ArchivePageMediaSortListContent" onclick="ArchivePageMediaSort('Score')"><img src="./assets/score.svg" style="height: 60%;"/>评分</div>
+                    <div class="ArchivePageMediaSortListContent" onclick="ArchivePageMediaSort('Year')"><img src="./assets/Timeline.svg" style="height: 60%;"/>年代</div>
+                    <div class="ArchivePageMediaSortListContent" onclick="ArchivePageMediaSort('Type')"><img src="./assets/类别.svg" style="height: 60%;"/>类别</div>
+                    <div class="ArchivePageMediaSortListContent" onclick="ArchivePageMediaSort('WorkSaveNo')"><img src="./assets/default.svg" style="height: 60%;"/>默认</div>
+                </div>
                 <div class="ArchivePageSearchButton" onclick="ArchivePageMediaSearch(1);"><img src="./assets/search-right.svg" alt="ScanMediaChange" style="width:55%"/></div>
                 <input class="Winui3inputText" type="text" autocomplete="off" id="ArchivePageSearch" placeholder="&nbsp;&nbsp;请输入搜索内容" style="width: 40%;right: 30%;top: 10px;height: 34px;background-color: #2a2a2a;z-index:50;" onkeydown="ArchivePageMediaSearch(event.keyCode);" required>
                  <!-- *搜索作品 -->
@@ -153,9 +166,9 @@
             </div>
 
             <div id="ArchivePageMainContent" style="width: 400%;position: absolute;top: 85px;bottom: 2%;left: 0;transform: translateX(0);transition: transform 0.5s cubic-bezier(0, 1.08, 0.58, 1)">
-            <div id="ArchivePageRecentPlayContent" class="ArchivePageContent" style="top: 0;bottom: 0;left: max(4.5%,220px);right: 75.5%;display: flex;justify-content: center;align-items: center;flex-direction: column;"> 
-                <img src="./assets/construction.svg" style="width: 150px;"/>
-                <p style="font-family: 'bgmUIHeavy';font-size: 30px;">施工中</p> 
+            <div id="ArchivePageRecentPlayContent" class="ArchivePageContent" style="top: 0;bottom: 0;left: max(4.5%,220px);right: 75.5%;
+            display: grid;grid-gap: 25px;grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));grid-auto-rows: 290px;grid-auto-flow: dense;row-gap: 40px;padding: 30px;padding-top:70px;"> 
+            
             </div> <!-- *最近播放 --> 
             <div id="ArchivePageCollectionContent" class="ArchivePageContent" style="top: 0;bottom: 0;left: max(29.5%, calc(25% + 220px));right: 50.5%;display: flex;justify-content: center;align-items: center;flex-direction: column;">
                 <img src="./assets/construction2.svg" style="width: 150px;"/>
@@ -314,14 +327,19 @@
                         type: 'GET',timeout : 2000,success: function(data){document.getElementById('ArchivePageContentDetailsDetailsBlock').innerText='';for(let Temp=0;Temp!=data.sentences.length;Temp++){$('#ArchivePageContentDetailsDetailsBlock').append(data.sentences[Temp].trans+'<br/>')}}}).done(function() { OKErrorStreamer('MessageOff','',0);OKErrorStreamer('OK','翻译完成',0);}).fail(function(){OKErrorStreamer('MessageOff','',0);OKErrorStreamer('Error','无法连接Google翻译',0);})"><svg t="1674619588292" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4393" width="30" height="30"><path d="M128 42.666667C80.64 42.666667 42.666667 80.64 42.666667 128L42.666667 725.333333C42.666667 772.693333 80.64 810.666667 128 810.666667L640 810.666667 384 42.666667 128 42.666667M526.506667 213.333333 554.666667 298.666667 896 298.666667 896 896 528.213333 896 555.946667 981.333333 896 981.333333C943.36 981.333333 981.333333 943.36 981.333333 896L981.333333 298.666667C981.333333 251.306667 943.36 213.333333 896 213.333333L526.506667 213.333333M301.226667 252.16C348.16 252.16 387.84 269.226667 417.28 298.666667L369.493333 342.613333C357.12 330.24 335.786667 316.16 301.226667 316.16 241.92 316.16 194.56 364.8 194.56 424.106667 194.56 483.413333 241.92 533.333333 301.226667 533.333333 370.346667 533.333333 395.093333 483.413333 400.213333 458.666667L301.226667 458.666667 301.226667 400.213333 464.213333 400.213333C466.346667 410.026667 466.773333 416.853333 466.773333 429.226667 466.773333 528.213333 400.213333 597.333333 301.226667 597.333333 205.226667 597.333333 128 520.106667 128 424.106667 128 327.68 205.226667 252.16 301.226667 252.16M682.666667 426.666667 682.666667 469.333333 611.84 469.333333 625.493333 512 768 512C756.48 538.026667 752.213333 561.92 717.226667 602.88 700.16 582.826667 686.506667 565.333333 682.666667 554.666667L640 554.666667C645.12 573.013333 666.453333 601.6 692.053333 630.613333 686.506667 636.16 678.826667 643.413333 672 649.386667L683.946667 685.226667C694.613333 675.84 705.28 666.026667 715.946667 656.213333 759.466667 701.866667 805.546667 744.106667 805.546667 744.106667L829.44 718.506667C829.44 718.506667 783.786667 673.706667 742.826667 629.333333 769.706667 599.466667 793.6 563.2 810.666667 512L853.333333 512 853.333333 469.333333 725.333333 469.333333 725.333333 426.666667 682.666667 426.666667Z" p-id="4394" fill="#e6e6e6"></path></svg></div></div>
                     <div id="ArchivePageContentDetailsDetailsBlock" style="margin:10px"></div></div> 
                 <!--作品章节-->
-                <div id='ArchivePageContentDetailsEpisodeBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;height:40%;margin-top:2%;left:max(18%,195px);right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;color:#d0d0d0"> <!--top:84%;-->
+                <div id='ArchivePageContentDetailsEpisodeBlockContainer' class="RecentViewDetail" style="position:relative;width: 76%;/*height:40%;*/height:auto;margin-top:2%;left:max(18%,195px);right:4%;bottom:auto;margin-bottom:15px;padding: 1.1%;padding-bottom:2%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;color:#d0d0d0"> <!--top:84%;-->
                     <div class='RecentViewName' style='top:5px;font-size:3vw;font-size:min(3vw,35px);left: 1%;position: relative;height:auto'>章节</div>
                     <!-- <div class='RecentViewName' style='top:10px;font-size:3vw;left: 1%;position: relative;height:auto'>本篇</div> -->
                     <!--EP分割线--><div style="position:relative;height: 3px;margin: 10px;border-radius:5px;background:#ffffff1f;margin-top: 30px;"></div>
-                    <!--EP填充容器--><div id="ArchivePageContentDetailsEpisodeBlock" style="position:relative;width:auto;margin-top:20px;display: grid;grid-gap: 25px;grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));grid-auto-rows: 55px;grid-auto-flow: dense;row-gap: 30px;padding: 20px;"></div>
-                    <!--EP/SP分割线--><div style="position:relative;height: 3px;margin: 10px;border-radius:5px;background:#ffffff1f"></div>
-                    <!--SP填充容器--><div id="ArchivePageContentDetailsSpecialEpisodeBlock" style="position:relative;width:auto;margin-top:20px;display: grid;grid-gap: 25px;grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));grid-auto-rows: 55px;grid-auto-flow: dense;row-gap: 30px;padding: 20px;"></div>
-                    <div id="ArchivePageContentDetailsEpisodeBlockUnfoldContainer" style="position:absolute;height:20%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #00000098);transition: all .5s ease;    transform: scale(1.02);">
+                    <div style="position: relative;">
+                        <!-- 章节分页的外层滚动容器 -->
+                        <div id="ArchivePageContentDetailsEpisodePaginationWrapper" style="display: flex; overflow-x: scroll; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none;padding-bottom:20px">
+                        <!-- 页面将动态添加到这里 --></div>
+                    </div>
+                    <!--EP填充容器--><div id="ArchivePageContentDetailsEpisodeBlock" style="position:relative;width:auto;margin-top:20px;/*display: grid;*/grid-gap: 25px;grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));grid-auto-rows: 55px;grid-auto-flow: dense;row-gap: 30px;padding: 20px;display:none"></div>
+                    <!--EP/SP分割线--><!--<div style="position:relative;height: 3px;margin: 10px;border-radius:5px;background:#ffffff1f;margin-top:25px"></div>-->
+                    <!--SP填充容器--><div id="ArchivePageContentDetailsSpecialEpisodeBlock" style="position:relative;width:auto;margin-top:20px;/*display: grid;*/grid-gap: 25px;grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));grid-auto-rows: 55px;grid-auto-flow: dense;row-gap: 30px;padding: 20px;display:none"></div>
+                    <div id="ArchivePageContentDetailsEpisodeBlockUnfoldContainer" style="position:absolute;height:20%;width:100%;bottom:0%;left:0%;background:linear-gradient(180deg, transparent, #00000098);transition: all .5s ease;    transform: scale(1.02);display:none">
                     <svg id='ArchivePageContentDetailsEpisodeBlockUnfolder' t="1671722573107" class="icon" viewBox="0 0 1026 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2680" data-darkreader-inline-fill="" style="position: absolute;bottom: 5px;left: 0;right: 0;width: 28px;margin:auto;transition: all .6s ease;" onclick="ArchivePageContentDetailsEpisodeBlockUnfoldFunc()"><path d="M857.088 224.256q28.672-28.672 69.12-28.672t69.12 28.672q29.696 28.672 29.696 68.608t-29.696 68.608l-382.976 380.928q-12.288 14.336-30.72 19.968t-38.912 4.608-40.448-8.704-34.304-22.016l-376.832-374.784q-29.696-28.672-29.696-68.608t29.696-68.608q14.336-14.336 32.256-21.504t36.864-7.168 37.376 7.168 32.768 21.504l313.344 309.248z" p-id="2681" fill="#ccc"></path></svg></div>
                 </div>
                 <!--作品特典与相关条目-->
@@ -353,9 +371,9 @@
                     <div class='RecentViewName' style='top:5px;font-size:3vw;font-size:min(3vw,35px);left: 1%;position: relative;height: auto;'>制作人员</div><div id="ArchivePageContentDetailsPersonBlock" class="ArchivePageContentDetailsPersonBlock"></div>
                 </div> 
                 <!--作品页页尾-->
-                <div class="RecentViewDetail" style="position:relative;width: 78%;height:65px;margin-top:1%;left:max(18%,195px);right:4%;bottom:auto;margin-bottom:3%;padding: 0%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;border:2px solid #ffffff1f" onclick="$('#ArchivePageContentDetails').animate({scrollTop: 0},300)" title="点击可以回顶部哦"> <!--top:84%;-->
+                <div class="RecentViewDetail" style="position:relative;width: 78%;height:65px;margin-top:1%;left:max(18%,195px);right:4%;bottom:auto;margin-bottom:3%;padding: 0%;-webkit-app-region:unset;backdrop-filter: blur(50px);background-color: rgba(0, 0, 0, 0.2);overflow: hidden;/*border:2px solid #ffffff1f*/" onclick="$('#ArchivePageContentDetails').animate({scrollTop: 0},300)" title="点击可以回顶部哦"> <!--top:84%;-->
                     <div id='ArchivePageContentLastCardHitokoto' class='RecentViewName' style='top:10px;font-size:20px;left: 1%;position: relative;height: auto;'>已经到底部啦~</div>
-                    <div id='ArchivePageContentLastCardHitokotoFrom' class='RecentViewName' style='bottom:8px;right:10px;font-size:15px;position: absolute;text-align: right;top:unset'></div>
+                    <div id='ArchivePageContentLastCardHitokotoFrom' class='RecentViewName' style='bottom:10px;right:15px;font-size:15px;position: absolute;text-align: right;top:unset'></div>
                     <div id='ArchivePageContentLastCardToTop' class='ArchivePageContentLastCardToTop'>↑ 回顶部 ↑</div>
                 </div>
                 <div id='ArchivePageContentLastCard' class="RecentViewDetail" style="position:relative;width: 78%;height:0px;margin-top:0%;left:max(18%,195px);right:4%;bottom:0px;margin-bottom:0%;padding: 0%;"></div>
@@ -366,7 +384,8 @@
                 </div><div class="RecentViewEpisodePlayCardBack" style='background-color:#00000080' id="RecentViewFriendRankCardBack" onclick="//document.getElementById('RecentViewFriendRankCard').style.display='none';document.getElementById('RecentViewFriendRankCardBack').style.display='none';"></div>
             </div><!-- *作品详情页 -->
         </div>
-        <div id="TorrnetPage" class="TorrnetPage"> <!--*做种管理页 -->
+        <div id="TorrnetPage" class="ArchivePage" style="top:0"> <!--*做种管理页 -->
+            <div id="TorrnetPageIndex" class="TorrnetPage" style="display: block;border:unset;box-shadow: 0 0 8px rgba(0, 0, 0, 0.664);"></div>
         </div>
         <div id="SettingsPage" class="SettingsPage"> <!--*设置页 -->
             <div class="Winui3setTab" id="SettingsPageSetTab" style="left:max(18%,220px)"> <!--设置tab-->
@@ -460,15 +479,15 @@
                     
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">高级功能</h2>
                     <div class="Winui3brickContainer"><!--开发人员选项--><svg t="1674187129738" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6119" width="22" height="22" style="margin-right: 10px;margin-left:5px"><path d="M896 806.08a32 32 0 0 1 64 0v73.92a48 48 0 0 1-48 48h-800A48 48 0 0 1 64 880v-736A48 48 0 0 1 112 96h800A48 48 0 0 1 960 144v166.144H128V864h768v-57.92z m0-559.936V160H128v86.144h768z" fill="#e6e6e6" p-id="6636"></path><path d="M641.92 405.056a32 32 0 0 1 60.16 21.888l-128 352a32 32 0 0 1-60.16-21.888l128-352zM776.192 469.408a32 32 0 0 1 47.616-42.816l126.432 140.64a32 32 0 0 1 0 42.784l-126.432 140.64a32 32 0 1 1-47.616-42.784l107.232-119.232-107.2-119.232zM438.24 469.408a32 32 0 1 0-47.584-42.816l-126.464 140.64a32 32 0 0 0 0 42.784l126.464 140.64a32 32 0 1 0 47.584-42.784l-107.2-119.232 107.2-119.232z" fill="#e6e6e6" p-id="6637"></path></svg>开发人员选项<label class="Winui3switch"><input class="input" type="checkbox" value="developerMode" id="checkboxSwitchDevMode" onchange="if(document.getElementById('checkboxSwitchDevMode').checked)ipcRenderer.send('dev','Open');"><div class="Winui3slider"></div></label></div>
-                    <div class="Winui3brickContainer"><div>恢复旧版设置<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式设置界面</a></div><button type="button" value="点击临时切换" class="Winui3button" onclick="document.getElementById('SettingsPageSetTab').style.display='none';document.getElementById('SettingsPageSetpageC').style.display='none';document.getElementById('SettingsPageOld').style.display='block';">点击临时切换</button></div>
+                    <!-- <div class="Winui3brickContainer"><div>恢复旧版设置<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式设置界面</a></div><button type="button" value="点击临时切换" class="Winui3button" onclick="document.getElementById('SettingsPageSetTab').style.display='none';document.getElementById('SettingsPageSetpageC').style.display='none';document.getElementById('SettingsPageOld').style.display='block';">点击临时切换</button></div> -->
                     <div class="Winui3brickContainer"><div>恢复旧版媒体编辑页面<br><a class="Winui3brickSubtitle" style="font-size: 13px;">恢复到开发版本的旧式媒体信息编辑界面</a></div><label class="Winui3switch"><input class="Winui3input" type="checkbox" name="checkboxC" value="showOldSettingPage" onchange='SettingsPageSaveConfig("checkboxC",0,"LocalStorageMediaShowOldSettingPage","checkbox")'/><div class="Winui3slider"></div></label></div>
                     <div class="Winui3brickContainer" style="background-color:#2b4f6c;line-height: 22px;height: auto;">若你的媒体库刮削成功率较低，你可以在此尝试自定义刮削时的屏蔽标签与屏蔽词。在此设定的屏蔽标签将匹配媒体文件夹名的任何括号内标签内容，并将整个括号及内容从文件夹名内移除；而屏蔽词会全局匹配文件夹名内符合匹配规则的文本，并将其移除。因此，请谨慎添加屏蔽词以免误伤作品标题。<!--<button type="button" value="点击打开" class="Winui3button" onclick="shell.openExternal('https://regex-vis.com/');" style="width:120px">了解正则表达式</button>--></div>
                     <div class="Winui3brickContainer"><div>自定义刮削器屏蔽标签<br><a class="Winui3brickSubtitle" style="font-size: 13px;">使用逗号分隔文本，中英文符号均可，匹配不区分大小写</a></div><input class="Winui3inputText" type="text" name="checkboxC" placeholder="修改适合你媒体库命名规范的屏蔽标签" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxC",1,"LocalStorageMediaScanExpression","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                     <div class="Winui3brickContainer"><div>自定义刮削器屏蔽词<br><a class="Winui3brickSubtitle" style="font-size: 13px;">使用逗号分隔文本，中英文符号均可，部分符号需转义字符方可生效</a></div><input class="Winui3inputText" type="text" name="checkboxC" placeholder="修改适合你媒体库命名规范的屏蔽关键词" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxC",2,"LocalStorageMediaScanExpressionSub","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
                 
                     <div class="Winui3brickContainer">打开设置配置文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer %APPDATA%\\bgm.res\\sysdata.json')">点击打开</button></div>
-                    <div class="Winui3brickContainer">打开媒体库数据文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer %APPDATA%\\bgm.res\\config.json')">点击打开</button></div>
-                    <div class="Winui3brickContainer">打开内置mpv配置文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer '+__dirname.slice(0,-9)+'\\mpv\\portable_config\\mpv.conf');console.log(__dirname.slice(0,-9))">点击打开</button></div>
+                    <div class="Winui3brickContainer">打开媒体库数据文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer %APPDATA%\\bgm.res\\MediaData.db')">点击打开</button></div>
+                    <div class="Winui3brickContainer">打开内置mpv配置文件<button type="button" value="点击打开" class="Winui3button" onclick="exec('explorer '+__dirname.slice(0,-9)+'\\app.asar.unpacked\\mpv\\portable_config\\mpv.conf');console.log(__dirname.slice(0,-9))">点击打开</button></div>
 
                     <h2 style="margin-top:15px;margin-bottom:15px;margin-left:16px;">数据库手动配置</h2>
                     <div class="Winui3brickContainer">设置继续观看作品bgmID<input class="Winui3inputText" type="text" name="checkboxC" placeholder="填写继续观看影片ID(bgmID)" style="right: 60px;" required><button type='button' value='保存' class='Winui3button' style='width:30px' onclick='SettingsPageSaveConfig("checkboxC",3,"LocalStorageRecentViewID","fillblank")'><svg t="1674212097751" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3806" width="20" height="20"><path d="M704 128H192c-35.2 0-64 28.8-64 64v640c0 35.2 28.8 64 64 64h640c35.2 0 64-28.8 64-64V320L704 128zM256 256h320v128H256V256z m256 512c-70.4 0-128-57.6-128-128s57.6-128 128-128 128 57.6 128 128-57.6 128-128 128z" p-id="3807" fill="#e6e6e6"></path></svg></button></div>
@@ -502,28 +521,28 @@
                 </div>
             </div>
 
-            <div id='SettingsPageOld' style="display: none;overflow-y: auto;position:absolute;height:100%;left:0;right:0;background-color:#00000098">
+            <!-- <div id='SettingsPageOld' style="display: none;overflow-y: auto;position:absolute;height:100%;left:0;right:0;background-color:#00000098">
             <div class="RecentViewName" style="left:20%;top:6%;font-size: 4vw;">🛠️设置页（旧版）</div>
             <div style="position:absolute;z-index:12;left:20%;top:21%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟继续观看影片ID:</div>
             <div class="boxBlank" style="top: 20%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看ID-Dev -->
-                <input type="text" id="LocalStorageRecentViewID" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewID')">
+                <!-- <input type="text" id="LocalStorageRecentViewID" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewID')">
             </div>
             <div style="position:absolute;z-index:12;left:20%;top:41%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟继续观看EPID:</div>
             <div class="boxBlank" style="top: 40%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看EPID-Dev -->
-                <input type="text" id="LocalStorageRecentViewEpisode" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewEpisode')">
+                <!-- <input type="text" id="LocalStorageRecentViewEpisode" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewEpisode')">
             </div>
             <div style="position:absolute;z-index:12;left:20%;top:61%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟继续观看-URL:</div>
             <div class="boxBlank" style="top: 60%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *继续观看URL-Dev -->
-                <input type="text" id="LocalStorageRecentViewURL" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewURL')">
+                <!-- <input type="text" id="LocalStorageRecentViewURL" autocomplete="off" class="TspInput" placeholder="请输入参数"  onkeydown="LocalSave(event.keyCode,'LocalStorageRecentViewURL')">
             </div>
             <div style="position:absolute;z-index:12;left:20%;top:81%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟媒体库扫描路径:</div>
             <div class="boxBlank" style="top: 80%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *媒体库URL -->
-                <input type="text" id="LocalStorageMediaBaseURL" autocomplete="off" class="TspInput" placeholder="请输入需要扫描的媒体库路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageMediaBaseURL')">
+                <!-- <input type="text" id="LocalStorageMediaBaseURL" autocomplete="off" class="TspInput" placeholder="请输入需要扫描的媒体库路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageMediaBaseURL')"> 
             </div>
             <div style="position:absolute;z-index:12;left:20%;top:101%;font-size:3vmin;font-family:'bgmUIHeavy';text-shadow:2px 3px 1px rgba(0, 0, 0, 0.5);"required>📟qBittorrnet远程路径:</div>
             <div class="boxBlank" style="top: 100%;left:45%;height:8%;right:7%;background-color:rgba(201, 225, 244, 0.212)"> <!-- *qBittorrnetURL -->
-                <input type="text" id="LocalStorageqBittorrnetURL" autocomplete="off" class="TspInput" placeholder="请输入qBittorrnet远程面板路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageqBittorrnetURL')">
-            </div>
+                <!-- <input type="text" id="LocalStorageqBittorrnetURL" autocomplete="off" class="TspInput" placeholder="请输入qBittorrnet远程面板路径"  onkeydown="LocalSave(event.keyCode,'LocalStorageqBittorrnetURL')">
+            </div>  -->
 
             <!-- *版本信息 -->
             <!-- <div style="bottom:1%;right:1%;position: fixed;text-align: center;z-index: 100;">
@@ -531,7 +550,7 @@
                 , Chromium <span id="chrome-version"></span>
                 , Electron <span id="electron-version"></span>
             </div> -->
-            </div>
+            <!-- </div> -->
         </div>
 
         <!--  *成功、失败横幅提示  -->
@@ -583,7 +602,7 @@
             setTimeout(() => {document.getElementById('ArchivePageContentDetailsBlur').style.height=(Math.min(document.getElementById('ArchivePageContentDetails').scrollHeight),(document.getElementById('ArchivePageContentLastCard').offsetTop)).toString()+'px';}, 300);    }
         ArchivePageContentDetailsEpisodeBlockUnfoldCounter+=1;
     }
-    ArchivePageContentDetailsEpisodeBlockUnfoldFunc();
+    // ArchivePageContentDetailsEpisodeBlockUnfoldFunc();
 
     var ArchivePageContentDetailsStaffBlockUnfoldCounter = 0;
     //作品详情制作信息卡片展开收回控制
@@ -662,15 +681,15 @@
 
 <script> //做种页面初始化模块
     if(sysdata.get("Settings.checkboxA.LocalStorageqBittorrnetURL")/*localStorage.getItem('LocalStorageqBittorrnetURL')*/){
-        document.getElementById('TorrnetPage').innerHTML="<webview id='qbitwebview' src='"+sysdata.get("Settings.checkboxA.LocalStorageqBittorrnetURL")/*localStorage.getItem('LocalStorageqBittorrnetURL')*/+"' style='width: 100%;height: 100%'></webview> "
+        document.getElementById('TorrnetPageIndex').innerHTML="<webview id='qbitwebview' src='"+sysdata.get("Settings.checkboxA.LocalStorageqBittorrnetURL")/*localStorage.getItem('LocalStorageqBittorrnetURL')*/+"' style='width: 100%;height: 100%'></webview> "
         const webview =document.getElementById('qbitwebview')
         
         webview.addEventListener('did-stop-loading', () => { 
-            if(!/qBittorrent/i.test(webview.getTitle())) {document.getElementById('TorrnetPage').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbitdisconnect.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
+            if(!/qBittorrent/i.test(webview.getTitle())) {document.getElementById('TorrnetPageIndex').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbitdisconnect.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
             "<div style='position:absolute;left: 10%;right: 10%;top: 55%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size: 4vmin;text-align: center;'>很抱歉，qBittorrnet Web UI暂时不可达</div>"+
             "<div style='position:absolute;left: 10%;right: 10%;top: 65%;bottom:20%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.3);font-size: 3vmin;text-align: center;'>请检查您的网络是否连接正常，或者是否填写了不正确的URL</div>"}
         })
-    } else {document.getElementById('TorrnetPage').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbittorrnet.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
+    } else {document.getElementById('TorrnetPageIndex').innerHTML="<div style='position:absolute;left: 10%;right: 10%;bottom:50%;width:128px;aspect-ratio:1;background:url(\"./assets/qbittorrnet.png\") no-repeat center;background-size:cover;margin:auto'></div>"+
     "<div style='position:absolute;left: 10%;right: 10%;top: 55%;bottom:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size: 4vmin;text-align: center;'>使用qBittorrnet Web UI 管理您的媒体库</div>"+
     "<div style='position:absolute;left: 10%;right: 10%;top: 65%;bottom:20%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.3);font-size: 3vmin;text-align: center;'>在设置内填写您的Web UI地址(URL)，立即开始使用吧</div>"}
 </script>

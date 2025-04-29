@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        .episode-container {
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+            height: 140px;
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            padding: 20px;
+            gap: 25px;
+            background-color: rgba(0,0,0,0.2);
+        }
+
+        .episode-page {
+            display: grid;
+            grid-template-columns: repeat(3, 110px);
+            grid-template-rows: repeat(2, 55px);
+            grid-gap: 25px;
+            flex: 0 0 auto;
+        }
+
+        .episode-card {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            font-size: 25px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0,0,0.2,1);
+            box-shadow: 0px 0px 0px 0px #ffffff4a;
+            background-color: rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .episode-card:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: scale(1.05);
+        }
+
+        /* 自定义滚动条样式 */
+        .episode-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .episode-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .episode-container::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="episode-container">
+        <!-- 第一页 -->
+        <div class="episode-page">
+            <div class="episode-card">EP 1</div>
+            <div class="episode-card">EP 2</div>
+            <div class="episode-card">EP 3</div>
+            <div class="episode-card">EP 4</div>
+            <div class="episode-card">EP 5</div>
+            <div class="episode-card">EP 6</div>
+        </div>
+        <!-- 第二页 -->
+        <div class="episode-page">
+            <div class="episode-card">EP 7</div>
+            <div class="episode-card">EP 8</div>
+            <div class="episode-card">EP 9</div>
+            <div class="episode-card">EP 10</div>
+            <div class="episode-card">EP 11</div>
+            <div class="episode-card">EP 12</div>
+        </div>
+        <!-- 第三页 -->
+        <div class="episode-page">
+            <div class="episode-card">EP 13</div>
+            <div class="episode-card">EP 14</div>
+            <div class="episode-card">EP 15</div>
+            <div class="episode-card">EP 16</div>
+            <div class="episode-card">EP 17</div>
+            <div class="episode-card">EP 18</div>
+        </div>
+        <!-- 第四页 -->
+        <div class="episode-page">
+            <div class="episode-card">EP 19</div>
+            <div class="episode-card">EP 20</div>
+            <div class="episode-card">EP 21</div>
+            <div class="episode-card">EP 22</div>
+            <div class="episode-card">EP 23</div>
+            <div class="episode-card">EP 24</div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.episode-container').addEventListener('wheel', (event) => {
+            event.preventDefault();
+            const container = event.currentTarget;
+            container.scrollLeft += document.getElementsByClassName('episode-page')[0].width ;
+        });
+    </script>
+</body>
+</html>

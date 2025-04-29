@@ -8,7 +8,20 @@ const ipc = nodeRequire('electron').ipcRenderer;                      //?引入i
 const {clipboard,nativeImage} = nodeRequire('electron');              //?引入剪贴板api
 const { dialog } = nodeRequire('@electron/remote')                    //?引入remote.dialog 对话框弹出api
 const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
-const store = new Store();                                            //?创建electron-store存储资源库对象
+// const store = new Store();                                            //?创建electron-store存储资源库对象
+
+//! NeDB数据库初始化
+const path = nodeRequire("path");                                     //?引入path
+const appDataPath = process.env.APPDATA || path.join(process.env.HOME, 'Library', 'Application Support'); // 获取appdata
+const Datastore = nodeRequire('nedb');
+const db = new Datastore({
+    filename: path.join(path.join(appDataPath, 'bgm.res'), 'MediaData.db'),
+    autoload: false
+});
+const ElectronStoreAdapter = nodeRequire('../js/ElectronStore2NeDB.js');
+const store = new ElectronStoreAdapter();  // 创建自定义适配器实例
+//! NeDB数据库初始化OVER
+
 var htmlToImage = nodeRequire('html-to-image');                       //?引入html-to-image截图库
 const { drawText } = nodeRequire('canvas-txt')                        //?canvas-txt文本绘制模块
 var MediaIDStorage = null;                                          //?媒体ID
@@ -19,7 +32,8 @@ let SysdataOption={
 }; const sysdata = new Store(SysdataOption);                          //?创建electron-store存储资源库对象-系统设置存储
 
 const { OKErrorStreamer } = nodeRequire('../js/Mainpage_Modules/MainpageToaster.js'); //?引入bgm.res主界面的通知toast函数封装
-ipc.on('data', (e,arg) => {console.log(arg);MediaIDStorage = arg;SharePostPreGenerate(arg);});       //?接收主进程传来的数据
+ipc.on('data', (e,arg) => {console.log(arg);MediaIDStorage = arg;store.update().then(() => {SharePostPreGenerate(arg);}).catch(err => {
+    console.error('更新缓存时出错:', err);});});       //?接收主进程传来的数据
 
 function SharePostPreGenerate(MediaID){
     if(sysdata.get("Settings.checkboxB.LocalStorageSystemCustomColor")) //初始化自定义颜色
@@ -31,31 +45,31 @@ function SharePostPreGenerate(MediaID){
     document.body.appendChild(customcolorstyle);//把内联样式表添加到html中    
     }
 
-    document.getElementById('ShareCanvasBackGround').style.background = "url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
+    document.getElementById('ShareCanvasBackGround').style.background = "url('"+store.find("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
     document.getElementById('ShareCanvasBackGround').style.backgroundSize = "cover";
-    document.getElementById('ShareCanvasCover').style.background = "url('"+store.get("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
+    document.getElementById('ShareCanvasCover').style.background = "url('"+store.find("WorkSaveNo"+MediaID+".Cover")+"') no-repeat center";
     document.getElementById('ShareCanvasCover').style.backgroundSize = "cover";
-    document.getElementById('ShareCanvasTitle').innerText = store.get("WorkSaveNo"+MediaID+".Name");
+    document.getElementById('ShareCanvasTitle').innerText = store.find("WorkSaveNo"+MediaID+".Name");
 
     // 作品等级判定
-    let RateScore = store.get("WorkSaveNo"+MediaID+".Score")
-    if(RateScore > 9.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;超神作";}
-    else if(RateScore > 8.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;神作";}
-    else if(RateScore > 7.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;力荐";}
-    else if(RateScore > 6.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;推荐";}
-    else if(RateScore > 5.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;还行";}
-    else if(RateScore > 4.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;不过不失";}
-    else if(RateScore > 3.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;较差";}
-    else if(RateScore > 2.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;差";}
-    else if(RateScore > 2.5) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;很差";}
-    else if(RateScore >= 1) {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;不忍直视";}
-    else {document.getElementById('ShareCanvasRank').innerHTML = store.get("WorkSaveNo"+MediaID+".Score")+"&nbsp;&nbsp;暂无评分";}
+    let RateScore = store.find("WorkSaveNo"+MediaID+".Score")
+    if(RateScore > 9.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;超神作";}
+    else if(RateScore > 8.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;神作";}
+    else if(RateScore > 7.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;力荐";}
+    else if(RateScore > 6.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;推荐";}
+    else if(RateScore > 5.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;还行";}
+    else if(RateScore > 4.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;不过不失";}
+    else if(RateScore > 3.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;较差";}
+    else if(RateScore > 2.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;差";}
+    else if(RateScore > 2.5) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;很差";}
+    else if(RateScore >= 1) {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;不忍直视";}
+    else {document.getElementById('ShareCanvasRank').innerHTML = RateScore+"&nbsp;&nbsp;暂无评分";}
 
 
-    document.getElementById('ShareCanvasStaff1').innerText = "原作："+store.get("WorkSaveNo"+MediaID+".Protocol")+" / 监督："+store.get("WorkSaveNo"+MediaID+".Director");
-    document.getElementById('ShareCanvasStaff2').innerText = store.get("WorkSaveNo"+MediaID+".Type")+" / "+store.get("WorkSaveNo"+MediaID+".Eps")+"话 / "+store.get("WorkSaveNo"+MediaID+".Year")+"年 / 动画制作："+store.get("WorkSaveNo"+MediaID+".Corp");
+    document.getElementById('ShareCanvasStaff1').innerText = "原作："+store.find("WorkSaveNo"+MediaID+".Protocol")+" / 监督："+store.find("WorkSaveNo"+MediaID+".Director");
+    document.getElementById('ShareCanvasStaff2').innerText = store.find("WorkSaveNo"+MediaID+".Type")+" / "+store.find("WorkSaveNo"+MediaID+".Eps")+"话 / "+store.find("WorkSaveNo"+MediaID+".Year")+"年 / 动画制作："+store.find("WorkSaveNo"+MediaID+".Corp");
 
-    document.getElementById('ShareCanvasShareQR').style.background = "url('https://api.pwmqr.com/qrcode/create/?url=https://bgm.tv/subject/"+store.get("WorkSaveNo"+MediaID+".bgmID")+"') no-repeat center";
+    document.getElementById('ShareCanvasShareQR').style.background = "url('https://api.pwmqr.com/qrcode/create/?url=https://bgm.tv/subject/"+store.find("WorkSaveNo"+MediaID+".bgmID")+"') no-repeat center";
     document.getElementById('ShareCanvasShareQR').style.backgroundSize = "cover";
 
     const TitleBox = document.getElementById('ShareCanvasTitle');

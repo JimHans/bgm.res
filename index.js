@@ -63,6 +63,7 @@ function createWindow () {
       // if(IS_WINDOWS_11)  {win.setMicaTabbedEffect();win.setAutoTheme();} else if(WIN10) 
 
       // 并且为你的应用加载index.html
+      win.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
       win.loadFile('index.html');
 
       require('@electron/remote/main').enable(win.webContents) // 启用 electron/remote web组件
@@ -108,6 +109,7 @@ function createWindow () {
       })
     
       // 并且为你的应用加载index.html
+      win.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
       win.loadFile('index.html');
 
       require('@electron/remote/main').enable(win.webContents) // 启用 electron/remote web组件
@@ -253,6 +255,7 @@ ipcMain.on('MediaSettings', (event, arg) => {
       contextIsolation: false,
     }
   });
+  MediaSettings.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
   MediaSettings.loadFile('./pages/MediaSettings.html');// 并且为你的应用加载index.html
   require('@electron/remote/main').enable(MediaSettings.webContents) // 启用 electron/remote web组件
   // MediaSettings.webContents.openDevTools();
@@ -287,6 +290,7 @@ ipcMain.on('MediaShare', (event, data) => {
       contextIsolation: false,
     }
   });
+  MediaShare.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
   MediaShare.loadFile('./pages/MediaShare.html');// 并且为你的应用加载index.html
   require('@electron/remote/main').enable(MediaShare.webContents) // 启用 electron/remote web组件
   // MediaShare.webContents.openDevTools();
@@ -326,6 +330,7 @@ function userpageShow () {
     }
   });
   // 并且为你的应用加载index.html
+  userpage.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
   userpage.loadFile('./pages/userpage.html');
   require('@electron/remote/main').enable(userpage.webContents) // 启用 electron/remote web组件
   // userpage.webContents.openDevTools();
@@ -368,6 +373,7 @@ function AddMediaPageShow () {
       contextIsolation: false,
     }
   });
+  AddMediaPage.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
   AddMediaPage.loadFile('./pages/AddMediaPage.html');// 并且为你的应用加载index.html
   require('@electron/remote/main').enable(AddMediaPage.webContents) // 启用 electron/remote web组件
   // AddMediaPage.webContents.openDevTools();
@@ -415,6 +421,7 @@ function RecycleBinPageShow () {
       contextIsolation: false,
     }
   });
+  RecycleBinPage.webContents.setUserAgent(`JimHan/bgm.res/${packageGet.version} (Windows) (https://github.com/JimHans/bgm.res)`);
   RecycleBinPage.loadFile('./pages/RecycleBinPage.html');// 并且为你的应用加载index.html
   require('@electron/remote/main').enable(RecycleBinPage.webContents) // 启用 electron/remote web组件
   RecycleBinPage.on('ready-to-show', function () {

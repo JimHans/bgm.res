@@ -34,12 +34,12 @@ exports.ArchiveMediaDetailsEpInfoCard=function(event,MediaID,TempCounter,Type){
   
   /*点击标注看到此ep*/"<div id='RecentViewEpisodePlayCardProgressWatchedTill' class='RecentViewEpisodePlayCardProgressBtn' style='left: 64px;border-radius: 0px;border-left-width:0px;border-right-width:0px' onclick='for(var Tempj=1;Tempj<="+TempCounter+";Tempj++)"+
   "{store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP\"+Tempj+\".Condition\",\"Watched\");document.getElementById(\"ArchivePageContentDetailsEpisodeNo\"+Tempj).style.boxShadow=\"0px 0px 0px 2px "+SettingsColorPicker(0.4)+"\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo\"+Tempj).style.backgroundColor=\""+SettingsColorPicker(0.4)+"\";}"+
-  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\""+SettingsColorPicker(0.6)+"\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+",1,"+(bgmEP+1)+",2);'>看到</div>"+
+  "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\""+SettingsColorPicker(0.6)+"\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"#000\";ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+",1,"+(bgmEP+1)+",2);RecentWorksPageInit();'>看到</div>"+
   
   /*点击撤销观看此ep*/"<div class='RecentViewEpisodePlayCardProgressBtn' style='left: 114px;border-top-left-radius: 0;border-bottom-left-radius: 0;' onclick='store.set(\"WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".Condition\",\"Unwatched\");"+
   "document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.backgroundColor=\"#00000055\";document.getElementById(\"RecentViewEpisodePlayCardProgressWatched\").style.color=\"rgb(172, 172, 172)\";document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.boxShadow=\"0px 0px 0px 0px #ffffff4a\";"+
   "document.getElementById(\"ArchivePageContentDetailsEpisodeNo"+TempCounter+"\").style.backgroundColor=\"rgb(0,0,0,0.3)\";"+
-  "ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+","+bgmEP+","+(bgmEP+1)+",0);'>撤销</div>"+
+  "ArchivePageMediaProgressCalc("+MediaID+");ArchiveMediaDetailsEpisodeUserUpdate("+bgmID+","+bgmEP+","+(bgmEP+1)+",0);RecentWorksPageInit();'>撤销</div>"+
   
   "<div class='RecentViewEpisodePlayCardPlay' style='right:10px;top:122px;width:28%;height:28%;border:0px solid' onclick='ArchiveMediaDetailsEpInfoPlayer("+MediaID+","+TempCounter+",\"EP\");'>"+
   "<div style='width: 80%;height: 100%;left:10%;position: absolute;background:url(./assets/play.svg) no-repeat center;background-size: contain;'></div>"+
@@ -102,6 +102,10 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
     if(Type == 'EP') var EPOpenURL = store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+TempCounter+".URL");
     if(Type == 'SP') var EPOpenURL = store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+TempCounter+".URL");
 
+    //更新最近观看
+    store.recordLastWatched(store.get("WorkSaveNo"+MediaID+".WorkSaveNo"),Type+(TempCounter).toString());
+    RecentWorksPageInit();
+
     if(sysdata.get("Settings.checkboxA.LocalStorageUseSystemPlayer")){ //使用系统默认播放器
       // 规范化路径，确保兼容性
       DirectvideoPath = path.normalize(EPOpenURL);
@@ -156,24 +160,25 @@ exports.ArchiveMediaDetailsEpInfoPlayer=function(MediaID,TempCounter,Type){
     })
     process.noAsar = false; //恢复fs对ASAR读取
     }
-    sysdata.set("Settings.checkboxC.LocalStorageRecentViewID",store.get("WorkSaveNo"+MediaID+".bgmID"));
-    localStorage.setItem("LocalStorageRecentViewID",store.get("WorkSaveNo"+MediaID+".bgmID"));
-    sysdata.set("Settings.checkboxC.LocalStorageRecentViewLocalID",MediaID);
-    localStorage.setItem("LocalStorageRecentViewLocalID",MediaID);
+    let RecentViewWorkOriNo = store.get("WorkSaveNo"+MediaID+".WorkSaveNo");
+    sysdata.set("Settings.checkboxC.LocalStorageRecentViewID",store.find(RecentViewWorkOriNo+".bgmID"));
+    localStorage.setItem("LocalStorageRecentViewID",store.find(RecentViewWorkOriNo+".bgmID"));
+    sysdata.set("Settings.checkboxC.LocalStorageRecentViewLocalID",RecentViewWorkOriNo.replace(/[^0-9]/g, ''));
+    localStorage.setItem("LocalStorageRecentViewLocalID",RecentViewWorkOriNo.replace(/[^0-9]/g, ''));
     sysdata.set("Settings.checkboxC.LocalStorageRecentViewURL",EPOpenURL);
     localStorage.setItem("LocalStorageRecentViewURL",EPOpenURL);
     sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisode",TempCounter);
     localStorage.setItem("LocalStorageRecentViewEpisode",TempCounter);
     if(Type == 'EP') {
-      sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
-      localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".EPDetails.EP"+(TempCounter+1)+".URL"));
+      sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.find(RecentViewWorkOriNo+".URL")+"\\"+store.find(RecentViewWorkOriNo+".EPDetails.EP"+(TempCounter+1)+".URL"));
+      localStorage.setItem("LocalStorageRecentViewNextURL",store.find(RecentViewWorkOriNo+".URL")+"\\"+store.find(RecentViewWorkOriNo+".EPDetails.EP"+(TempCounter+1)+".URL"));
       sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'EP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'EP');
       document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px "+SettingsColorPicker(0.4);
       document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
     }
     if(Type == 'SP') {
-      sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));
-      localStorage.setItem("LocalStorageRecentViewNextURL",store.get("WorkSaveNo"+MediaID+".URL")+"\\"+store.get("WorkSaveNo"+MediaID+".SPDetails.SP"+(TempCounter+1)+".URL"));
+      sysdata.set("Settings.checkboxC.LocalStorageRecentViewNextURL",store.find(RecentViewWorkOriNo+".URL")+"\\"+store.find(RecentViewWorkOriNo+".SPDetails.SP"+(TempCounter+1)+".URL"));
+      localStorage.setItem("LocalStorageRecentViewNextURL",store.find(RecentViewWorkOriNo+".URL")+"\\"+store.find(RecentViewWorkOriNo+".SPDetails.SP"+(TempCounter+1)+".URL"));
       sysdata.set("Settings.checkboxC.LocalStorageRecentViewEpisodeType",'SP');localStorage.setItem("LocalStorageRecentViewEpisodeType",'SP');
       document.getElementById("ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px "+SettingsColorPicker(0.4);
       document.getElementById("ArchivePageContentDetailsSpecialEpisodeNo"+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
@@ -276,4 +281,5 @@ exports.ArchiveMediaDetailsEpInfoCardWatched = function (MediaID,TempCounter,bgm
   document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.boxShadow="0px 0px 0px 2px "+SettingsColorPicker(0.4);
   document.getElementById("ArchivePageContentDetailsEpisodeNo"+TempCounter).style.backgroundColor=SettingsColorPicker(0.4);
   ArchivePageMediaProgressCalc(MediaID);ArchiveMediaDetailsEpisodeUserUpdate(bgmID,bgmEP,(bgmEP+1),2);
+  RecentWorksPageInit();
 }

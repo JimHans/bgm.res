@@ -48,7 +48,20 @@
     // 额外引入模块
     const ipc = nodeRequire('electron').ipcRenderer;                      //?引入ipcRenderer进程通信api
     const Store = nodeRequire('electron-store');                          //?引入electron-store存储资源库信息
-    const store = new Store();                                            //?创建electron-store存储资源库对象
+    // const store = new Store();                                            //?创建electron-store存储资源库对象
+
+    //! NeDB数据库初始化
+    const path = nodeRequire("path");                                     //?引入path
+    const appDataPath = process.env.APPDATA || path.join(process.env.HOME, 'Library', 'Application Support'); // 获取appdata
+    const Datastore = nodeRequire('nedb');
+    const db = new Datastore({
+    filename: path.join(path.join(appDataPath, 'bgm.res'), 'MediaData.db'),
+    autoload: false
+    });
+    const ElectronStoreAdapter = nodeRequire('../js/ElectronStore2NeDB.js');
+    const store = new ElectronStoreAdapter();  // 创建自定义适配器实例
+    //! NeDB数据库初始化OVER
+
     let SysdataOption={
     name:"sysdata",//文件名称,默认 config
     fileExtension:"json",//文件后缀,默认json
@@ -67,6 +80,7 @@
     }
 
     OKErrorStreamer("MessageOn","正在读取...",0);
+    store.update().then(() => {
     var MediaBaseNumberGet = sysdata.get("Settings.checkboxC.LocalStorageMediaBaseNumber");
     var MediaBaseTempDataSaver = store.get();
     let MediaBaseTempCounter = 0;
@@ -90,6 +104,7 @@
     OKErrorStreamer("OK","列表读取完毕",0,"..");
     $("#MediaBanListTab").html('<img src="../assets/ban.svg" alt="Ban" style="width:16px"/>&nbsp;&nbsp;已屏蔽作品 '+MediaBaseTempCounter+'个');
     if(MediaBaseTempCounter==0){$("#MediaBanListSetpageA").append("<div style='position:relative;text-align:center;top:30%;font-family:bgmUIHeavy;color: rgba(255, 255, 255, 0.5);font-size:3vmin'>没有已屏蔽的作品</div>")}
+    }).catch(err => {console.error('更新缓存时出错:', err);});
 
     function MediaBanListRecover(MediaID){
         OKErrorStreamer("MessageOn","正在恢复...",0);
